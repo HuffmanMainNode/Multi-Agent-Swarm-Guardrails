@@ -7,7 +7,7 @@ Last updated: 2026-11-10
 | Ten mandatory contracts | Specified | Machine-readable catalog; only a subset of requirements is executable |
 | Universal protocol v1.0.0 | Implemented specification baseline | Normative language-neutral decision semantics, versioning, trust boundaries, policy-version binding, JSON Schemas and portable vectors; merged PR #10 |
 | Portable conformance artifacts | PASS in PR CI | JSON Schema Draft 2020-12 validation and shared decision vectors run against Python 3.11/3.12/3.13; PR run 42746824887 passed; this is not deployment certification |
-| Independent language implementations | Python and Go reference implementations | Go 0.1.1 and Rust 0.1.0 are independent standard-library-only evaluators; both pass the same eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Java/C#/TypeScript implementation yet |
+| Independent language implementations | Python, Go, and Rust reference implementations | Go 0.1.1 and Rust 0.1.0 are independent standard-library-only evaluators; both pass the same eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Java/C#/TypeScript implementation yet |
 | Namespaced extension model | Specified | Versioned extension manifest schema, domain/transport/identity/policy/enforcement/evidence/recovery types, fail-closed compatibility rules; example is documentation-only; merged PR #13 |
 | Go portable decision conformance | PASS in CI, narrowly scoped | Go vet and race-enabled tests pass; eight shared vectors; PR #16 CI run 42750992748 and post-merge main run 42751069709; report scope is policy-decision/time vectors only, not MSC certification |
 | Strict policy/request parsing | Implemented in reference evaluator | Duplicate keys, non-standard constants, unknown fields, malformed selectors, and oversized inputs rejected |
@@ -26,7 +26,7 @@ Last updated: 2026-11-10
 
 ## Critical gaps
 
-Independent Rust/Java/C#/TypeScript implementations and broader cross-language interoperability testing; full conformance runner for deployment profiles; signed protocol envelope/canonicalization profile; sender-constrained identity (X.509-SVID/mTLS); live SPIRE rotation/revocation and workload-selector tests; review and hash-pin the optional py-spiffe dependency closure (pinned release currently has no PyPI provenance); stronger rollback-resistant TUF cache storage; TUF repository publishing/signing workflow and key management; distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
+Java/C#/TypeScript implementations and broader cross-language interoperability testing; full conformance runner for deployment profiles; signed protocol envelope/canonicalization profile; sender-constrained identity (X.509-SVID/mTLS); live SPIRE rotation/revocation and workload-selector tests; review and hash-pin the optional py-spiffe dependency closure (pinned release currently has no PyPI provenance); stronger rollback-resistant TUF cache storage; TUF repository publishing/signing workflow and key management; distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
 
 ## Validation boundary
 
@@ -63,3 +63,12 @@ A third implementation is under review in `implementations/rust/`. It uses only 
 ## Rust reference status
 
 Rust 0.1.0 under `implementations/rust/` passed CI run 42752336251: rustfmt, Clippy with warnings denied, and shared-vector/parser tests. The implementation is dependency-free and passes all eight v1.0.0 decision/time vectors. Its report scope is only those vectors; all MSC statuses remain NOT_TESTED. It does not authenticate principals or mediate side effects. PR #18 is open pending final merge.
+
+
+## Three-language conformance evidence
+
+- Python reference evaluator: shared eight-vector suite plus Python parser/schema regression tests in the main Python 3.11/3.12/3.13 matrix.
+- Go 0.1.1: eight shared policy/time vectors; Go vet and race-enabled tests; tested source revision `1b95c53aefd366f5364417b5bdfc6f07b78b95a8`; CI run 42750849476 passed.
+- Rust 0.1.0: eight shared policy/time vectors; strict parser, UTF-8, duplicate-key, unknown-field, timestamp and boundary tests; tested source revision `0cc0a0ac4baa906f3757c970f8d881f1ec365ca5`; CI run 42752336251 passed.
+- Post-merge main CI run 42752581046 passed Python 3.11/3.12/3.13, Go vet/race, Rust formatting, Clippy with warnings denied, and Rust tests.
+- The eight vectors are not a full conformance suite. All ten MSC statuses remain NOT_TESTED in both Go and Rust manifests. No deployment certification or independent security assessment is implied.

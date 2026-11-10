@@ -19,6 +19,18 @@ Priorities are ordered by security dependency, not feature count.
 6. Independent evidence checkpoint and signed portable evidence format.
 7. Deployment-level conformance, property-based/fuzz testing, load testing, and external review.
 
+## Universal protocol and language interoperability
+- [x] Publish language-neutral MASG v1.0.0 schemas and eight shared policy/time vectors.
+- [x] Python reference evaluator.
+- [x] Independent Go standard-library evaluator with race-enabled CI.
+- [x] Independent Rust standard-library evaluator with formatting, Clippy and tests.
+- [x] Validate Go and Rust implementation manifests/reports against normative schemas in Python CI.
+- [ ] Add shared malformed-input/parser-negative fixtures consumed by all implementations.
+- [ ] Add cross-language differential/property-based testing and fuzz campaigns.
+- [ ] Add JavaScript/TypeScript implementation for common agent/tool ecosystems.
+- [ ] Add a portable CLI conformance runner that can validate any implementation report offline.
+- [ ] Add a real transport adapter (MCP candidate) only after identity and bypass contracts are defined.
+
 ## Interoperability
 - ACS/MCP integration only after security contract mappings and compatibility tests.
 - A2A identity, audience, expiry, and replay integration.

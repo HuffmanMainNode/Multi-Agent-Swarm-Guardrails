@@ -145,3 +145,19 @@ CI run: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/
 CI result: PASS across Python 3.11/3.12/3.13, Go vet/race tests, Rust formatting, Rust Clippy with warnings denied, and Rust tests.
 
 Rust is a dependency-free third implementation with a custom bounded JSON parser. It consumes all eight shared v1.0.0 decision/time vectors and adds parser, Unicode, timestamp, and boundary tests. Its conformance report is PASS only for those eight vectors. All ten MSC statuses remain NOT_TESTED; Rust does not authenticate identity or mediate side effects. PR #18 merge status remains pending.
+
+
+## Superseding checkpoint: three-language protocol baseline
+
+Current main commit at checkpoint: `2b3aa05450b09d7ba00c79671a0c261a4ec773bd`
+Latest main CI: run `42752581046`, PASS (Python 3.11/3.12/3.13, Go vet/race, Rust fmt/Clippy/tests).
+Protocol: MASG v1.0.0.
+Implementations: Python reference, Go 0.1.1, Rust 0.1.0.
+Shared vectors: eight policy-decision and request-time vectors.
+Merged Rust milestone: PR #18, merge commit `2b3aa05450b09d7ba00c79671a0c261a4ec773bd`.
+
+This supersedes the earlier text in this file stating Rust PR #18 was pending or that Rust CI had not yet run. Rust's conformance PASS is limited to the eight shared vectors in the embedded profile. The Go report is similarly limited. Both manifests correctly retain NOT_TESTED for all ten mandatory safety contracts. Neither implementation authenticates principals, brokers protected execution, proves complete mediation, or establishes production readiness.
+
+The Python CI suite now validates the Go and Rust implementation manifests and conformance reports against the normative schemas, checks matching implementation IDs/versions/protocol versions, checks the declared eight-vector scope, and requires explicit PASS results, source revision identifiers, evidence links, and visible limitations.
+
+Next quality gate: broaden portable conformance beyond eight policy/time cases, add shared parser-negative fixtures, and run independent differential/property/fuzz testing. Then prioritize the MCP transport adapter only with explicit identity mapping and bypass tests. Keep X.509-SVID/mTLS, live SPIRE, TUF publisher workflow/cache anti-rollback, delegation attenuation, typed executor, complete mediation, recovery, and external security review as open critical work.
