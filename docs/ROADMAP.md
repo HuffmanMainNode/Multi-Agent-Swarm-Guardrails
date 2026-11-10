@@ -54,3 +54,7 @@ No production or certification claim until identity, policy integrity, execution
 - [ ] Expand independent protocol implementations to Java, C#, Swift, Kotlin, C/C++, and WebAssembly as community demand and maintainers allow.
 
 UASR is experimental and separate from authorization protocol v1.0.0. No hidden-reasoning disclosure, translation accuracy guarantee, or token-efficiency result is claimed.
+
+- [x] Add Python and JavaScript/TypeScript template generators that create untranslated packs for any syntactically valid locale tag.
+- [x] Add a schema and uniqueness checks for the controlled contextual glossary of protocol and security terms.
+- [ ] Add Go and Rust template generators with matching behavior.
