@@ -75,7 +75,7 @@ Example principal map, where `1001` must be replaced with the actual dedicated a
 
 ## SPIFFE/SPIRE workload identity mode
 
-Install the optional client dependency with `python -m pip install 'masg-guardrails[spiffe]'`. Configure SPIRE or another SPIFFE Workload API implementation to expose a local Unix socket accessible to the broker. The broker validates every presented JWT-SVID online through `ValidateJWTSVID`, with a fixed audience and a two-second default timeout. The validated SPIFFE ID becomes the policy principal. Write exact SPIFFE IDs into the policy's `principals` selectors. There is no UID-to-principal map in this mode.
+Install the optional client dependency with `python -m pip install 'masg-guardrails[spiffe]'`. Configure SPIRE or another SPIFFE Workload API implementation to expose a local Unix socket accessible to the broker in a protected parent directory that is not group/world writable or a symlink. The broker validates every presented JWT-SVID online through `ValidateJWTSVID`, with a fixed audience and a two-second default timeout. The validated SPIFFE ID becomes the policy principal. Write exact SPIFFE IDs into the policy's `principals` selectors. There is no UID-to-principal map in this mode.
 
 ```bash
 masg broker serve \\

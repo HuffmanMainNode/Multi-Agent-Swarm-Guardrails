@@ -31,7 +31,7 @@ Install the optional dependency:
 python -m pip install 'masg-guardrails[spiffe]'
 ```
 
-Configure the SPIRE Agent or another conformant Workload API implementation to expose a local Unix socket. The broker process must be permitted to access that endpoint. Supply the absolute socket path and a dedicated audience:
+Configure the SPIRE Agent or another conformant Workload API implementation to expose a local Unix socket. The broker process must be permitted to access that endpoint. Supply the absolute socket path and a dedicated exact audience. Wildcard, padded, or whitespace-containing audience values are rejected. The socket must be a real Unix socket in a protected parent directory that is not group/world writable or a symlink:
 
 ```bash
 masg broker serve \\
@@ -74,7 +74,7 @@ A validation timeout or Workload API failure denies the request. No offline iden
 
 - A JWT-SVID is a bearer token. This integration does not bind it cryptographically to the Unix-domain-socket peer PID/UID or to the originating process. A stolen token can be presented by another local process until it expires or becomes invalid.
 - Linux `SO_PEERCRED` remains collected as local transport provenance and defense in depth, but SPIFFE ID is the policy principal in SPIFFE mode.
-- The broker trusts the Workload API endpoint and its implementation, SPIRE server/agent configuration, workload attestation selectors, trust domain, signing keys, clock, and local socket access controls.
+- The broker trusts the Workload API endpoint and its implementation, SPIRE server/agent configuration, workload attestation selectors, trust domain, signing keys, clock, and local socket access controls. The socket parent directory must not be writable by untrusted groups/users.
 - The broker does not issue SVIDs, register workloads, administer SPIRE, rotate CA keys, configure federation, or manage trust bundles.
 - This mode does not yet implement X.509-SVID mutual TLS or sender-constrained credentials.
 - No live SPIRE integration test or deployment conformance test is claimed by the unit tests. CI injects a deterministic fake Workload API client to verify request shaping, fail-closed behavior, bounds, identity derivation, expiry binding, and policy mapping.
