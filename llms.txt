@@ -25,3 +25,6 @@ Offline localization resolver implementations:
 - implementations/javascript/localization.js and localization.d.ts: JavaScript/TypeScript resolver; import @masg/reference-javascript/localization.
 - tests/test_localization.py and implementations/javascript/localization.test.js: fallback, machine-draft opt-in, review metadata, and catalog mismatch tests.
 Both resolvers use human-reviewed text by default and never perform network translation.
+
+- schemas/core-glossary.schema.json: validates the controlled contextual concept glossary.
+- Python masg.localization.create_translation_template(source_pack, locale) and JavaScript createTranslationTemplate(sourcePack, locale): generate a full untranslated template for a new locale without translation services.
