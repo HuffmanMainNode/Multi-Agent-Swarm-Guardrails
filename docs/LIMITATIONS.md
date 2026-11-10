@@ -7,16 +7,26 @@ The reference implementation is experimental. It is not a production security bo
 - Policy decisions are deny-by-default and exact-match. Explicit DENY dominates ALLOW.
 - Optional SQLite replay protection atomically consumes request IDs once within one local database.
 - The local JSONL evidence ledger verifies its hash chain and rejects ambiguous JSON records.
-- Experimental Linux broker uses OS peer UID credentials, an operator-maintained UID-to-principal map, one fixed audit append operation, bounded request/event sizes, a five-minute maximum request lifetime, local replay consumption, and a broker-owned evidence ledger.
+- Experimental Linux broker supports one fixed audit append operation, bounded requests, a five-minute request lifetime, local replay consumption and a broker-owned evidence ledger. It supports legacy UID principal mapping and an optional SPIFFE JWT-SVID validation mode under review.
 
 ## Not implemented
-- External cryptographic identity authentication, credential issuance, revocation, or proof of principal ownership beyond the local OS UID.
+- Live SPIRE deployment conformance, X.509-SVID/mTLS sender binding, and proof-of-possession for the JWT-SVID bearer token.
+- Credential issuance, SPIRE workload registration, key administration, or globally instantaneous revocation. Optional SPIFFE mode validates JWT-SVIDs through the local Workload API on every request; trust provider, workload attestation, key rotation and revocation propagation remain adopter dependencies.
 - Static local policy mode has no publisher authentication. Optional TUF mode verifies policy metadata, signatures, expiry, versions, and target hashes through python-tuf; its cache must be persistent and protected against rollback. MASG does not provide TUF repository publishing or signing-key management.
 - Distributed replay protection, database anti-rollback, or replay protection when the optional SQLite store is not configured.
 - Capability-set delegation attenuation. Current evaluator checks only reject malformed/cyclic chains.
 - General arbitrary-tool execution broker, filesystem/network mediation, OS sandbox, egress firewall, or complete mediation proof.
 - Signed evidence, remote immutable checkpoint, trusted timestamp, or multi-writer-safe JSONL ledger.
 - Human approval binding, semantic prompt-injection engine, legality classifier, recovery orchestration, framework adapters, fuzz/load/penetration testing, or independent security assessment.
+
+## SPIFFE workload identity limits
+- Optional `spiffe` extra pins community-maintained py-spiffe 0.4.0; PyPI currently reports no provenance for the release. Audit and hash-pin the dependency closure before sensitive deployment.
+- Requires a local SPIFFE Workload API Unix socket and operator-configured audience.
+- Every request is validated online; Workload API failure or timeout fails closed. No identity cache or offline fallback exists.
+- Request expiry is bounded by the validated SVID expiry.
+- Revocation depends on provider trust-bundle/key update propagation. No globally instantaneous revocation guarantee.
+- JWT-SVID is a bearer token; theft enables presentation until expiry or provider-side invalidation.
+- No X.509-SVID/mTLS sender binding, real SPIRE integration test, or workload selector change test yet.
 
 ## TUF policy-source limits
 - TUF support is optional and requires the `masg-guardrails[tuf]` extra.
@@ -29,8 +39,8 @@ The reference implementation is experimental. It is not a production security bo
 
 ## Broker-specific limits
 - Linux only; requires SO_PEERCRED and Unix domain sockets.
-- Processes sharing an OS UID share the same broker identity.
-- Policy and UID map are loaded at startup. Files must be regular and not group/world writable; parent directories still require operator protection.
+- Processes sharing an OS UID share the same broker identity in UID mode. SPIFFE mode uses the validated SPIFFE ID as policy principal, but presented JWT-SVIDs are bearer tokens not bound to the Unix peer process.
+- Policy and UID map are loaded at startup in UID mode. Files must be regular and not group/world writable; parent directories still require operator protection.
 - Broker socket parent must already exist and be operator-controlled. Existing socket paths are never removed automatically.
 - Exactly one operation is exposed: append a bounded event to the broker-owned ledger. No arbitrary commands, paths, executables, or tool names are accepted.
 - Replay state is local and can be rolled back by an attacker controlling broker-owned state.
