@@ -225,3 +225,6 @@ PR #24: shared RFC 3339 calendar-validation fixtures. Tested PR head `9061662d86
 The shared negative corpus now has eighteen fixtures: ten raw JSON/parser cases plus eight impossible timestamp cases (February 30, non-leap February 29, month 13, April 31, hour 24, minute 60, second 60, and offset +25:00). All four language implementations reject the same raw request bytes with REQUEST_INVALID. JavaScript conformance report includes eight decision/time plus eighteen negative-fixture results. Go and Rust reports remain scoped to the eight decision/time vectors; their CI jobs also execute the eighteen negative fixtures. This is deterministic regression evidence, not exhaustive fuzzing or production assurance.
 
 The older entries above that describe JavaScript as pending, the parser suite as ten fixtures, or PR #24 as pending are historical checkpoints and are superseded by this section. All ten MSC contracts remain NOT_TESTED for the Go, Rust, and JavaScript embedded evaluators.
+
+ 
+The localization follow-on also adds Python and JavaScript/TypeScript template generators for any locale tag, plus a schema-validated controlled glossary of protocol/security concepts. The glossary is intentionally contextual rather than an unbounded word-for-word dictionary.
