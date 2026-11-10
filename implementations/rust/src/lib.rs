@@ -830,7 +830,7 @@ mod tests {
         let raw = std::fs::read(path).unwrap();
         let fixtures = parse_json(&raw, MAX_VECTOR_BYTES).unwrap();
         let fixtures = as_array(&fixtures).unwrap();
-        assert!(fixtures.len() >= 10);
+        assert!(fixtures.len() >= 18);
         for fixture in fixtures {
             let object = as_object(fixture).unwrap();
             let policy = decode_hex(

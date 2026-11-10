@@ -52,7 +52,7 @@ class UniversalProtocolTests(unittest.TestCase):
     def test_shared_parser_negative_vectors_match_their_schema(self):
         schema = self.schemas["parser-negative-vector.schema.json"]
         validator = Draft202012Validator(schema, format_checker=FormatChecker())
-        self.assertGreaterEqual(len(self.parser_vectors), 10)
+        self.assertGreaterEqual(len(self.parser_vectors), 18)
         for fixture in self.parser_vectors:
             with self.subTest(fixture=fixture["fixture_id"]):
                 validator.validate(fixture)

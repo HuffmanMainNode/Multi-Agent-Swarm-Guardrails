@@ -216,6 +216,12 @@ The implementation is tested but not yet merged. Do not count it as part of main
 - Deterministic CBOR is a candidate encoding only. No custom binary language or token-efficiency claim is standardized.
 
 
-## Localization runtime checkpoint
+## Superseding universal interoperability status: RFC 3339 negative fixtures
 
-A follow-on implementation adds offline translation resolvers in Python and JavaScript/TypeScript. Both default to HUMAN_REVIEWED entries, fall back to English for missing, untranslated, or NEEDS_REVISION strings, and require explicit opt-in for MACHINE_DRAFT text. The resolver does not translate content or contact external services. Go/Rust resolvers and full BCP 47 registry validation remain future work.
+PR #23 is merged: language-neutral human localization and experimental AI semantic interchange foundation. Main merge commit: `1872528324a8112ceaaad7a4ffbbde5cd91e385e`. Main CI run 42762900442 passed all six jobs. UASR remains experimental and is separate from authorization protocol v1.0.0.
+
+PR #24: shared RFC 3339 calendar-validation fixtures. Tested PR head `9061662d860f80bb0bbd0cb50841d68355fed963`; CI run 42762823222 passed Python 3.11/3.12/3.13, Go race, Rust fmt/Clippy/tests, and Node.js 22. The follow-up report update is on the same branch; final CI run 42762900442 also passed after the semantic-interchange base merge.
+
+The shared negative corpus now has eighteen fixtures: ten raw JSON/parser cases plus eight impossible timestamp cases (February 30, non-leap February 29, month 13, April 31, hour 24, minute 60, second 60, and offset +25:00). All four language implementations reject the same raw request bytes with REQUEST_INVALID. JavaScript conformance report includes eight decision/time plus eighteen negative-fixture results. Go and Rust reports remain scoped to the eight decision/time vectors; their CI jobs also execute the eighteen negative fixtures. This is deterministic regression evidence, not exhaustive fuzzing or production assurance.
+
+The older entries above that describe JavaScript as pending, the parser suite as ten fixtures, or PR #24 as pending are historical checkpoints and are superseded by this section. All ten MSC contracts remain NOT_TESTED for the Go, Rust, and JavaScript embedded evaluators.

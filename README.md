@@ -27,7 +27,7 @@ The normative protocol lives in `spec/`, `schemas/`, and `vectors/v1.0.0/`. It i
 - Go 0.1.1 provides an independent standard-library-only `Evaluate` / `EvaluateJSON` implementation.
 - Rust 0.1.0 provides an independent, dependency-free evaluator with its own strict JSON parser.
 - JavaScript 0.1.0 provides a fourth dependency-free evaluator for Node.js 22+, with TypeScript declarations and its own bounded strict JSON parser.
-- All four implementations consume the same eight versioned decision/time vectors and ten shared malformed-input fixtures. CI checks Python 3.11, 3.12, 3.13, Go race-enabled tests, Rust formatting/Clippy/tests, and Node.js 22 tests.
+- All four implementations consume the same eight versioned decision/time vectors and eighteen shared malformed-input/timestamp fixtures. CI checks Python 3.11, 3.12, 3.13, Go race-enabled tests, Rust formatting/Clippy/tests, and Node.js 22 tests.
 - Java, C#, JavaScript/TypeScript, and other runtimes can implement the same schemas and vectors without importing Python, using Go/Rust, or calling a MASG-hosted service.
 - Transport, identity provider, policy engine, enforcement broker, and runtime adapters remain replaceable. An adapter is not trusted merely because it implements the interface; it must publish evidence and limitations.
 
@@ -38,7 +38,7 @@ The current shared suite establishes a narrow policy-decision and request-time b
 MASG separates human-language localization, programming-language implementations, and machine-readable semantic exchange. These layers are related but are not interchangeable.
 
 - [Universal Language Architecture](docs/UNIVERSAL_LANGUAGE_ARCHITECTURE.md) explains the human-language, programming-language, semantic, and encoding layers.
-- [Localization packs](localization/README.md) define portable BCP 47 language packages, stable message IDs, source-language fallback, and human-review status. Python and JavaScript offline resolvers use human-reviewed translations by default; machine drafts require explicit opt-in. English is the source locale; the Spanish file is an untranslated template, not a completed translation.
+- [Localization packs](localization/README.md) define portable BCP 47 language packages, stable message IDs, source-language fallback, and human-review status. English is the source locale; the Spanish file is an untranslated template, not a completed translation.
 - [Core concept glossary](localization/glossary/core-concepts.json) provides stable concept IDs independent of translated labels.
 - [Universal Agent Semantic Representation (UASR)](docs/AI_SEMANTIC_INTERCHANGE.md) is an experimental proposal for typed claims, provenance, and epistemic status. Its JSON schema and example are not part of MASG authorization protocol v1.0.0.
 - JSON remains the inspectable baseline. Deterministic CBOR is only a candidate compact encoding pending interoperability and efficiency benchmarks.

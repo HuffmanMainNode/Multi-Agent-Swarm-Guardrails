@@ -67,8 +67,8 @@ func TestSharedParserNegativeVectors(t *testing.T) {
 	if err := json.Unmarshal(raw, &fixtures); err != nil {
 		t.Fatal(err)
 	}
-	if len(fixtures) < 10 {
-		t.Fatalf("expected at least ten shared parser fixtures, got %d", len(fixtures))
+	if len(fixtures) < 18 {
+		t.Fatalf("expected at least eighteen shared parser fixtures, got %d", len(fixtures))
 	}
 	now := fixedClock()
 	for _, fixture := range fixtures {
