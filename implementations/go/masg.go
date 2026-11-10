@@ -101,6 +101,9 @@ func validatePolicy(policy Policy) error {
 	if policy.DefaultEffect != "DENY" {
 		return errors.New("policy must default to DENY")
 	}
+	if policy.Rules == nil {
+		return errors.New("policy rules must be an array")
+	}
 	if len(policy.Rules) > maxRules {
 		return errors.New("too many policy rules")
 	}

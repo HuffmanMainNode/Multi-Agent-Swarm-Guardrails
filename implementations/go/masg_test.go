@@ -2,6 +2,7 @@ package masg
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -151,5 +152,37 @@ func TestUnicodeLimitsCountCodePoints(t *testing.T) {
 	}
 	if validText(strings.Repeat("é", 1025), 1024) {
 		t.Fatal("1025 Unicode code points must exceed the principal limit")
+	}
+}
+
+func TestPolicyLimitsMatchSchema(t *testing.T) {
+	base := Policy{
+		Version: "p1", DefaultEffect: "DENY",
+		Rules: []Rule{{
+			ID: "rule-1", Principals: []string{"agent:reader"},
+			Actions: []string{"read"}, Targets: []string{"reports:weekly"},
+			Scopes: []string{"summary"}, Effect: "ALLOW",
+		}},
+	}
+	if err := validatePolicy(base); err != nil {
+		t.Fatalf("valid schema policy rejected: %v", err)
+	}
+	tooLongAction := base
+	tooLongAction.Rules = append([]Rule(nil), base.Rules...)
+	tooLongAction.Rules[0].Actions = []string{strings.Repeat("x", 257)}
+	if err := validatePolicy(tooLongAction); err == nil {
+		t.Fatal("action exceeding 256 code points must be rejected")
+	}
+	tooManySelectors := base
+	tooManySelectors.Rules = append([]Rule(nil), base.Rules...)
+	tooManySelectors.Rules[0].Principals = make([]string, 129)
+	for i := range tooManySelectors.Rules[0].Principals {
+		tooManySelectors.Rules[0].Principals[i] = fmt.Sprintf("agent:%d", i)
+	}
+	if err := validatePolicy(tooManySelectors); err == nil {
+		t.Fatal("more than 128 selectors must be rejected")
+	}
+	if err := validatePolicy(Policy{Version: "p1", DefaultEffect: "DENY"}); err == nil {
+		t.Fatal("missing rules array must be rejected")
 	}
 }

@@ -68,6 +68,17 @@ class UniversalProtocolTests(unittest.TestCase):
         result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
         self.assertEqual(result.decision.value, "ALLOW")
 
+    def test_schema_rejects_unknown_offset_and_excess_precision(self):
+        schema = self.schemas["decision-request.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        valid = dict(self.vectors[0]["request"])
+        valid["issued_at"] = "2026-11-10T12:00:00.123456Z"
+        self.assertTrue(validator.is_valid(valid))
+        valid["issued_at"] = "2026-11-10T12:00:00.1234567Z"
+        self.assertFalse(validator.is_valid(valid))
+        valid["issued_at"] = "2026-11-10T12:00:00-00:00"
+        self.assertFalse(validator.is_valid(valid))
+
     def test_protocol_timestamp_precision_is_bounded(self):
         request = {**self.vectors[0]["request"], "issued_at": "2026-11-10T12:00:00.1234567Z"}
         result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))

@@ -35,3 +35,8 @@ The Go implementation passed Go vet and race-enabled tests against the shared fi
 
 
 PR #8's SPIFFE integration passed its 75-test Python 3.11/3.12/3.13 matrix, Ruff, structural verification, and JSON checks. The tests use an injected fake Workload API client; they do not exercise a live SPIRE Agent or prove revocation propagation. The optional dependency is third-party and has a documented provenance gap. JWT-SVID is a bearer credential, not sender-constrained. No production deployment, complete mediation, safety certification, or independent review is established.
+
+
+## Cross-language parity checkpoint
+
+The v1.0.0 shared-vector harness now passes the complete request envelope to Python's `evaluate_protocol`, rather than stripping protocol fields before evaluation. Python and Go now align with the published schema for rule IDs, 1,000-rule and 128-selector limits, field-specific selector lengths, Unicode code-point counting, policy/request JSON byte caps, optional provenance references, and RFC 3339 timestamp precision/known-offset behavior. CI evidence is pending for PR `protocol/cross-language-semantic-parity`; do not describe these changes as merged or passed until the run completes.

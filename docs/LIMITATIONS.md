@@ -70,3 +70,8 @@ The evaluator requires timezone-aware RFC3339 request timestamps and an aware ev
 
 ## Assurance
 The structural verifier checks repository artifacts only. Unit tests exercise reference functions and a local Unix socket, not a deployed service configuration or all side-effect paths. No certification, production readiness, complete mediation, or independent audit is claimed.
+
+
+## Cross-language protocol limits
+
+Protocol v1.0.0 defines a maximum 1 MiB policy document, 64 KiB request envelope, 1,000 policy rules, and 128 selectors per selector field. Field string limits follow the normative JSON Schemas and count Unicode code points, not UTF-8 bytes. Timestamp strings allow zero to six fractional-second digits and require a known explicit offset; the RFC 3339 unknown-local-offset marker `-00:00` is rejected. The Python and Go protocol entry points are tested against these constraints. The legacy Python evaluator API is a local internal API; protocol consumers should use `evaluate_protocol`.

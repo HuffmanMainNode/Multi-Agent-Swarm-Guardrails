@@ -103,3 +103,11 @@ Added a namespaced extension manifest schema, extension package rules, types for
 5. Continue toward a typed protected executor and complete-mediation tests; do not widen the Linux broker without per-operation assurance.
 
 Do not describe Go as full MASG conformance or the extension example as a working adapter.
+
+
+## Cross-language semantic parity work in progress
+
+Branch: `protocol/cross-language-semantic-parity`
+Goal: eliminate differences between normative JSON Schemas and Python/Go decision evaluators.
+Changes prepared: Python full-envelope `evaluate_protocol` entry point; complete request envelopes used by Python shared-vector tests; aligned policy/rule/selector limits and required rule IDs; Unicode code-point counting; shared timestamp precision and known-offset rule; optional provenance_ref support; explicit policy/request byte limits; new edge-case tests.
+Status: open engineering work. CI and merge not yet confirmed.
