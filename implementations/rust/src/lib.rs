@@ -328,10 +328,9 @@ fn valid_text(value: &str, max_chars: usize) -> bool {
 
 fn exact_keys(object: &BTreeMap<String, JsonValue>, required: &[&str], optional: &[&str]) -> bool {
     required.iter().all(|key| object.contains_key(*key))
-        && object.keys().all(|key| {
-            required.contains(&key.as_str())
-                || optional.contains(&key.as_str())
-        })
+        && object
+            .keys()
+            .all(|key| required.contains(&key.as_str()) || optional.contains(&key.as_str()))
 }
 
 fn parse_selectors(
