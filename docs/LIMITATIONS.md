@@ -7,7 +7,7 @@ The reference implementation is experimental. It is not a production security bo
 - Policy decisions are deny-by-default and exact-match. Explicit DENY dominates ALLOW.
 - Optional SQLite replay protection atomically consumes request IDs once within one local database.
 - The local JSONL evidence ledger verifies its hash chain and rejects ambiguous JSON records.
-- Experimental Linux broker supports one fixed audit append operation, bounded requests, a five-minute request lifetime, local replay consumption and a broker-owned evidence ledger. It supports legacy UID principal mapping and an optional SPIFFE JWT-SVID validation mode under review.
+- Experimental Linux broker supports one fixed audit append operation, bounded requests, a five-minute request lifetime, local replay consumption and a broker-owned evidence ledger. It supports legacy UID principal mapping and an optional experimental SPIFFE JWT-SVID validation mode.
 
 ## Not implemented
 - Live SPIRE deployment conformance, X.509-SVID/mTLS sender binding, and proof-of-possession for the JWT-SVID bearer token.
@@ -57,6 +57,15 @@ The JSONL ledger is single-writer only. The broker serializes its own append cal
 
 ## Clock assumptions
 The evaluator requires timezone-aware RFC3339 request timestamps and an aware evaluation clock. It does not authenticate time or protect against a compromised system clock. The broker additionally limits request lifetime to five minutes but still relies on the host clock.
+
+## Universal protocol limits
+
+- Protocol v1.0.0 standardizes policy/decision envelopes and conformance artifacts; it does not standardize a universal execution transport, arbitrary protected executor, identity provider, sandbox, or orchestration protocol.
+- Python is the only reference implementation currently included. Other language implementations are possible from the language-neutral schemas and vectors but have not yet been built or independently tested.
+- Shared vectors currently cover a small set of policy outcomes. They do not cover all identity, replay, delegation, recovery, runtime mediation, concurrency, distributed, or hardware-assurance behaviors.
+- No signed envelope or cross-language canonical JSON signature profile is defined. Do not treat JSON serialization bytes as a stable signature input.
+- Schema validation and policy-vector agreement do not prove identity provenance, complete mediation, runtime isolation, or production safety.
+- Protocol v1.0.0 requires exact policy-version binding in its decision request envelope. The reference evaluator checks the version when supplied; the protocol schema requires it.
 
 ## Assurance
 The structural verifier checks repository artifacts only. Unit tests exercise reference functions and a local Unix socket, not a deployed service configuration or all side-effect paths. No certification, production readiness, complete mediation, or independent audit is claimed.
