@@ -72,6 +72,21 @@ class UniversalProtocolTests(unittest.TestCase):
         self.assertTrue(validator.is_valid(valid))
         self.assertFalse(validator.is_valid(invalid))
 
+    def test_go_implementation_manifest_and_report_match_schemas(self):
+        manifest = load_json(ROOT / "implementations/go/implementation-manifest.json")
+        report = load_json(ROOT / "implementations/go/conformance-report.json")
+        manifest_validator = Draft202012Validator(
+            self.schemas["implementation-manifest.schema.json"],
+            format_checker=FormatChecker(),
+        )
+        report_validator = Draft202012Validator(
+            self.schemas["conformance-report.schema.json"],
+            format_checker=FormatChecker(),
+        )
+        manifest_validator.validate(manifest)
+        report_validator.validate(report)
+        self.assertEqual(report["overall_status"], "UNKNOWN")
+
     def test_response_schema_accepts_standard_decision(self):
         response = {
             "protocol_version": "1.0.0",

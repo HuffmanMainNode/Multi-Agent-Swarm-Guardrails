@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Add an independent Go reference evaluator using only the Go standard library; it consumes the shared v1.0.0 decision vectors without a Python dependency and publishes an explicit embedded-only limitation/conformance manifest.
+- Add Go CI vet/race-test job and validate the Go implementation manifest and conformance report against the normative schemas.
 - Define language-neutral MASG protocol v1.0.0 with JSON Schemas for policies, authorization requests/responses, implementation manifests, conformance reports, and portable conformance vectors.
 - Add shared decision vectors and Python CI validation; publish implementation guidance for independent language/runtime adapters.
 - Clarify that Python is a reference implementation, not the normative protocol or a required dependency.

@@ -34,4 +34,19 @@ jobs:
           python -m json.tool examples/request.json > /dev/null
           python -m json.tool examples/broker-policy.example.json > /dev/null
           python -m json.tool examples/broker-principals.example.json > /dev/null
-          for file in schemas/*.json vectors/v1.0.0/*.json; do python -m json.tool "$file" > /dev/null; done
+          for file in schemas/*.json vectors/v1.0.0/*.json implementations/go/*.json; do python -m json.tool "$file" > /dev/null; done
+
+  go-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache-dependency-path: implementations/go/go.mod
+      - name: Go vet
+        working-directory: implementations/go
+        run: go vet ./...
+      - name: Go tests against shared protocol vectors
+        working-directory: implementations/go
+        run: go test -race -count=1 ./...

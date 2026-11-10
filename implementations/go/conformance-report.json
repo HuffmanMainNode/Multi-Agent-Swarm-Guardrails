@@ -1,0 +1,45 @@
+{
+  "report_version": "1.0.0",
+  "implementation_id": "masg-go-reference",
+  "implementation_version": "0.1.0",
+  "protocol_version": "1.0.0",
+  "profile": "embedded",
+  "tested_at": "2026-11-10T03:10:00Z",
+  "overall_status": "UNKNOWN",
+  "results": [
+    {
+      "test_id": "MASG-V1-ALLOW-001",
+      "status": "NOT_TESTED",
+      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+    },
+    {
+      "test_id": "MASG-V1-DEFAULT-DENY-001",
+      "status": "NOT_TESTED",
+      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+    },
+    {
+      "test_id": "MASG-V1-DENY-PRECEDENCE-001",
+      "status": "NOT_TESTED",
+      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+    },
+    {
+      "test_id": "MASG-V1-REVIEW-001",
+      "status": "NOT_TESTED",
+      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+    },
+    {
+      "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
+      "status": "NOT_TESTED",
+      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+    }
+  ],
+  "limitations": [
+    "No CI result has yet been recorded for this source revision.",
+    "The evaluator does not authenticate principal identity or mediate side effects.",
+    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load or penetration tests."
+  ],
+  "notices": [
+    "A PASS for portable vectors would not establish deployment security, complete mediation, certification or production readiness."
+  ],
+  "assessor": "Self-reported project test artifact; not an independent assessment."
+}
