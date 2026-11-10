@@ -21,7 +21,9 @@ It does not standardize an execution broker transport, identity provider, crypto
 - `../schemas/implementation-manifest.schema.json`
 - `../schemas/conformance-report.schema.json`
 - `../schemas/conformance-vector.schema.json`
+- `../schemas/extension-manifest.schema.json`
 - `../vectors/v1.0.0/`
+- `../docs/EXTENSION_MODEL.md`
 
 JSON Schema Draft 2020-12 is normative for structural validation. Implementations MUST reject duplicate JSON object keys, non-finite numeric constants, unknown fields in protocol envelopes, invalid UTF-8, and values exceeding declared limits. A schema-valid document is not necessarily authorized or safe.
 
@@ -52,7 +54,7 @@ For a structurally valid, authenticated request:
 8. Otherwise return DENY with reason code NO_MATCH.
 9. On any error or unavailable required control, do not return ALLOW.
 
-This algorithm is a specification target. The current Python evaluator and broker implement only subsets; consult the implementation manifest, contract status and limitations.
+This algorithm is a specification target. The Python evaluator/broker and independent Go evaluator implement different subsets; the Go report passes only the five portable policy-decision vectors in the embedded profile. Neither result certifies all contracts or a deployed system; consult each implementation manifest, contract status and limitations.
 
 ## Versioning and extensibility
 

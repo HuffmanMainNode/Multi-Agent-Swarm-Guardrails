@@ -69,3 +69,37 @@ The normative protocol is now separate from the Python reference package. Added 
 Independent implementations may use Rust, Go, Java, C#, JavaScript/TypeScript or any other language/runtime. They do not need Python, the MASG package, a MASG-hosted service, or the same transport. The specification defines normative semantics; adapters and SDKs are replaceable.
 
 Important scope: the first version standardizes policy/decision semantics and conformance artifacts, not a universal execution broker, transport, identity provider, cryptographic signature format, sandbox, or orchestration protocol. The Linux broker remains Linux-only and only supports audit.append. Signed envelopes and canonical JSON signatures are not defined. Full deployment conformance and security assurance remain future work.
+
+## Independent Go implementation milestone
+
+PR #12: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/12
+Merged commit: 5bab815c412326576b57dd1f3e00317f5fd51489
+Go implementation: implementations/go/
+Protocol: MASG v1.0.0
+Tested Go source revision: 6c43c0f997d627f77f297b2639e34fadd321c407
+Go/PR CI run: 42748095348 passed Go vet, Go race tests, and Python 3.11/3.12/3.13.
+Final PR CI run after report update: 42748191713 passed all jobs.
+Post-merge main CI: 42748296088 passed all jobs.
+
+The independent Go evaluator uses only the Go standard library and consumes the same portable decision vectors as Python. It implements strict JSON parsing (including duplicate-key and invalid UTF-8 rejection), exact selector matching, deny-by-default, explicit deny precedence, review-required, UUIDv4 syntax, RFC3339 expiry, and exact policy-version binding. Its conformance report is PASS only for the five portable policy-decision vectors in the embedded profile.
+
+It does NOT authenticate the principal, provide a broker/executor, replay database, TUF policy verification, SPIFFE/mTLS, sandbox, OS mediation, evidence ledger, recovery, or complete mediation. All ten MSC contract statuses remain NOT_TESTED in its implementation manifest. This is a second-language protocol proof, not a second complete security system.
+
+## Namespaced extension model milestone
+
+PR #13: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/13
+Merged commit: 6b2d94934665ac79f064ddaebd01a8d83f2833ce
+PR CI run: 42748658577 passed Python 3.11/3.12/3.13 and Go tests.
+Post-merge main CI: 42748737524 passed.
+
+Added a namespaced extension manifest schema, extension package rules, types for domain/transport/identity/policy/enforcement/evidence/recovery adapters, compatibility and fail-closed rules, and a generic tool-action mapping example. The example is metadata/documentation only; no actual MCP/A2A adapter or executable tool adapter is implemented. Extensions cannot weaken core invariants or inject arbitrary fields into v1.0.0 envelopes. Independent communities can host extensions without a central MASG registry or hosted service.
+
+## Next critical engineering priorities
+
+1. Expand shared vectors beyond the initial five policy decisions: expiry/future time, malformed envelopes, duplicate keys, invalid UTF-8, policy integrity, and replay behavior where applicable.
+2. Add an independent Rust implementation to further challenge language neutrality after Go.
+3. Define and test an extension discovery/provenance format without creating a central trust authority.
+4. Implement a real transport/identity adapter only after its mapping, identity provenance, threat model, and bypass tests are defined.
+5. Continue toward a typed protected executor and complete-mediation tests; do not widen the Linux broker without per-operation assurance.
+
+Do not describe Go as full MASG conformance or the extension example as a working adapter.
