@@ -1,6 +1,7 @@
 """Single-writer local JSONL hash chain; not a signature or immutable remote log."""
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -43,6 +44,7 @@ def append_event(path: str | Path, event: dict[str, Any]) -> dict[str, Any]:
     with target.open("a", encoding="utf-8") as stream:
         stream.write(json.dumps(record, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\\n")
         stream.flush()
+        os.fsync(stream.fileno())
     return record
 
 

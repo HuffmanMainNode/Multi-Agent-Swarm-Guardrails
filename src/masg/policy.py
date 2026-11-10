@@ -25,7 +25,7 @@ REQUEST_KEYS = {
     "issued_at", "expires_at", "delegation_chain",
 }
 RFC3339 = re.compile(
-    r"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-]\\d{2}:\\d{2})$"
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$"
 )
 
 
@@ -137,7 +137,7 @@ def evaluate(
     *,
     now: datetime | None = None,
 ) -> Evaluation:
-    version = policy.get("version", "UNKNOWN")
+    version = policy.get("version", "UNKNOWN") if isinstance(policy, dict) else "UNKNOWN"
     if not isinstance(version, str):
         version = "UNKNOWN"
 
