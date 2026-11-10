@@ -234,3 +234,7 @@ audit/
 evidence/
 runtime/
 state/
+
+# Local TUF trust cache (never commit mutable client metadata)
+tuf-cache/
+.masg-tuf/

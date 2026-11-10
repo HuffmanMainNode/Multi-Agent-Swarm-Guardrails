@@ -12,7 +12,7 @@ Compromised or malicious agent; malicious operator; compromised tool or peer; su
 3. Low-privilege agent delegates to a peer to escalate privilege.
 4. Compromised agent invokes alternate side-effect path around middleware.
 5. Revoked identity remains authorized through stale cache.
-6. Malicious dependency/update compromises enforcement.
+6. Malicious dependency/update compromises enforcement or replays stale policy metadata. TUF verifies signed update metadata when configured, but cache rollback and compromised trust roots remain risks.
 7. Peer message is replayed, redirected, or modified.
 8. Correlated agents are misrepresented as independent reviewers.
 9. Audit evidence is modified, truncated, reordered, or replaced.
@@ -24,4 +24,4 @@ Compromised or malicious agent; malicious operator; compromised tool or peer; su
 Authentication, trust, authorization, and safe execution are separate. A signature proves key possession under cryptographic assumptions, not permission. Multiple agents agreeing is not independent verification if they share model, key, operator, infrastructure, or data lineage. Untrusted content must not create authority even if injection detection fails. Delegated capabilities must be attenuated. Unknown evidence is not PASS. Restore application data separately from trust state.
 
 ## Out of scope for current package
-Hostile kernel, arbitrary control of host process, compromised interpreter, stolen credentials, malicious firmware, complete network compromise, and attacker able to replace both ledger and trusted checkpoint.
+Hostile kernel, arbitrary control of host process, compromised interpreter, stolen credentials, malicious firmware, complete network compromise, attacker able to replace both ledger and trusted checkpoint, and attacker able to roll back protected TUF metadata cache or compromise its bootstrap root.

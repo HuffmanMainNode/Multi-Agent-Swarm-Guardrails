@@ -102,3 +102,45 @@ PASS means the corresponding automated test passed, not that the control is prov
 ## Acceptance decision
 
 The broker is an experimental reference for one narrow protected operation and passed its current Python CI matrix. It is not a general production security boundary. Adoption requires distinct OS identities, a dedicated broker service account, protected configuration/state/socket directories, and explicit routing of the protected operation through the broker. Do not infer that other side effects are mediated.
+
+
+## TUF-verified policy source
+
+PR #6: [TUF-verified policy updates](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/6). Tested head: `ba950ae7a69ffe77202d786623fdefb662ae1cd1`.
+
+Successful CI runs:
+- [42737352852](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42737352852)
+- [42737349896](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42737349896)
+
+Both runs passed all Python 3.11, 3.12, and 3.13 jobs. Each job ran 57 tests, Ruff static checks, structural verification, and JSON syntax checks. CI installed python-tuf 7.0.1 and securesystemslib 1.6.0 through the optional TUF extra.
+
+### TUF-specific cases exercised
+
+| Test | Expected result | Observed |
+|---|---|---|
+| Valid signed policy target | Verify metadata and target, return bytes | PASS |
+| Tampered target bytes | Reject target hash/length mismatch | PASS |
+| Tampered targets metadata | Reject snapshot metadata hash/length mismatch | PASS |
+| Restore older timestamp after accepting newer version | Reject rollback | PASS |
+| Expired metadata | Fail closed | PASS |
+| Wrong but internally valid bootstrap root | Reject repository signatures | PASS |
+| Target path traversal | Reject before fetch | PASS |
+| Group/world-writable cache directory | Reject configuration | PASS |
+| Broker starts from TUF-verified policy | Load verified target through strict policy parser | PASS |
+| Mixed static and TUF policy sources | Reject ambiguous configuration | PASS |
+| Tampered TUF target at broker startup | Refuse startup; no unsigned fallback | PASS |
+
+The tests generate ephemeral Ed25519 role keys in temporary directories. No private signing keys are committed. The tests use a local directory mirror and do not require an external TUF service.
+
+### CI failure and correction record
+
+The first TUF CI attempt stopped at Ruff before unit tests. The reported issues were import ordering, the type used for a non-object JSON value, UTC parsing style, and a test import order. These were corrected. The UTC parsing change retains Python 3.11+ behavior, and no unsafe automated Ruff fix was applied. The final 57-test matrix and static checks passed.
+
+### TUF assurance limits
+
+- No repository publisher or signing-key management workflow is implemented by MASG.
+- No root-key rotation test, multi-signature threshold test, delegated-role test, or production mirror deployment test is claimed.
+- The metadata cache can be rolled back by an attacker who can restore old cache state. Protect it with OS/storage controls or an independent monotonic checkpoint.
+- Metadata expiry relies on the host clock.
+- The bootstrap root must be provisioned out-of-band; its initial correctness is an adopter responsibility.
+- TUF authenticates policy distribution, not the policy's wisdom, legality, safety, or runtime enforcement.

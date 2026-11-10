@@ -11,17 +11,18 @@ Last updated: 2026-11-10
 | Replay resistance | Local reference control | SQLite atomic one-time UUIDv4 request-ID consumption in broker; rollback/fresh IDs remain possible |
 | Evidence ledger | Experimental local format | SHA-256 chain; broker serializes its own appends; no independent checkpoint or anti-rollback |
 | Structural verifier | Implemented | Checks repository structure/catalog shape; does not verify deployments |
+| Policy publisher authentication | Optional experimental TUF client | python-tuf 7.0.1 verifies metadata signatures, versions, expiry, snapshot consistency, and policy target hashes from a local mirror; bootstrap root is out-of-band; cache rollback protection is an adopter responsibility |
 | Independent execution broker | Implemented as experimental Linux reference | Separate process, SO_PEERCRED UID mapping, fixed audit.append allowlist, five-minute TTL, UUIDv4 IDs, 32-level JSON cap, bounded inputs, 32-handler cap |
 | Broker configuration | Hardened baseline | Rejects symlink/special config files and group/world-writable config/state/socket parent directories |
-| Broker tests | PASS in CI | 46 tests per Python version, 3.11/3.12/3.13; tested head 6885d489f8aa971c5d409c8de5753a539ef540e5; merged PR #4 |
-| CI evidence | PASS | PR runs 42735881467 and 42735881291; main run 42736182162; all matrix jobs passed |
+| Broker and TUF tests | PASS in CI | 57 tests per Python version, 3.11/3.12/3.13; TUF test dependencies installed; tested head ba950ae7a69ffe77202d786623fdefb662ae1cd1 |
+| CI evidence | PASS | TUF PR runs 42737352852 and 42737349896; all matrix jobs passed, including Ruff, structural verification, and JSON checks |
 | General tool mediation | Not implemented | No arbitrary tool, filesystem, network, shell, or executable execution |
 | Independent review | Not performed | No certification or external audit claim |
 
 ## Critical gaps
 
-Cryptographic workload identity and revocation; signed policy provenance and anti-rollback; authenticated request identity and distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
+Cryptographic workload identity and revocation; stronger rollback-resistant TUF cache storage; TUF repository publishing/signing workflow and key management; authenticated request identity and distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
 
 ## Validation boundary
 
-The CI PASS applies to the exact tested broker head and workflow. The broker was merged in commit 1c0295204258a4a92315a9e97dba95a33e8202c4 and the main-branch workflow passed. It does not certify a production deployment, prove all application side effects are mediated, or establish safety. The broker is Linux-only and trusts the host kernel, broker account, and operator-managed configuration/state.
+The CI PASS applies to the exact tested TUF/broker head and workflow. TUF verification is optional and uses an operator-managed local mirror. The broker was merged in commit 1c0295204258a4a92315a9e97dba95a33e8202c4 and the main-branch workflow passed. It does not certify a production deployment, prove all application side effects are mediated, or establish safety. The broker is Linux-only and trusts the host kernel, broker account, and operator-managed configuration/state.

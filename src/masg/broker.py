@@ -5,10 +5,8 @@ Authorizes only audit.append to the broker-owned ledger. Not a general command r
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import socket
 import socketserver
 import stat
@@ -16,6 +14,8 @@ import struct
 import sys
 import threading
 import uuid
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from .audit import append_event
@@ -57,7 +57,7 @@ def _decode(raw: bytes) -> dict[str, Any]:
     except RecursionError as exc:
         raise ValueError("JSON nesting exceeds parser safety limit") from exc
     if not isinstance(value, dict):
-        raise ValueError("request must be a JSON object")
+        raise TypeError("request must be a JSON object")
     pending = [(value, 1)]
     while pending:
         item, depth = pending.pop()
@@ -100,7 +100,10 @@ def _load_principals(path: str | Path) -> dict[int, str]:
     raw = target.read_bytes()
     if len(raw) > 65_536:
         raise BrokerError("principal map exceeds size limit")
-    data = _decode(raw)
+    try:
+        data = _decode(raw)
+    except (TypeError, ValueError, UnicodeDecodeError) as exc:
+        raise BrokerError("principal map must be a valid JSON object") from exc
     result: dict[int, str] = {}
     for key, principal in data.items():
         if not isinstance(key, str) or not key.isascii() or not key.isdecimal():
@@ -130,12 +133,34 @@ class ExecutionBroker:
     """Authorize and execute the fixed audit.append operation."""
 
     def __init__(
-        self, *, policy_path: str | Path, principal_map_path: str | Path,
+        self, *, policy_path: str | Path | None = None, principal_map_path: str | Path,
         replay_db: str | Path, ledger_path: str | Path,
+        tuf_repository: str | Path | None = None,
+        tuf_bootstrap_root: str | Path | None = None,
+        tuf_cache: str | Path | None = None,
+        policy_target: str = "policies/active.json",
     ) -> None:
         if not sys.platform.startswith("linux") or not hasattr(socket, "SO_PEERCRED"):
             raise BrokerError("execution broker currently supports Linux only")
-        policy_file = _regular_operator_file(policy_path, "policy file")
+        tuf_args = (tuf_repository, tuf_bootstrap_root, tuf_cache)
+        if policy_path is not None:
+            if any(value is not None for value in tuf_args):
+                raise BrokerError("choose either a static policy or TUF policy source, not both")
+            policy_file = _regular_operator_file(policy_path, "policy file")
+        else:
+            if not all(value is not None for value in tuf_args):
+                raise BrokerError("TUF policy source requires repository, bootstrap root, and cache")
+            try:
+                from .trust import fetch_verified_policy
+                policy_file = fetch_verified_policy(
+                    repository_root=tuf_repository,
+                    bootstrap_root=tuf_bootstrap_root,
+                    cache_dir=tuf_cache,
+                    target_name=policy_target,
+                )
+                policy_file = _regular_operator_file(policy_file, "verified TUF policy target")
+            except Exception as exc:
+                raise BrokerError("TUF policy verification failed; protected broker startup denied") from exc
         self.policy = load_policy(policy_file)
         self.principals = _load_principals(principal_map_path)
         replay_path = Path(replay_db)
@@ -155,7 +180,7 @@ class ExecutionBroker:
     def process(self, raw: bytes, peer_uid: int) -> dict[str, Any]:
         try:
             request = _decode(raw)
-        except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
             return {"decision": "DENY", "reason_code": "REQUEST_INVALID"}
         if set(request) != {"request_id", "issued_at", "expires_at", "event"}:
             return {"decision": "DENY", "reason_code": "REQUEST_SHAPE_INVALID"}
@@ -200,8 +225,8 @@ class ExecutionBroker:
                 "policy_version": result.policy_version,
             }
         try:
-            issued = datetime.fromisoformat(issued_at.replace("Z", "+00:00"))
-            expires = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            issued = datetime.fromisoformat(issued_at)
+            expires = datetime.fromisoformat(expires_at)
             if (expires - issued).total_seconds() > MAX_REQUEST_TTL_SECONDS:
                 return {"decision": "DENY", "reason_code": "REQUEST_TTL_TOO_LONG"}
             if issued.tzinfo is None or expires.tzinfo is None:
@@ -273,8 +298,10 @@ class _ThreadedUnixServer(socketserver.ThreadingMixIn, socketserver.UnixStreamSe
 
 
 def serve(
-    *, socket_path: str | Path, policy_path: str | Path, principal_map_path: str | Path,
-    replay_db: str | Path, ledger_path: str | Path,
+    *, socket_path: str | Path, policy_path: str | Path | None = None,
+    principal_map_path: str | Path, replay_db: str | Path, ledger_path: str | Path,
+    tuf_repository: str | Path | None = None, tuf_bootstrap_root: str | Path | None = None,
+    tuf_cache: str | Path | None = None, policy_target: str = "policies/active.json",
 ) -> None:
     """Serve until interrupted. Existing socket paths are never unlinked automatically."""
     if not sys.platform.startswith("linux"):
@@ -286,6 +313,8 @@ def serve(
     broker = ExecutionBroker(
         policy_path=policy_path, principal_map_path=principal_map_path,
         replay_db=replay_db, ledger_path=ledger_path,
+        tuf_repository=tuf_repository, tuf_bootstrap_root=tuf_bootstrap_root,
+        tuf_cache=tuf_cache, policy_target=policy_target,
     )
     server = _ThreadedUnixServer(str(path), _RequestHandler)
     server.broker = broker  # type: ignore[attr-defined]

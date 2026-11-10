@@ -11,12 +11,21 @@ The reference implementation is experimental. It is not a production security bo
 
 ## Not implemented
 - External cryptographic identity authentication, credential issuance, revocation, or proof of principal ownership beyond the local OS UID.
-- Cryptographically authenticated policy distribution or trusted policy rollback prevention.
+- Static local policy mode has no publisher authentication. Optional TUF mode verifies policy metadata, signatures, expiry, versions, and target hashes through python-tuf; its cache must be persistent and protected against rollback. MASG does not provide TUF repository publishing or signing-key management.
 - Distributed replay protection, database anti-rollback, or replay protection when the optional SQLite store is not configured.
 - Capability-set delegation attenuation. Current evaluator checks only reject malformed/cyclic chains.
 - General arbitrary-tool execution broker, filesystem/network mediation, OS sandbox, egress firewall, or complete mediation proof.
 - Signed evidence, remote immutable checkpoint, trusted timestamp, or multi-writer-safe JSONL ledger.
 - Human approval binding, semantic prompt-injection engine, legality classifier, recovery orchestration, framework adapters, fuzz/load/penetration testing, or independent security assessment.
+
+## TUF policy-source limits
+- TUF support is optional and requires the `masg-guardrails[tuf]` extra.
+- The adopter must provision a trusted root bootstrap out-of-band and operate a TUF-compatible signing/publishing workflow.
+- The repository implements a local-directory mirror fetcher only; it does not host metadata or publish/sign TUF repositories.
+- The metadata cache must persist and be protected from agent writes and rollback. Restoring an old cache can undermine rollback detection.
+- TUF metadata expiration relies on the host clock; stale or expired metadata fails closed.
+- Only one active updater per cache is supported; do not run concurrent brokers against one TUF cache.
+- Static `--policy` mode remains available but is not publisher-authenticated.
 
 ## Broker-specific limits
 - Linux only; requires SO_PEERCRED and Unix domain sockets.

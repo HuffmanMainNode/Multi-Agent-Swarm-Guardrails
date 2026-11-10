@@ -11,7 +11,7 @@ Listing a project is an integration target, not a claim of implementation, endor
 | SPIFFE/SPIRE | Workload identity | Candidate; not implemented |
 | OpenTelemetry | Trace/evidence correlation | Candidate; not implemented |
 | CycloneDX / SPDX | Software and agent inventory | Documentation only |
-| TUF | Secure update metadata | Candidate; not implemented |
+| TUF | Secure update metadata and policy target verification | Optional experimental python-tuf client for local mirrors; no repository publisher |
 | SLSA / in-toto / Sigstore | Build provenance | Candidate; not implemented |
 | OS sandbox / containers / gVisor | Process isolation | Adopter responsibility |
 
