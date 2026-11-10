@@ -25,7 +25,7 @@ UASR proposes a small, explicit, typed representation for information that an ag
 
 The initial JSON schema is `schemas/semantic-frame.schema.json`; an illustrative message is in `examples/semantic-frame.example.json`.
 
-A frame contains:
+The current schema checks locale-tag syntax but does not validate the IANA language-subtag registry; a production implementation must use a standards-aware BCP 47 parser. It also requires implementation-level byte and nesting limits, which are not yet standardized for UASR.\n\nA frame contains:
 - A schema version and unique frame ID.
 - Creation time and BCP 47 locale.
 - A declared intent such as ASSERTION, QUESTION, PROPOSAL, or RESULT.
