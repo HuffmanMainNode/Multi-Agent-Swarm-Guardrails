@@ -4,71 +4,69 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T05:27:10Z",
-  "conformance_scope": "portable_policy_decision_and_time_vectors_only",
+  "tested_at": "2026-11-10T05:26:03Z",
+  "conformance_scope": "portable_policy_time_and_parser_negative_vectors_only",
   "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-EXPIRED-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-NOT-YET-VALID-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     },
     {
       "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
     }
   ],
   "limitations": [
-    "Conformance report covers eight shared policy-decision and request-time vectors only.",
+    "Conformance report covers eight shared policy-decision/request-time vectors and ten deterministic parser-negative fixtures only.",
     "The evaluator does not authenticate principal identity or mediate side effects.",
-    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load, penetration or independent-assessment result is implied."
+    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz campaign, load test, penetration test or independent assessment is implied."
   ],
   "notices": [
-    "PASS applies only to the eight portable policy-decision and request-time vectors in the embedded profile.",
-    "The same ten parser-negative fixtures also pass in the Node.js 22 CI job; those regression tests are separate from this eight-vector report.",
+    "PASS applies only to the eight shared policy-decision/time vectors and ten shared parser-negative fixtures in the embedded profile.",
+    "Parser-negative fixtures are deterministic regression cases, not exhaustive fuzzing or parser memory-safety proof.",
     "The caller supplies principal and JavaScript Date clock; neither is authenticated.",
-    "This is not a security certification, complete mediation result, production readiness claim or independent assessment.",
-    "Overall PASS applies only to the eight shared policy/time vectors and ten shared parser-negative fixtures on the recorded revision; it is not MSC conformance or deployment security assurance.",
-    "Overall PASS applies only to the eight shared policy-decision/time vectors. Parser-negative and additional timestamp regression tests are separate CI evidence. This is not MSC conformance or deployment security assurance."
+    "This is not a security certification, complete mediation result, MSC conformance, production readiness claim or independent assessment."
   ],
   "assessor": "Self-reported project test artifact; not an independent assessment.",
   "source_revision": "da8ec519e1ca1d1f7e8a2baeae0a9f7e38159c4d"
