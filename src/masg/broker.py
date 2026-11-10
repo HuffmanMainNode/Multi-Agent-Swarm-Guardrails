@@ -243,7 +243,7 @@ class ExecutionBroker:
                     or not isinstance(credential_expires_at, int)
                 ):
                     return {"decision": "DENY", "reason_code": "IDENTITY_RESULT_INVALID"}
-            except Exception:
+            except WorkloadIdentityError:
                 return {"decision": "DENY", "reason_code": "IDENTITY_VALIDATION_FAILED"}
         else:
             principal = self.principals.get(peer_uid)

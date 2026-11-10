@@ -80,9 +80,8 @@ class SpiffeIdentityTests(unittest.TestCase):
             client_factory=self.factory,
         )
         for token in ("", "not-a-jwt", "a.b.c\n", "a" * 8193):
-            with self.subTest(token=token[:20]):
-                with self.assertRaises(WorkloadIdentityError):
-                    verifier.authenticate(token)
+            with self.subTest(token=token[:20]), self.assertRaises(WorkloadIdentityError):
+                verifier.authenticate(token)
         self.assertEqual(self.client.calls, [])
 
     def test_expired_svid_rejected(self):

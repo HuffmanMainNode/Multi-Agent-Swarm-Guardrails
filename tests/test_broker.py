@@ -12,7 +12,7 @@ from pathlib import Path
 
 from masg.audit import verify_ledger
 from masg.broker import BrokerError, ExecutionBroker, _ThreadedUnixServer, _RequestHandler, submit
-from masg.identity import VerifiedWorkloadIdentity
+from masg.identity import VerifiedWorkloadIdentity, WorkloadIdentityError
 from masg.replay import ReplayStoreError
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -236,7 +236,7 @@ class BrokerTests(unittest.TestCase):
     def test_spiffe_validation_failure_denies_without_evidence(self):
         class RejectingVerifier:
             def authenticate(self, _token):
-                raise ValueError("not trusted")
+                raise WorkloadIdentityError("not trusted")
 
         broker = ExecutionBroker(
             policy_path=self.policy, principal_map_path=None,
