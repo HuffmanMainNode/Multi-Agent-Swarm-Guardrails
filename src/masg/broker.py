@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from .audit import append_event
-from .identity import SpiffeJwtSvidVerifier, WorkloadIdentityError
+from .identity import SpiffeJwtSvidVerifier, VerifiedWorkloadIdentity, WorkloadIdentityError
 from .policy import evaluate, load_policy
 from .replay import ReplayStore, ReplayStoreError
 
@@ -222,6 +222,7 @@ class ExecutionBroker:
         if set(request) != expected_fields:
             return {"decision": "DENY", "reason_code": "REQUEST_SHAPE_INVALID"}
 
+        credential_expires_at: int | None = None
         if self.identity_mode == "spiffe":
             token = request.get("svid")
             if (
@@ -231,7 +232,16 @@ class ExecutionBroker:
             ):
                 return {"decision": "DENY", "reason_code": "IDENTITY_TOKEN_INVALID"}
             try:
-                principal = self.identity_verifier.authenticate(token)
+                verified_identity = self.identity_verifier.authenticate(token)
+                principal = verified_identity.principal
+                credential_expires_at = verified_identity.expires_at
+                if (
+                    not isinstance(principal, str) or not principal.startswith("spiffe://")
+                    or len(principal) > 1_024
+                    or isinstance(credential_expires_at, bool)
+                    or not isinstance(credential_expires_at, int)
+                ):
+                    return {"decision": "DENY", "reason_code": "IDENTITY_RESULT_INVALID"}
             except Exception:
                 return {"decision": "DENY", "reason_code": "IDENTITY_VALIDATION_FAILED"}
         else:
@@ -281,6 +291,8 @@ class ExecutionBroker:
                 return {"decision": "DENY", "reason_code": "REQUEST_TTL_TOO_LONG"}
             if issued.tzinfo is None or expires.tzinfo is None:
                 return {"decision": "DENY", "reason_code": "REQUEST_TIME_INVALID"}
+            if credential_expires_at is not None and expires.timestamp() > credential_expires_at:
+                return {"decision": "DENY", "reason_code": "REQUEST_EXCEEDS_IDENTITY_EXPIRY"}
         except (TypeError, ValueError, OverflowError):
             return {"decision": "DENY", "reason_code": "REQUEST_TIME_INVALID"}
 
@@ -297,6 +309,8 @@ class ExecutionBroker:
             ),
             "peer_uid": peer_uid, "request_id": request_id, "submitted_event": event,
         }
+        if credential_expires_at is not None:
+            record_event["credential_expires_at"] = credential_expires_at
         try:
             with self._ledger_lock:
                 record = append_event(self.ledger_path, record_event)
@@ -351,7 +365,7 @@ class _ThreadedUnixServer(socketserver.ThreadingMixIn, socketserver.UnixStreamSe
 
 def serve(
     *, socket_path: str | Path, policy_path: str | Path | None = None,
-    principal_map_path: str | Path, replay_db: str | Path, ledger_path: str | Path,
+    principal_map_path: str | Path | None, replay_db: str | Path, ledger_path: str | Path,
     tuf_repository: str | Path | None = None, tuf_bootstrap_root: str | Path | None = None,
     tuf_cache: str | Path | None = None, policy_target: str = "policies/active.json",
     spiffe_endpoint_socket: str | Path | None = None, spiffe_audience: str | None = None,
@@ -368,6 +382,7 @@ def serve(
         replay_db=replay_db, ledger_path=ledger_path,
         tuf_repository=tuf_repository, tuf_bootstrap_root=tuf_bootstrap_root,
         tuf_cache=tuf_cache, policy_target=policy_target,
+        spiffe_endpoint_socket=spiffe_endpoint_socket, spiffe_audience=spiffe_audience,
     )
     server = _ThreadedUnixServer(str(path), _RequestHandler)
     server.broker = broker  # type: ignore[attr-defined]

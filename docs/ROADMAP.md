@@ -11,7 +11,7 @@ Priorities are ordered by security dependency, not feature count.
 - [x] Experimental Linux separate-process broker for one fixed audit append operation.
 
 ## Critical engineering
-1. Authenticated workload identity and revocation integration beyond local OS UID.
+1. [ ] Optional SPIFFE JWT-SVID validation through local Workload API implemented on branch; complete live SPIRE integration/rotation/revocation tests and sender-constrained X.509-SVID/mTLS before marking complete.
 2. [x] Optional TUF policy client verifies signatures, metadata versions/expiry, snapshots, and target hashes from a local mirror. Remaining: repository publishing/signing workflow and independently protected rollback-resistant cache.
 3. Cryptographically bound capability delegation with strict attenuation.
 4. Typed protected-executor interface and explicit capability registry; no arbitrary shell execution.
@@ -22,7 +22,7 @@ Priorities are ordered by security dependency, not feature count.
 ## Interoperability
 - ACS/MCP integration only after security contract mappings and compatibility tests.
 - A2A identity, audience, expiry, and replay integration.
-- OPA/Cedar and SPIFFE/SPIRE adapters where they improve interoperability without replacing MASG contracts.
+- OPA/Cedar adapters where they improve interoperability without replacing MASG contracts.
 
 ## Release gate
 No production or certification claim until identity, policy integrity, execution isolation, complete declared-path mediation, evidence trust, recovery, and independent review are tested in a documented threat model.

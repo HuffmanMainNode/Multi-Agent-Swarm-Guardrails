@@ -12,6 +12,7 @@ from pathlib import Path
 
 from masg.audit import verify_ledger
 from masg.broker import BrokerError, ExecutionBroker, _ThreadedUnixServer, _RequestHandler, submit
+from masg.identity import VerifiedWorkloadIdentity
 from masg.replay import ReplayStoreError
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -185,6 +186,111 @@ class BrokerTests(unittest.TestCase):
             server.shutdown()
             server.server_close()
             thread.join(timeout=2)
+
+
+
+    def test_spiffe_identity_is_used_as_policy_principal(self):
+        identity = "spiffe://example.org/agent/test"
+        self.policy.write_text(json.dumps({
+            "version": "spiffe-broker-test-v1", "default_effect": "DENY",
+            "rules": [{
+                "id": "allow-spiffe-audit", "principals": [identity],
+                "actions": ["audit.append"], "targets": ["audit-ledger"],
+                "scopes": ["append"], "effect": "ALLOW",
+            }],
+        }), encoding="utf-8")
+
+        class FakeVerifier:
+            def __init__(self):
+                self.tokens = []
+                self.closed = False
+
+            def authenticate(self, token):
+                self.tokens.append(token)
+                if token != "header.payload.signature":
+                    raise ValueError("invalid")
+                return VerifiedWorkloadIdentity(
+                    principal=identity,
+                    expires_at=int(datetime.now(timezone.utc).timestamp()) + 300,
+                )
+
+            def close(self):
+                self.closed = True
+
+        verifier = FakeVerifier()
+        broker = ExecutionBroker(
+            policy_path=self.policy, principal_map_path=None,
+            replay_db=self.replay, ledger_path=self.ledger,
+            identity_verifier=verifier,
+        )
+        request = {**self.request, "svid": "header.payload.signature"}
+        result = broker.process(json.dumps(request).encode(), 987654)
+        self.assertEqual(result["decision"], "ALLOW")
+        self.assertEqual(verifier.tokens, ["header.payload.signature"])
+        ledger_text = self.ledger.read_text(encoding="utf-8")
+        self.assertNotIn("header.payload.signature", ledger_text)
+        self.assertIn(identity, ledger_text)
+        broker.close()
+        self.assertTrue(verifier.closed)
+
+    def test_spiffe_validation_failure_denies_without_evidence(self):
+        class RejectingVerifier:
+            def authenticate(self, _token):
+                raise ValueError("not trusted")
+
+        broker = ExecutionBroker(
+            policy_path=self.policy, principal_map_path=None,
+            replay_db=self.replay, ledger_path=self.ledger,
+            identity_verifier=RejectingVerifier(),
+        )
+        request = {**self.request, "svid": "header.payload.signature"}
+        result = broker.process(json.dumps(request).encode(), os.getuid())
+        self.assertEqual(result["reason_code"], "IDENTITY_VALIDATION_FAILED")
+        self.assertFalse(self.ledger.exists())
+
+    def test_spiffe_credential_expiry_bounds_request_expiry(self):
+        class ShortLivedVerifier:
+            def authenticate(self, _token):
+                return VerifiedWorkloadIdentity(
+                    principal="spiffe://example.org/agent/test",
+                    expires_at=int(datetime.now(timezone.utc).timestamp()) + 30,
+                )
+
+        self.policy.write_text(json.dumps({
+            "version": "spiffe-expiry-test-v1", "default_effect": "ALLOW", "rules": [],
+        }), encoding="utf-8")
+        broker = ExecutionBroker(
+            policy_path=self.policy, principal_map_path=None,
+            replay_db=self.replay, ledger_path=self.ledger,
+            identity_verifier=ShortLivedVerifier(),
+        )
+        request = {**self.request, "svid": "header.payload.signature"}
+        result = broker.process(json.dumps(request).encode(), os.getuid())
+        self.assertEqual(result["reason_code"], "REQUEST_EXCEEDS_IDENTITY_EXPIRY")
+        self.assertFalse(self.ledger.exists())
+
+    def test_spiffe_mode_rejects_uid_map_and_client_identity_fields(self):
+        class FakeVerifier:
+            def authenticate(self, _token):
+                return VerifiedWorkloadIdentity(
+                    principal="spiffe://example.org/agent/test",
+                    expires_at=int(datetime.now(timezone.utc).timestamp()) + 300,
+                )
+
+        with self.assertRaises(BrokerError):
+            ExecutionBroker(
+                policy_path=self.policy, principal_map_path=self.principals,
+                replay_db=self.replay, ledger_path=self.ledger,
+                identity_verifier=FakeVerifier(),
+            )
+        broker = ExecutionBroker(
+            policy_path=self.policy, principal_map_path=None,
+            replay_db=self.replay, ledger_path=self.ledger,
+            identity_verifier=FakeVerifier(),
+        )
+        request = {**self.request, "svid": "header.payload.signature", "principal": "admin"}
+        result = broker.process(json.dumps(request).encode(), os.getuid())
+        self.assertEqual(result["reason_code"], "REQUEST_SHAPE_INVALID")
 
 
 if __name__ == "__main__":

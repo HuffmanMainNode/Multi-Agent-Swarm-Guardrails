@@ -1,10 +1,11 @@
 import socket
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from masg.identity import SpiffeJwtSvidVerifier, WorkloadIdentityError
+from masg.identity import SpiffeJwtSvidVerifier, VerifiedWorkloadIdentity, WorkloadIdentityError
 
 
 class FakeWorkloadApiClient:
@@ -13,6 +14,8 @@ class FakeWorkloadApiClient:
         self.default_timeout = default_timeout
         self.calls = []
         self.closed = False
+        self.expiry = int(time.time()) + 300
+        self.audience_override = None
 
     def validate_jwt_svid(self, *, token, audience, timeout):
         self.calls.append((token, audience, timeout))
@@ -20,7 +23,8 @@ class FakeWorkloadApiClient:
             raise RuntimeError("rejected")
         return SimpleNamespace(
             spiffe_id="spiffe://example.org/agent/test",
-            audience={audience},
+            audience={self.audience_override or audience},
+            expiry=self.expiry,
         )
 
     def close(self):
@@ -44,14 +48,17 @@ class SpiffeIdentityTests(unittest.TestCase):
         self.client = FakeWorkloadApiClient(**kwargs)
         return self.client
 
-    def test_valid_token_returns_validated_spiffe_id(self):
+    def test_valid_token_returns_validated_identity_and_expiry(self):
         verifier = SpiffeJwtSvidVerifier(
             socket_path=self.socket_path, audience="masg-broker",
             client_factory=self.factory,
         )
         self.assertEqual(
             verifier.authenticate("header.payload.signature"),
-            "spiffe://example.org/agent/test",
+            VerifiedWorkloadIdentity(
+                principal="spiffe://example.org/agent/test",
+                expires_at=self.client.expiry,
+            ),
         )
         self.assertEqual(self.client.calls, [
             ("header.payload.signature", "masg-broker", 2.0),
@@ -77,6 +84,24 @@ class SpiffeIdentityTests(unittest.TestCase):
                 with self.assertRaises(WorkloadIdentityError):
                     verifier.authenticate(token)
         self.assertEqual(self.client.calls, [])
+
+    def test_expired_svid_rejected(self):
+        verifier = SpiffeJwtSvidVerifier(
+            socket_path=self.socket_path, audience="masg-broker",
+            client_factory=self.factory,
+        )
+        self.client.expiry = int(time.time()) - 1
+        with self.assertRaises(WorkloadIdentityError):
+            verifier.authenticate("header.payload.signature")
+
+    def test_wrong_audience_rejected(self):
+        verifier = SpiffeJwtSvidVerifier(
+            socket_path=self.socket_path, audience="masg-broker",
+            client_factory=self.factory,
+        )
+        self.client.audience_override = "another-service"
+        with self.assertRaises(WorkloadIdentityError):
+            verifier.authenticate("header.payload.signature")
 
     def test_empty_audience_rejected(self):
         with self.assertRaises(WorkloadIdentityError):

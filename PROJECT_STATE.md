@@ -22,25 +22,19 @@ Adds an experimental Linux-only separate-process broker for exactly one fixed op
 
 The broker rejects symlink/special config files and group/world-writable config, state, and socket parent directories. It bounds request size, JSON depth, event size, socket read time, and concurrent handler count.
 
-New CLI:
-- masg broker serve --socket ... --policy ... --principal-map ... --replay-db ... --ledger ...
-- masg broker append --socket ... --request ...
-
-## Validation evidence
-Two successful CI runs on the tested head:
-- 42735881467
-- 42735881291
-
-All Python 3.11, 3.12, and 3.13 jobs passed. Each ran 46 unit tests, package installation, structural verification, and JSON syntax checks. The first broker CI run failed two new validation tests; parser depth and UUID validation were corrected before the successful runs. Details are in docs/STRESS_TEST_RESULTS.md.
-
 ## Optional TUF policy source
 The broker can load a policy target from a local TUF mirror using python-tuf. The bootstrap root is supplied out-of-band, and the metadata cache persists under an operator-controlled directory. TUF signature, version, expiry, snapshot, and target hash checks must pass before the policy is loaded. Static policy mode remains available but is not publisher-authenticated. MASG does not publish TUF repositories or manage private signing keys. The cache can still be rolled back by an attacker who can restore older cache state.
 
 ## TUF validation evidence
-PR #6 merged as `e8a8d1400a601ef4277ed388337f630c06531cf2`; branch `security/tuf-policy-trust-and-rollback`, tested head `ba950ae7a69ffe77202d786623fdefb662ae1cd1`. CI runs 42737352852 and 42737349896 passed all Python 3.11, 3.12, and 3.13 jobs; main-branch CI run 42737605525 also passed. Each ran 57 tests plus Ruff, structural verification, and JSON checks. Tests include signed target acceptance, target and metadata tampering, timestamp rollback, expired metadata, wrong bootstrap root, path traversal, unsafe cache permissions, broker startup from verified policy, and fail-closed tamper behavior.
+PR #6 merged as `e8a8d1400a601ef4277ed388337f630c06531cf2`; branch `security/tuf-policy-trust-and-rollback`, tested head `ba950ae7a69ffe77202d786623fdefb662ae1cd1`. CI runs 42737352852 and 42737349896 passed all Python 3.11, 3.12, and 3.13 jobs; main-branch CI run 42737605525 also passed. Each ran 57 tests plus Ruff, structural verification, and JSON checks.
+
+## SPIFFE Workload API integration (in progress)
+Branch: `security/spiffe-workload-identity`.
+Adds an optional SPIFFE mode for the Linux broker. The client presents a bounded JWT-SVID; the broker validates it on every request through the local Workload API's `ValidateJWTSVID` method for an operator-configured audience. The validated SPIFFE ID becomes the exact policy principal, and the request expiry cannot outlive the SVID. Legacy UID-map mode remains available and the two modes are mutually exclusive. No positive identity cache or unsigned/offline fallback exists. Tokens are not written to evidence.
+The optional `spiffe` extra pins community-maintained py-spiffe 0.4.0. PyPI reports no provenance for that release; this is explicitly documented as a supply-chain risk requiring review before sensitive deployment. Unit tests use a fake Workload API client; no live SPIRE deployment test is claimed. JWT-SVID remains a bearer credential and is not bound to the Unix peer process.
 
 ## Security limitations
-Linux only. Processes sharing a UID share an identity. This is local OS identity, not cryptographic workload identity. Policy and UID map require operator-controlled files/directories and are loaded at startup. Optional TUF mode authenticates policy publisher metadata, but its cache can be rolled back if an attacker controls persistent cache storage. Local replay DB can be rolled back. Only audit append is exposed. No arbitrary tool executor, shell, filesystem proxy, network proxy, credential revocation, TUF repository publishing/key management, rollback-resistant cache storage, general sandbox, complete mediation proof, fuzz campaign, penetration test, or independent review.
+Linux only. UID mode still depends on OS peer identity and processes sharing a UID share authority. SPIFFE mode depends on local Workload API trust, SPIRE attestation and key/bundle updates; JWT-SVIDs are bearer tokens. Policy and state require operator-controlled files/directories. Optional TUF mode authenticates policy publisher metadata, but its cache can be rolled back if an attacker controls persistent cache storage. Local replay DB can be rolled back. Only audit append is exposed. No arbitrary tool executor, shell, filesystem proxy, network proxy, X.509-SVID/mTLS binding, TUF repository publishing/key management, rollback-resistant cache storage, general sandbox, complete mediation proof, fuzz campaign, penetration test, live SPIRE test, or independent review.
 
 ## Next
-Prioritize cryptographic workload identity/revocation, a TUF repository publishing/signing workflow, and stronger rollback-resistant cache storage. Do not expand broker capabilities until each new operation has a fixed schema, explicit authority mapping, bounded inputs/resources, side-effect evidence, and bypass tests.
+Complete live SPIRE rotation/revocation tests and sender-constrained X.509-SVID/mTLS. Then prioritize TUF repository publishing/signing, stronger rollback-resistant cache storage, capability delegation attenuation, and a typed protected executor. Do not expand broker capabilities until each new operation has a fixed schema, explicit authority mapping, bounded inputs/resources, side-effect evidence, and bypass tests.

@@ -15,7 +15,7 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 - Optional local SQLite one-time request-ID consumption for replay resistance.
 - Local JSONL evidence ledger with a SHA-256 hash chain and verifier.
 - Experimental separate-process Linux broker for one fixed protected operation: `audit.append`.
-- Broker derives caller UID from Linux SO_PEERCRED, maps it to a configured principal, rejects caller-supplied identity/operation, requires canonical UUIDv4 request IDs, consumes them before execution, and writes to its own bounded evidence ledger.
+- Broker derives local peer credentials from Linux SO_PEERCRED. Optional SPIFFE mode validates a presented JWT-SVID through the local Workload API for a fixed audience and uses the validated SPIFFE ID as the policy principal; request expiry cannot outlive the SVID. Legacy UID mapping remains available.
 - Optional python-tuf 7.x policy verification from an operator-managed local mirror, with out-of-band bootstrap root and persistent metadata cache. CI tests signed-target tampering, metadata tampering, expiry, rollback, and fail-closed broker startup.
 - Structural repository conformance CLI, examples, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
 
@@ -38,7 +38,7 @@ Without `--replay-db`, replay protection is disabled. With it, an ALLOW consumes
 
 The broker is a separate process, not an in-process middleware hook. It uses Linux Unix-domain-socket peer credentials to derive the caller UID, maps that UID to an operator-configured principal, and authorizes one fixed operation: appending a bounded event to the broker-owned evidence ledger. The client cannot choose a principal, action, target, scope, path, executable, or command.
 
-See [docs/INDEPENDENT_BROKER.md](docs/INDEPENDENT_BROKER.md) for dedicated service-account setup, UID separation, policy, socket permissions, operation, and residual risks. Optional TUF-backed policy verification is documented in [docs/TUF_POLICY_TRUST.md](docs/TUF_POLICY_TRUST.md).
+See [docs/INDEPENDENT_BROKER.md](docs/INDEPENDENT_BROKER.md) for broker deployment, [docs/SPIFFE_WORKLOAD_IDENTITY.md](docs/SPIFFE_WORKLOAD_IDENTITY.md) for optional cryptographic workload identity, and [docs/TUF_POLICY_TRUST.md](docs/TUF_POLICY_TRUST.md) for policy publisher verification.
 
 This first broker is deliberately narrow. It is not an arbitrary tool executor, a sandbox, or proof that every side effect in an adopting application is mediated. Processes sharing a UID share the same broker identity.
 
@@ -69,7 +69,7 @@ The evaluator currently emits ALLOW, REVIEW_REQUIRED, or DENY. Unknown, malforme
 ## Important security limitations
 This is an experimental reference implementation, not a certified security product:
 - Principal strings in the local evaluator are assertions, not authenticated identities.
-- The broker's identity signal is the local OS UID, not cryptographic workload identity.
+- Legacy broker mode uses the local OS UID. Optional SPIFFE mode validates bearer JWT-SVIDs online, but does not bind them to the Unix-socket peer process.
 - Static policy-file mode is not publisher-authenticated. Optional TUF mode verifies policy metadata and target signatures/hashes; its cache must be protected from rollback.
 - SQLite replay protection is local; a database rollback can reset its history.
 - Delegation cycle checks are not capability attenuation.
@@ -77,7 +77,7 @@ This is an experimental reference implementation, not a certified security produ
 - The structural verifier does not test a live deployment or prove complete enforcement mediation.
 - The broker supports Linux only and exposes one fixed audit append operation.
 - Python in-process code cannot isolate a hostile process controlling the same interpreter.
-- No MCP, A2A, ACS, OPA, Cedar, SPIFFE/SPIRE, or OS sandbox adapter is implemented. MASG does not provide a TUF repository publisher or manage signing keys.
+- No MCP, A2A, ACS, OPA, Cedar, X.509-SVID/mTLS, or OS sandbox adapter is implemented. MASG does not provide a TUF repository publisher or manage signing keys.
 
 Read [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md), and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 

@@ -8,12 +8,22 @@ from __future__ import annotations
 
 import os
 import stat
+import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 
 class WorkloadIdentityError(RuntimeError):
     """Workload identity configuration or validation failure."""
+
+
+@dataclass(frozen=True)
+class VerifiedWorkloadIdentity:
+    """Identity and expiry returned only after Workload API validation."""
+
+    principal: str
+    expires_at: int
 
 
 class SpiffeJwtSvidVerifier:
@@ -66,8 +76,8 @@ class SpiffeJwtSvidVerifier:
         self.audience = audience
         self.timeout = float(timeout)
 
-    def authenticate(self, token: str) -> str:
-        """Return the validated SPIFFE ID or fail closed without exposing token data."""
+    def authenticate(self, token: str) -> VerifiedWorkloadIdentity:
+        """Return validated identity and token expiry or fail closed."""
         if (
             not isinstance(token, str) or not token or len(token) > 8_192
             or not token.isascii() or any(char.isspace() for char in token)
@@ -79,14 +89,17 @@ class SpiffeJwtSvidVerifier:
                 token=token, audience=self.audience, timeout=self.timeout,
             )
             identity = str(svid.spiffe_id)
+            expiry = svid.expiry
             if (
-                not identity.startswith("spiffe://") or len(identity) > 2_048
+                not identity.startswith("spiffe://") or len(identity) > 1_024
                 or "?" in identity or "#" in identity
             ):
                 raise WorkloadIdentityError("validated SPIFFE ID is not canonical")
             if self.audience not in svid.audience:
                 raise WorkloadIdentityError("validated JWT-SVID audience mismatch")
-            return identity
+            if isinstance(expiry, bool) or not isinstance(expiry, int) or expiry <= int(time.time()):
+                raise WorkloadIdentityError("validated JWT-SVID expiry is invalid or elapsed")
+            return VerifiedWorkloadIdentity(principal=identity, expires_at=expiry)
         except WorkloadIdentityError:
             raise
         except Exception as exc:
