@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Merge ten shared raw-parser negative fixtures; Python, Go, and Rust now reject the same malformed policy/request byte documents in CI, with exact fail-closed reason-code checks. PR #20 and post-merge main CI passed all five jobs.
 - Add ten shared raw-parser negative fixtures, hex-encoded to represent malformed UTF-8 and duplicate-key documents, and execute the same cases in Python, Go, and Rust.
 - Validate the parser-negative fixture schema and require all three implementations to deny malformed policy/request inputs with the specified reason code.
 - Validate both Go and Rust implementation manifests and conformance reports against the normative JSON Schemas; cross-check implementation IDs, versions, protocol version, eight-vector scope, PASS statuses, source revisions, evidence links and explicit limitations.
