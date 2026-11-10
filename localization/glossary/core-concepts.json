@@ -1,0 +1,90 @@
+{
+  "glossary_version": "1.0.0",
+  "source_locale": "en",
+  "concepts": [
+    {
+      "concept_id": "masg.identity.authentication",
+      "term": "authentication",
+      "definition": "A process that verifies an asserted identity or credential under a defined trust model.",
+      "domain": "identity",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.identity.principal",
+      "term": "principal",
+      "definition": "The identity to which an authorization decision is applied, derived from a trusted identity mechanism rather than an untrusted caller assertion.",
+      "domain": "identity",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.decision",
+      "term": "authorization decision",
+      "definition": "A policy outcome stating whether a specific principal may perform a specific action on a specific target within a specific scope and validity window.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.deny_by_default",
+      "term": "deny by default",
+      "definition": "When no valid matching permission exists, the requested operation is denied.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.fail_closed",
+      "term": "fail closed",
+      "definition": "When a required control is unavailable, invalid, or uncertain, the protected operation is not permitted.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.policy_version",
+      "term": "policy version",
+      "definition": "The exact version identifier of the policy used to evaluate a request.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.delegation_attenuation",
+      "term": "delegation attenuation",
+      "definition": "A rule that delegated authority must be no broader than the authority of the delegating principal.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.evidence.provenance",
+      "term": "provenance",
+      "definition": "Information describing where data or a claim came from and the transformations or custody relevant to interpreting it.",
+      "domain": "evidence",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.evidence.conformance",
+      "term": "conformance",
+      "definition": "A scoped, evidence-backed statement that an implementation matches specified requirements and tests in a declared environment.",
+      "domain": "assurance",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.localization.human_review",
+      "term": "human-reviewed translation",
+      "definition": "A translation reviewed by an identified human contributor, with review metadata recorded; this is not a guarantee of universal correctness.",
+      "domain": "localization",
+      "security_critical": false
+    },
+    {
+      "concept_id": "masg.semantic.epistemic_status",
+      "term": "epistemic status",
+      "definition": "A label indicating whether a claim is observed, verified, inferred, hypothetical, proposed, unknown, or disputed.",
+      "domain": "semantic_interchange",
+      "security_critical": false
+    },
+    {
+      "concept_id": "masg.interop.language_binding",
+      "term": "language binding",
+      "definition": "A programming-language-specific implementation or API that preserves the normative protocol's wire format and semantics.",
+      "domain": "interoperability",
+      "security_critical": false
+    }
+  ]
+}
