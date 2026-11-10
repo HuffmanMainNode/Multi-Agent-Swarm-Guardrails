@@ -166,8 +166,12 @@ class UniversalProtocolTests(unittest.TestCase):
                 statuses = [item["status"] for item in report["results"]]
                 expected_overall = "PASS" if all(status == "PASS" for status in statuses) else "UNKNOWN"
                 self.assertEqual(report["overall_status"], expected_overall)
-                self.assertEqual(report["conformance_scope"], "portable_policy_decision_and_time_vectors_only")
-                self.assertEqual(len(report["results"]), len(self.vectors))
+                if language == "javascript":
+                    self.assertEqual(report["conformance_scope"], "portable_policy_time_and_parser_negative_vectors_only")
+                    self.assertEqual(len(report["results"]), len(self.vectors) + len(self.parser_vectors))
+                else:
+                    self.assertEqual(report["conformance_scope"], "portable_policy_decision_and_time_vectors_only")
+                    self.assertEqual(len(report["results"]), len(self.vectors))
                 if report["overall_status"] == "PASS":
                     self.assertRegex(report["source_revision"], r"^[0-9a-f]{40}$")
                     self.assertTrue(all(item.get("evidence_ref", "").startswith("https://github.com/") for item in report["results"]))
