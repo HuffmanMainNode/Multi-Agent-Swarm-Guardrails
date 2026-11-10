@@ -126,9 +126,7 @@ class UniversalProtocolTests(unittest.TestCase):
         self.assertTrue(validator.is_valid(valid))
         self.assertFalse(validator.is_valid(invalid))
 
-    def test_go_implementation_manifest_and_report_match_schemas(self):
-        manifest = load_json(ROOT / "implementations/go/implementation-manifest.json")
-        report = load_json(ROOT / "implementations/go/conformance-report.json")
+    def test_all_reference_implementation_manifests_and_reports_match_schemas(self):
         manifest_validator = Draft202012Validator(
             self.schemas["implementation-manifest.schema.json"],
             format_checker=FormatChecker(),
@@ -137,12 +135,24 @@ class UniversalProtocolTests(unittest.TestCase):
             self.schemas["conformance-report.schema.json"],
             format_checker=FormatChecker(),
         )
-        manifest_validator.validate(manifest)
-        report_validator.validate(report)
-        statuses = [item["status"] for item in report["results"]]
-        expected_overall = "PASS" if all(status == "PASS" for status in statuses) else "UNKNOWN"
-        self.assertEqual(report["overall_status"], expected_overall)
-        self.assertTrue(report["conformance_scope"])
+        for language in ("go", "rust"):
+            with self.subTest(language=language):
+                manifest = load_json(ROOT / f"implementations/{language}/implementation-manifest.json")
+                report = load_json(ROOT / f"implementations/{language}/conformance-report.json")
+                manifest_validator.validate(manifest)
+                report_validator.validate(report)
+                self.assertEqual(manifest["implementation_id"], report["implementation_id"])
+                self.assertEqual(manifest["version"], report["implementation_version"])
+                self.assertEqual(manifest["protocol_versions"], [report["protocol_version"]])
+                self.assertEqual(report["overall_status"], "PASS")
+                self.assertEqual(report["conformance_scope"], "portable_policy_decision_and_time_vectors_only")
+                self.assertEqual(len(report["results"]), len(self.vectors))
+                self.assertTrue(all(item["status"] == "PASS" for item in report["results"]))
+                self.assertRegex(report["source_revision"], r"^[0-9a-f]{40}$")
+                self.assertTrue(all(item.get("evidence_ref", "").startswith("https://github.com/") for item in report["results"]))
+                self.assertTrue(manifest["limitations"])
+                self.assertTrue(report["limitations"])
+                self.assertTrue(all(item["status"] == "NOT_TESTED" for item in manifest["contract_status"]))
 
     def test_example_extension_manifest_matches_schema(self):
         manifest = load_json(

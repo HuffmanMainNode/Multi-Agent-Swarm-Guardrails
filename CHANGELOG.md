@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Validate both Go and Rust implementation manifests and conformance reports against the normative JSON Schemas; cross-check implementation IDs, versions, protocol version, eight-vector scope, PASS statuses, source revisions, evidence links and explicit limitations.
+- Correct the durable project checkpoint to reflect that Rust PR #18 is merged and its Rust CI passed; explicitly supersede stale pending-status entries.
 - Add an independent dependency-free Rust reference evaluator and CI job. Rust 0.1.0 passes all eight shared v1.0.0 decision/time vectors, formatting, Clippy and parser/limit tests; conformance remains narrowly scoped to those vectors.
 - Record PR #16 merged and post-merge main CI success; Go reference v0.1.1 now reports eight shared policy-decision/time vectors with explicit embedded-only scope.
 - Record passing cross-language protocol parity CI for complete Python and Go request envelopes, strict raw JSON parsing, schema-aligned limits, Unicode code-point handling, timestamp rules and JSON depth boundary tests.
