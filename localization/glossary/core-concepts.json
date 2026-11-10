@@ -85,6 +85,133 @@
       "definition": "A programming-language-specific implementation or API that preserves the normative protocol's wire format and semantics.",
       "domain": "interoperability",
       "security_critical": false
+    },
+    {
+      "concept_id": "masg.authorization.allow",
+      "term": "allow",
+      "definition": "A policy decision that permits the specified request under the evaluated policy; it does not prove that execution was mediated or safe.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.deny",
+      "term": "deny",
+      "definition": "A policy decision that refuses the specified request.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.review_required",
+      "term": "review required",
+      "definition": "A policy outcome that requires an approval process before the requested operation may proceed.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.no_match",
+      "term": "no match",
+      "definition": "No policy rule exactly matched the request, so the deny-by-default policy refuses it.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.action",
+      "term": "action",
+      "definition": "The operation a principal is requesting to perform.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.target",
+      "term": "target",
+      "definition": "The resource or object on which the requested action would operate.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.authorization.scope",
+      "term": "scope",
+      "definition": "The bounded context or extent within which an action is requested.",
+      "domain": "authorization",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.protocol.request_expiry",
+      "term": "request expiry",
+      "definition": "The time after which a request is no longer valid for evaluation.",
+      "domain": "protocol",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.security.explicit_deny_precedence",
+      "term": "explicit deny precedence",
+      "definition": "When matching rules include an explicit DENY, that denial takes precedence over ALLOW or REVIEW_REQUIRED rules.",
+      "domain": "security",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.security.replay_protection",
+      "term": "replay protection",
+      "definition": "A control that detects or prevents reuse of a request or message that should be accepted only once or within a defined validity window.",
+      "domain": "security",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.identity.revocation",
+      "term": "revocation",
+      "definition": "The process of invalidating a previously issued identity credential or authority under a defined trust and propagation model.",
+      "domain": "identity",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.runtime.enforcement_mediation",
+      "term": "enforcement mediation",
+      "definition": "A control that ensures protected side effects pass through an independently enforced authorization boundary.",
+      "domain": "runtime",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.evidence.reference",
+      "term": "evidence reference",
+      "definition": "A pointer to material that can be inspected to evaluate a claim; the pointer alone does not prove authenticity or sufficiency.",
+      "domain": "evidence",
+      "security_critical": true
+    },
+    {
+      "concept_id": "masg.localization.machine_draft",
+      "term": "machine draft",
+      "definition": "A translation generated or assisted by software that has not been approved through the required human review process.",
+      "domain": "localization",
+      "security_critical": false
+    },
+    {
+      "concept_id": "masg.localization.source_fallback",
+      "term": "source fallback",
+      "definition": "Use of the authoritative source-language text when a reviewed translation is unavailable or unsuitable.",
+      "domain": "localization",
+      "security_critical": false
+    },
+    {
+      "concept_id": "masg.semantic.frame",
+      "term": "semantic frame",
+      "definition": "A typed, versioned message containing explicit claims, provenance, locale, and intent for interchange between systems.",
+      "domain": "semantic_interchange",
+      "security_critical": false
+    },
+    {
+      "concept_id": "masg.semantic.unknown",
+      "term": "unknown",
+      "definition": "An explicit epistemic status indicating that a claim is not currently known or supported by sufficient evidence.",
+      "domain": "semantic_interchange",
+      "security_critical": false
+    },
+    {
+      "concept_id": "masg.semantic.disputed",
+      "term": "disputed",
+      "definition": "An explicit epistemic status indicating that a claim is contested or conflicting evidence exists.",
+      "domain": "semantic_interchange",
+      "security_critical": false
     }
-  ]
+  ],
+  "glossary_scope": "Controlled terminology for protocol fields, authorization outcomes, security assurances, evidence, interoperability, semantic exchange, and localization. This is not a dictionary of every natural-language word; terms are defined in context to avoid false one-to-one translations."
 }
