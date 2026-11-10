@@ -88,6 +88,18 @@ class UniversalProtocolTests(unittest.TestCase):
         self.assertEqual(report["overall_status"], "PASS")
         self.assertEqual(report["conformance_scope"], "portable_policy_decision_vectors_only")
 
+    def test_example_extension_manifest_matches_schema(self):
+        manifest = load_json(
+            ROOT / "extensions/examples/generic-tool-action/manifest.json"
+        )
+        validator = Draft202012Validator(
+            self.schemas["extension-manifest.schema.json"],
+            format_checker=FormatChecker(),
+        )
+        validator.validate(manifest)
+        self.assertTrue(manifest["security_critical"])
+        self.assertGreaterEqual(len(manifest["limitations"]), 1)
+
     def test_response_schema_accepts_standard_decision(self):
         response = {
             "protocol_version": "1.0.0",

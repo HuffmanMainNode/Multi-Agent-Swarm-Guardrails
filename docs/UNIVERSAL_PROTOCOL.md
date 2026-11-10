@@ -1,6 +1,6 @@
 # Universal, Language-Neutral MASG Architecture
 
-MASG is a protocol and set of safety contracts, not a Python framework. Python is the first reference implementation only.
+MASG is a protocol and set of safety contracts, not a single-language framework. Python is the first reference implementation; an independent Go policy-decision implementation now consumes the same protocol vectors.
 
 ## Separation of concerns
 
@@ -14,7 +14,7 @@ MASG is a protocol and set of safety contracts, not a Python framework. Python i
 | Runtime enforcement | Deployment-specific | Process broker, OS controls, sandbox, hypervisor, hardware, or embedded hooks |
 | Language SDKs | Replaceable | Python, Rust, Go, Java, C#, JavaScript/TypeScript, and future languages |
 
-No language SDK is the source of truth. The normative source is `spec/`, `schemas/`, contract catalog, and versioned vectors.
+No language SDK is the source of truth. The normative source is `spec/`, `schemas/`, contract catalog, and versioned vectors. Domain and transport adaptations are packaged as independent namespaced extensions under the rules in [docs/EXTENSION_MODEL.md](EXTENSION_MODEL.md).
 
 ## Universal does not mean identical deployment
 

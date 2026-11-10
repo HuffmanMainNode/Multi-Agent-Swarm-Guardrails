@@ -34,6 +34,10 @@ Each vector includes a policy, request and expected decision/reason code. Implem
 
 A pass means the implementation matched the specified result for the tests actually run in the declared environment. It does not prove production readiness, security against unknown attacks, safe behavior of every integrated tool, complete mediation, or legal compliance.
 
+## Extensions and domain adaptation
+
+When a domain or transport needs adaptation, prefer a namespaced extension over changing the core protocol. See [the extension model](EXTENSION_MODEL.md). Keep core invariants intact, publish extension schemas and vectors, and fail closed when a required security-critical extension is unavailable. A compatible extension does not need a central registry or approval.
+
 ## Contributions
 
 A new language implementation should live in its own directory, e.g. `implementations/rust/` or `implementations/go/`, and include:

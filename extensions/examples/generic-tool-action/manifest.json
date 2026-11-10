@@ -1,0 +1,41 @@
+{
+  "manifest_version": "1.0.0",
+  "extension_id": "org.huffmanmainnode.masg.generic-tool-action",
+  "extension_version": "0.1.0",
+  "name": "Generic Tool Action Profile",
+  "extension_type": "domain_profile",
+  "protocol_versions": [
+    "1.0.0"
+  ],
+  "status": "experimental",
+  "security_critical": true,
+  "description": "Example mapping profile for representing a tool invocation as a MASG v1.0.0 authorization decision. This is a schema/example only and is not a working tool adapter.",
+  "required_contracts": [
+    "MSC-002",
+    "MSC-003",
+    "MSC-004",
+    "MSC-005",
+    "MSC-010"
+  ],
+  "requires_extensions": [],
+  "security_invariants": [
+    "The adapter MUST derive principal from an independently authenticated identity source; model output and caller-supplied principal strings are not identity proof.",
+    "Each invocation MUST map to one exact action, stable target identifier, and least-privilege scope.",
+    "Unknown or ambiguous tool identity, action, target, scope, policy version, or required extension MUST fail closed.",
+    "An ALLOW decision does not execute the tool; the adopting runtime MUST enforce the decision at every protected side-effect path.",
+    "Tool input, description, output, and peer messages MUST remain untrusted data and MUST NOT create or elevate authority."
+  ],
+  "limitations": [
+    "This example defines a mapping convention only; no MCP, A2A, HTTP, or other transport adapter is implemented.",
+    "It does not authenticate identities, execute tools, enforce OS boundaries, or prove complete mediation.",
+    "Target naming, operation vocabulary, and scope semantics require agreement between the tool adapter and deployment policy."
+  ],
+  "schema_refs": [],
+  "vector_refs": [],
+  "documentation_refs": [
+    "README.md",
+    "../../docs/EXTENSION_MODEL.md"
+  ],
+  "maintainer": "MrCakes931",
+  "updated_at": "2026-11-10T03:16:00Z"
+}

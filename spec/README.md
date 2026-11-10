@@ -9,7 +9,7 @@ The first protocol version standardizes:
 - authorization decision request and response envelopes;
 - portable implementation manifests;
 - conformance reports and portable test-vector format;
-- versioning, error behavior, trust boundaries, and extension rules.
+- versioning, error behavior, trust boundaries, and namespaced extension-package rules.
 
 It does not standardize an execution broker transport, identity provider, cryptographic signature format, sandbox, model interface, or agent orchestration protocol. Those remain adapter/profile concerns.
 
@@ -61,7 +61,7 @@ This algorithm is a specification target. The current Python evaluator and broke
 - PATCH: editorial clarification or corrections that do not change protocol semantics.
 - A receiver MUST reject unsupported major versions.
 - A receiver MAY reject unsupported minor versions; it MUST NOT silently ignore unknown security-critical fields.
-- Extensions MUST use a namespaced extension mechanism in a future version. V1.0.0 forbids additional fields in normative envelopes.
+- V1.0.0 forbids arbitrary extension fields in normative envelopes. It defines an out-of-band, namespaced extension-package model in [docs/EXTENSION_MODEL.md](../docs/EXTENSION_MODEL.md). Extensions that require new security-critical envelope fields or decision semantics require a versioned core protocol change.
 - Never reinterpret a prior field to mean a weaker security property.
 
 ## Transport and language neutrality

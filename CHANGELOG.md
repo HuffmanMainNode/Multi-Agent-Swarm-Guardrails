@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Define a namespaced extension package model so independent communities can adapt MASG to domains, transports, identity providers, policy engines, enforcement, evidence, and recovery without silently changing core semantics.
+- Add an extension manifest schema and generic tool-action mapping example, explicitly marked as documentation-only and not a working adapter.
 - Add an independent Go reference evaluator using only the Go standard library; it consumes the shared v1.0.0 decision vectors without a Python dependency and publishes an explicit embedded-only limitation/conformance manifest.
 - Add Go CI vet/race-test job and validate the Go implementation manifest and conformance report against the normative schemas.
 - Define language-neutral MASG protocol v1.0.0 with JSON Schemas for policies, authorization requests/responses, implementation manifests, conformance reports, and portable conformance vectors.

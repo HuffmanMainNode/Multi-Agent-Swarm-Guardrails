@@ -89,6 +89,10 @@ A first standalone Go evaluator is now available under [implementations/go/](imp
 
 A conformance PASS applies only to the implementation, version, profile, tests, and environment reported. It is not certification or proof of production security.
 
+## Namespaced extensions
+
+Anyone can adapt MASG for a domain, transport, identity provider, policy engine, enforcement runtime, evidence sink, or recovery system through separately versioned extensions. The core security invariants cannot be weakened. See [the extension model](docs/EXTENSION_MODEL.md) and the [example extension](extensions/examples/generic-tool-action/README.md). The example is documentation only, not a working MCP/tool adapter or automatic trust listing.
+
 ## Interoperability
 MASG intends to integrate rather than replace mature identity, policy, protocol, sandbox, observability, and supply-chain systems. Integration targets and actual status are listed in [docs/INTEROPERABILITY.md](docs/INTEROPERABILITY.md).
 
