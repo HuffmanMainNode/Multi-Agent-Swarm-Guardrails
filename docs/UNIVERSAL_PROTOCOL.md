@@ -20,6 +20,8 @@ No language SDK is the source of truth. The normative source is `spec/`, `schema
 
 A Python package cannot enforce a Rust process's system calls merely by being imported. An embedded library cannot protect against a hostile host process that controls the same address space. A Linux SO_PEERCRED broker is not portable to Windows or browser runtimes. Hardware-backed claims require hardware-specific attestation and independent verification.
 
+Protocol v1.0.0 also fixes cross-language input limits: policy documents are bounded to 1 MiB, request envelopes to 64 KiB, policies to 1,000 rules, selector arrays to 128 entries, and selector text lengths follow the field limits in the normative JSON Schema. String limits count Unicode code points, not UTF-8 bytes. Timestamps permit zero to six fractional-second digits and require a known explicit offset; `-00:00` is rejected.
+
 Implementations MUST declare:
 - languages, runtimes, operating systems and transport adapters;
 - supported protocol and contract versions;

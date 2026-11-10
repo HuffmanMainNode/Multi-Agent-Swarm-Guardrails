@@ -17,72 +17,20 @@ import (
 )
 
 const (
-	ProtocolVersion = "1.0.0"
-	maxJSONBytes    = 65536
-	maxJSONDepth    = 32
-	maxRules        = 1000
-	maxSelectors    = 128
-	maxTextLength   = 1024
+	ProtocolVersion     = "1.0.0"
+	maxPolicyJSONBytes  = 1_048_576
+	maxRequestJSONBytes = 65_536
+	maxVectorJSONBytes  = 1_048_576
+	maxJSONDepth        = 32
+	maxRules            = 1000
+	maxSelectors        = 128
 )
 
-var uuidV4Pattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}// Package masg implements the MASG v1.0.0 policy-decision reference in Go.
-//
-// It is deliberately an evaluator, not an identity provider, transport broker,
-// sandbox, or proof that a caller's side effects are mediated.
-package masg
-
-import (
-	"bytes"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"regexp"
-	"strings"
-	"time"
-	"unicode/utf8"
-)
-
-const (
-	ProtocolVersion = "1.0.0"
-	maxJSONBytes    = 65536
-	maxJSONDepth    = 32
-	maxRules        = 1000
-	maxSelectors    = 128
-	maxTextLength   = 1024
-)
-
-)
-var rfc3339Pattern = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-](?:0\d|1\d|2[0-3]):[0-5]\d)// Package masg implements the MASG v1.0.0 policy-decision reference in Go.
-//
-// It is deliberately an evaluator, not an identity provider, transport broker,
-// sandbox, or proof that a caller's side effects are mediated.
-package masg
-
-import (
-	"bytes"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"regexp"
-	"strings"
-	"time"
-	"unicode/utf8"
-)
-
-const (
-	ProtocolVersion = "1.0.0"
-	maxJSONBytes    = 65536
-	maxJSONDepth    = 32
-	maxRules        = 1000
-	maxSelectors    = 128
-	maxTextLength   = 1024
-)
-
-)
+var uuidV4Pattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+var rfc3339Pattern = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-](?:0\d|1\d|2[0-3]):[0-5]\d)$`)
 
 // Policy is the language-neutral MASG decision policy document.
+
 type Policy struct {
 	Version       string `json:"version"`
 	DefaultEffect string `json:"default_effect"`
@@ -271,24 +219,24 @@ func contains(values []string, wanted string) bool {
 // documents fail closed. It does not provide authenticated identity or replay storage.
 func EvaluateJSON(policyJSON, requestJSON []byte, now time.Time) Result {
 	var policy Policy
-	if err := decodeUniqueJSON(policyJSON, &policy); err != nil {
+	if err := decodeUniqueJSON(policyJSON, &policy, maxPolicyJSONBytes); err != nil {
 		return result("DENY", "POLICY_INVALID", "UNKNOWN")
 	}
 	if err := validatePolicy(policy); err != nil {
 		return result("DENY", "POLICY_INVALID", policy.Version)
 	}
 	var request Request
-	if err := decodeUniqueJSON(requestJSON, &request); err != nil {
+	if err := decodeUniqueJSON(requestJSON, &request, maxRequestJSONBytes); err != nil {
 		return result("DENY", "REQUEST_INVALID", policy.Version)
 	}
 	return Evaluate(policy, request, now)
 }
 
-func decodeUniqueJSON(raw []byte, target any) error {
+func decodeUniqueJSON(raw []byte, target any, maxBytes int) error {
 	if !utf8.Valid(raw) {
 		return errors.New("invalid UTF-8")
 	}
-	if len(raw) == 0 || len(raw) > maxJSONBytes {
+	if len(raw) == 0 || len(raw) > maxBytes {
 		return errors.New("JSON size invalid")
 	}
 	decoder := json.NewDecoder(bytes.NewReader(raw))

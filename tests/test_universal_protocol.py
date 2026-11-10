@@ -57,6 +57,25 @@ class UniversalProtocolTests(unittest.TestCase):
                 self.assertEqual(result.decision.value, vector["expected"]["decision"])
                 self.assertEqual(result.reason_code, vector["expected"]["reason_code"])
 
+    def test_protocol_evaluator_requires_complete_envelope(self):
+        request = dict(self.vectors[0]["request"])
+        request.pop("policy_version")
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+
+    def test_protocol_evaluator_accepts_non_authoritative_provenance_reference(self):
+        request = {**self.vectors[0]["request"], "provenance_ref": "sha256:abc123"}
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.decision.value, "ALLOW")
+
+    def test_protocol_timestamp_precision_is_bounded(self):
+        request = {**self.vectors[0]["request"], "issued_at": "2026-11-10T12:00:00.1234567Z"}
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+        request["issued_at"] = "2026-11-10T12:00:00-00:00"
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+
     def test_protocol_envelopes_reject_unknown_fields(self):
         schema = self.schemas["decision-request.schema.json"]
         validator = Draft202012Validator(schema, format_checker=FormatChecker())

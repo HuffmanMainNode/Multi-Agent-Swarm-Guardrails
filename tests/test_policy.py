@@ -74,6 +74,24 @@ class PolicyTests(unittest.TestCase):
             with self.assertRaises(PolicyError):
                 load_policy(path)
 
+    def test_policy_rule_id_is_required(self):
+        policy = {**self.policy, "rules": [{key: value for key, value in self.policy["rules"][0].items() if key != "id"}]}
+        self.assertEqual(evaluate(policy, self.request, now=self.now).reason_code, "POLICY_INVALID")
+
+    def test_policy_rule_limit_matches_protocol_schema(self):
+        rules = [self.policy["rules"][0]] * 1001
+        self.assertEqual(evaluate({**self.policy, "rules": rules}, self.request, now=self.now).reason_code, "POLICY_INVALID")
+
+    def test_action_selector_limit_matches_protocol_schema(self):
+        rule = {**self.policy["rules"][0], "actions": ["x" * 257]}
+        self.assertEqual(evaluate({**self.policy, "rules": [rule]}, self.request, now=self.now).reason_code, "POLICY_INVALID")
+
+    def test_unicode_selector_limit_counts_characters(self):
+        rule = {**self.policy["rules"][0], "principals": ["é" * 1024]}
+        self.assertEqual(evaluate({**self.policy, "rules": [rule]}, self.request, now=self.now).reason_code, "NO_MATCH")
+        rule["principals"] = ["é" * 1025]
+        self.assertEqual(evaluate({**self.policy, "rules": [rule]}, self.request, now=self.now).reason_code, "POLICY_INVALID")
+
     def test_nonstandard_json_constant_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "policy.json"
