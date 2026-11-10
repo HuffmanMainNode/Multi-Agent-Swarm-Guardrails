@@ -244,7 +244,7 @@ func decodeUniqueJSON(raw []byte, target any, maxBytes int) error {
 	}
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
-	value, err := parseValue(decoder, 0)
+	value, err := parseValue(decoder, 1)
 	if err != nil {
 		return err
 	}

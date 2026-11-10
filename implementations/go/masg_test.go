@@ -195,3 +195,15 @@ func TestExcessiveJSONNestingFailsClosed(t *testing.T) {
 		t.Fatalf("excessive nesting did not fail closed: %+v", got)
 	}
 }
+
+func TestJSONDepthBoundary(t *testing.T) {
+	var value any
+	atLimit := []byte(strings.Repeat("[", 32) + "0" + strings.Repeat("]", 32))
+	if err := decodeUniqueJSON(atLimit, &value, maxVectorJSONBytes); err != nil {
+		t.Fatalf("32 container levels should be accepted: %v", err)
+	}
+	overLimit := []byte(strings.Repeat("[", 33) + "0" + strings.Repeat("]", 33))
+	if err := decodeUniqueJSON(overLimit, &value, maxVectorJSONBytes); err == nil {
+		t.Fatal("33 container levels must be rejected")
+	}
+}

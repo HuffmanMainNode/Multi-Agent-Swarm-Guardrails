@@ -8,7 +8,7 @@ import unittest
 from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
-from masg.policy import evaluate, evaluate_protocol, evaluate_protocol_json
+from masg.policy import PolicyError, _check_json_depth, evaluate, evaluate_protocol, evaluate_protocol_json
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
@@ -56,6 +56,11 @@ class UniversalProtocolTests(unittest.TestCase):
             with self.subTest(vector=vector["vector_id"]):
                 self.assertEqual(result.decision.value, vector["expected"]["decision"])
                 self.assertEqual(result.reason_code, vector["expected"]["reason_code"])
+
+    def test_json_depth_boundary_is_exactly_32_containers(self):
+        _check_json_depth(b"[" * 32 + b"0" + b"]" * 32)
+        with self.assertRaises(PolicyError):
+            _check_json_depth(b"[" * 33 + b"0" + b"]" * 33)
 
     def test_strict_json_protocol_entrypoint_accepts_valid_envelope(self):
         vector = self.vectors[0]
