@@ -2,6 +2,7 @@ import socket
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -159,6 +160,52 @@ class SpiffeIdentityTests(unittest.TestCase):
             SpiffeJwtSvidVerifier(
                 socket_path=alias / "workload-api.sock", audience="masg-broker",
                 client_factory=self.factory,
+            )
+
+
+
+    def test_sdk_default_factory_uses_expected_workload_api_client(self):
+        try:
+            import spiffe
+        except ImportError:
+            self.skipTest("optional SPIFFE SDK is not installed")
+        fake = self.factory(
+            socket_path=f"unix:{self.socket_path}", default_timeout=2.0,
+        )
+        with patch.object(spiffe, "WorkloadApiClient", return_value=fake) as factory:
+            verifier = SpiffeJwtSvidVerifier(
+                socket_path=self.socket_path, audience="masg-broker",
+            )
+        factory.assert_called_once_with(
+            socket_path=f"unix:{self.socket_path}", default_timeout=2.0,
+        )
+        self.assertEqual(
+            verifier.authenticate("header.payload.signature").principal,
+            "spiffe://example.org/agent/test",
+        )
+        verifier.close()
+
+    def test_dotdot_socket_path_rejected(self):
+        path = self.root / "nested" / ".." / "workload-api.sock"
+        with self.assertRaises(WorkloadIdentityError):
+            SpiffeJwtSvidVerifier(
+                socket_path=path, audience="masg-broker",
+                client_factory=self.factory,
+            )
+
+    def test_symlinked_ancestor_directory_rejected(self):
+        nested = self.root / "nested"
+        nested.mkdir()
+        actual_socket = nested / "workload-api.sock"
+        server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        server.bind(str(actual_socket))
+        server.close()
+        alias = self.root / "alias"
+        alias.symlink_to(self.root, target_is_directory=True)
+        with self.assertRaises(WorkloadIdentityError):
+            SpiffeJwtSvidVerifier(
+                socket_path=alias / "nested" / "workload-api.sock",
+                audience="masg-broker", client_factory=self.factory,
             )
 
 

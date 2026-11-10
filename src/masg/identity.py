@@ -53,19 +53,25 @@ class SpiffeJwtSvidVerifier:
         else:
             filesystem_path = supplied
             endpoint = f"unix:{supplied}"
-        if not filesystem_path or not Path(filesystem_path).is_absolute():
-            raise WorkloadIdentityError("SPIFFE endpoint must be an absolute Unix socket path")
+        if (
+            not filesystem_path or not Path(filesystem_path).is_absolute()
+            or ".." in Path(filesystem_path).parts
+        ):
+            raise WorkloadIdentityError("SPIFFE endpoint must be an absolute normalized Unix socket path")
 
         path = Path(filesystem_path)
         try:
-            parent_metadata = path.parent.lstat()
+            for directory in path.parents:
+                parent_metadata = directory.lstat()
+                if not stat.S_ISDIR(parent_metadata.st_mode):
+                    raise WorkloadIdentityError("SPIFFE socket path cannot traverse symlinked directories")
+                writable = parent_metadata.st_mode & 0o022
+                sticky = parent_metadata.st_mode & stat.S_ISVTX
+                if writable and not sticky:
+                    raise WorkloadIdentityError("SPIFFE socket path traverses an unprotected writable directory")
             metadata = path.lstat()
         except OSError as exc:
             raise WorkloadIdentityError("SPIFFE endpoint socket cannot be inspected") from exc
-        if (
-            not stat.S_ISDIR(parent_metadata.st_mode) or parent_metadata.st_mode & 0o022
-        ):
-            raise WorkloadIdentityError("SPIFFE socket parent must be a protected, non-writable directory")
         if not stat.S_ISSOCK(metadata.st_mode):
             raise WorkloadIdentityError("SPIFFE endpoint must be a Unix socket, not a symlink or regular file")
 
