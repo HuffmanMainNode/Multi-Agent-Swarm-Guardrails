@@ -4,38 +4,38 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T03:12:10Z",
+  "tested_at": "2026-11-10T03:14:35Z",
   "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
       "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747836468"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
       "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747836468"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
       "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747836468"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
       "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747836468"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
       "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747836468"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
     }
   ],
   "limitations": [
@@ -50,5 +50,5 @@
   ],
   "assessor": "Self-reported project test artifact; not an independent assessment.",
   "conformance_scope": "portable_policy_decision_vectors_only",
-  "source_revision": "4cd92f352ce437dabcdaa3081283818d65eb38a4"
+  "source_revision": "6c43c0f997d627f77f297b2639e34fadd321c407"
 }
