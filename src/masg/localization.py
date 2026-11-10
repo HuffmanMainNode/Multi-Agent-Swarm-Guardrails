@@ -141,7 +141,7 @@ def create_translation_template(
         raise LocalizationError("invalid locale syntax")
     if locale.casefold() == source_pack["locale"].casefold():
         raise LocalizationError("target locale must differ from source locale")
-    if text_direction not in {"ltr", "rtl", "auto"}:
+    if not isinstance(text_direction, str) or text_direction not in {"ltr", "rtl", "auto"}:
         raise LocalizationError("text_direction must be ltr, rtl, or auto")
     return {
         "schema_version": "1.0.0",
