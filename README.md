@@ -8,6 +8,17 @@ MASG is an open-source safety substrate existing systems can clone and integrate
 
 No hosted control plane, paid API, mandatory telemetry, central registry, or vendor-specific runtime is required.
 
+## Start here: no experience required
+
+You do not need to know how to code to begin. The project includes a no-install first lesson, plain-language computing glossary, learning paths from first-time visitor to independent implementer, and guidance for working safely with AI tutors.
+
+- **New to computers, coding, or open source?** Start with [Start Here](docs/START_HERE.md).
+- **Want a step-by-step learning route?** See [Learning Pathways](docs/LEARNING_PATHWAYS.md).
+- **Need plain-language definitions?** Open the [Human Glossary](docs/GLOSSARY_FOR_HUMANS.md).
+- **Using AI to learn or contribute?** Read the [AI Collaboration Guide](docs/AI_COLLABORATION_FOR_LEARNERS.md).
+
+You can contribute through documentation, accessibility feedback, translation review, testing, or code. No one has to master the whole project before making one useful contribution.
+
 ## Initial implementation
 - Ten versioned mandatory safety contract definitions.
 - Dependency-free Python reference policy evaluator with strict local input validation and deny-by-default behavior.
