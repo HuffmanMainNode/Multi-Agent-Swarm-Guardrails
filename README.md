@@ -79,7 +79,13 @@ This is an experimental reference implementation, not a certified security produ
 - Python in-process code cannot isolate a hostile process controlling the same interpreter.
 - No MCP, A2A, ACS, OPA, Cedar, X.509-SVID/mTLS, or OS sandbox adapter is implemented. MASG does not provide a TUF repository publisher or manage signing keys.
 
-Read [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md), and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Read [docs/UNIVERSAL_PROTOCOL.md](docs/UNIVERSAL_PROTOCOL.md), [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md), and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## Universal protocol and language implementations
+
+MASG's normative protocol is language-neutral. Python is the first reference implementation, not a required runtime. The versioned specification, JSON Schemas, portable decision vectors, and implementation guide are in [spec/](spec/README.md), [schemas/](schemas/), [vectors/](vectors/), and [docs/IMPLEMENTING_IN_ANY_LANGUAGE.md](docs/IMPLEMENTING_IN_ANY_LANGUAGE.md). Independent Rust, Go, Java, C#, JavaScript/TypeScript, and future implementations can consume the same contracts and test vectors without depending on the Python package.
+
+A conformance PASS applies only to the implementation, version, profile, tests, and environment reported. It is not certification or proof of production security.
 
 ## Interoperability
 MASG intends to integrate rather than replace mature identity, policy, protocol, sandbox, observability, and supply-chain systems. Integration targets and actual status are listed in [docs/INTEROPERABILITY.md](docs/INTEROPERABILITY.md).

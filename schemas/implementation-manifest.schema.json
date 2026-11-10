@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:implementation-manifest:1.0.0",
+  "title": "MASG Implementation Manifest",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "implementation_id",
+    "name",
+    "version",
+    "languages",
+    "protocol_versions",
+    "supported_profiles",
+    "contract_status",
+    "limitations",
+    "conformance_report"
+  ],
+  "properties": {
+    "manifest_version": {
+      "const": "1.0.0"
+    },
+    "implementation_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{1,127}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "source_revision": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      }
+    },
+    "runtimes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "protocol_versions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      }
+    },
+    "supported_profiles": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "embedded",
+          "isolated",
+          "hardware_assured"
+        ]
+      }
+    },
+    "contract_status": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "contract_id",
+          "contract_version",
+          "status"
+        ],
+        "properties": {
+          "contract_id": {
+            "type": "string",
+            "pattern": "^MSC-[0-9]{3}$"
+          },
+          "contract_version": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "status": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNKNOWN",
+              "NOT_TESTED",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "evidence_ref": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "conformance_report": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "maintainer": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

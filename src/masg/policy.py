@@ -22,7 +22,7 @@ POLICY_KEYS = {"version", "default_effect", "rules"}
 RULE_KEYS = {"id", "principals", "actions", "targets", "scopes", "effect"}
 REQUEST_KEYS = {
     "principal", "action", "target", "scope", "request_id",
-    "issued_at", "expires_at", "delegation_chain",
+    "issued_at", "expires_at", "delegation_chain", "policy_version",
 }
 RFC3339 = re.compile(
     r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$"
@@ -105,10 +105,12 @@ def load_request(path: str | Path) -> dict[str, Any]:
     request = _load(path, max_bytes=MAX_REQUEST_BYTES)
     if not set(request).issubset(REQUEST_KEYS):
         raise PolicyError("request contains unknown fields")
-    required = REQUEST_KEYS - {"delegation_chain"}
+    required = REQUEST_KEYS - {"delegation_chain", "policy_version"}
     for key in required:
         if not _text(request.get(key), f"request.{key}"):
             raise PolicyError(f"request.{key} must be a non-empty string of at most 1024 characters")
+    if "policy_version" in request and not _text(request["policy_version"], "policy_version"):
+        raise PolicyError("request.policy_version must be a non-empty string")
     chain = request.get("delegation_chain", [])
     if (
         not isinstance(chain, list)
@@ -156,9 +158,14 @@ def evaluate(
             return deny("POLICY_INVALID", "Policy version is invalid.")
         if not isinstance(request, dict) or not set(request).issubset(REQUEST_KEYS):
             return deny("REQUEST_INVALID", "Request shape is invalid.")
-        required = REQUEST_KEYS - {"delegation_chain"}
+        required = REQUEST_KEYS - {"delegation_chain", "policy_version"}
         if any(not _text(request.get(key), key) for key in required):
             return deny("REQUEST_INVALID", "Required request fields are missing or invalid.")
+        if "policy_version" in request:
+            if not _text(request["policy_version"], "policy_version"):
+                return deny("REQUEST_INVALID", "Policy version reference is invalid.")
+            if request["policy_version"] != policy["version"]:
+                return deny("POLICY_VERSION_MISMATCH", "Request policy version does not match loaded policy.")
         issued = _time(request["issued_at"], "issued_at")
         expires = _time(request["expires_at"], "expires_at")
         if now is not None and (

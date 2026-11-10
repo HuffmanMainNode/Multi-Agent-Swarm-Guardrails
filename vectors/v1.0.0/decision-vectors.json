@@ -1,0 +1,238 @@
+[
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-ALLOW-001",
+    "category": "allow",
+    "description": "Exact matching ALLOW rule returns ALLOW.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440000",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:01:00Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "ALLOW",
+      "reason_code": "EXPLICIT_MATCH"
+    }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-DEFAULT-DENY-001",
+    "category": "default_deny",
+    "description": "No exact matching rule returns default DENY.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440001",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:01:00Z",
+      "principal": "agent:reader",
+      "action": "delete",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "NO_MATCH"
+    }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-DENY-PRECEDENCE-001",
+    "category": "explicit_deny_precedence",
+    "description": "An exact matching DENY dominates an exact matching ALLOW.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        },
+        {
+          "id": "deny-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "DENY"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440002",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:01:00Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "EXPLICIT_DENY"
+    }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-REVIEW-001",
+    "category": "review_required",
+    "description": "A matching review rule returns REVIEW_REQUIRED when no deny rule matches.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "review-export",
+          "principals": [
+            "agent:reporter"
+          ],
+          "actions": [
+            "export"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "external"
+          ],
+          "effect": "REVIEW_REQUIRED"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440003",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:01:00Z",
+      "principal": "agent:reporter",
+      "action": "export",
+      "target": "reports:weekly",
+      "scope": "external",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "REVIEW_REQUIRED",
+      "reason_code": "APPROVAL_REQUIRED"
+    }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
+    "category": "policy_integrity",
+    "description": "A request bound to a different policy version is denied before authorization.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440004",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:01:00Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "different-policy-version"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "POLICY_VERSION_MISMATCH"
+    }
+  }
+]

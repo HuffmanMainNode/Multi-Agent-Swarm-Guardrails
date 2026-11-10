@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:conformance-vector:1.0.0",
+  "title": "MASG Portable Conformance Vector",
+  "type": "object",
+  "required": [
+    "vector_version",
+    "vector_id",
+    "category",
+    "description",
+    "policy",
+    "request",
+    "expected"
+  ],
+  "properties": {
+    "vector_version": {
+      "const": "1.0.0"
+    },
+    "vector_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{2,127}$"
+    },
+    "category": {
+      "enum": [
+        "allow",
+        "default_deny",
+        "explicit_deny_precedence",
+        "review_required",
+        "invalid_request",
+        "expiry",
+        "replay",
+        "identity",
+        "policy_integrity",
+        "failure_closed"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "policy": {
+      "$ref": "urn:masg:schema:decision-policy:1.0.0"
+    },
+    "request": {
+      "$ref": "urn:masg:schema:decision-request:1.0.0"
+    },
+    "expected": {
+      "type": "object",
+      "required": [
+        "decision",
+        "reason_code"
+      ],
+      "properties": {
+        "decision": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "REVIEW_REQUIRED"
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]{1,96}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
