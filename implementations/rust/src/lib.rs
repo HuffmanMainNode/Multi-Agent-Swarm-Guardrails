@@ -7,6 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 const MAX_POLICY_BYTES: usize = 1_048_576;
 const MAX_REQUEST_BYTES: usize = 65_536;
+#[cfg(test)]
 const MAX_VECTOR_BYTES: usize = 1_048_576;
 const MAX_JSON_DEPTH: usize = 32;
 const MAX_RULES: usize = 1_000;
@@ -328,8 +329,8 @@ fn valid_text(value: &str, max_chars: usize) -> bool {
 fn exact_keys(object: &BTreeMap<String, JsonValue>, required: &[&str], optional: &[&str]) -> bool {
     required.iter().all(|key| object.contains_key(*key))
         && object.keys().all(|key| {
-            required.iter().any(|known| key.as_str() == *known)
-                || optional.iter().any(|known| key.as_str() == *known)
+            required.contains(&key.as_str())
+                || optional.contains(&key.as_str())
         })
 }
 
@@ -826,9 +827,9 @@ mod tests {
     fn excessive_nesting_fails_closed() {
         let policy = br#"{"version":"p1","default_effect":"DENY","rules":[]}"#;
         let mut request = b"{\"x\":".to_vec();
-        request.extend(std::iter::repeat(b'[').take(33));
+        request.extend(std::iter::repeat_n(b'[', 33));
         request.push(b'0');
-        request.extend(std::iter::repeat(b']').take(33));
+        request.extend(std::iter::repeat_n(b']', 33));
         request.push(b'}');
         assert_eq!(
             evaluate_json(policy, &request, fixed_now()).reason_code,
