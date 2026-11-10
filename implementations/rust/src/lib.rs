@@ -141,7 +141,9 @@ impl<'a> JsonParser<'a> {
                 }
                 b'\\' => {
                     self.position += 1;
-                    let escaped = self.peek().ok_or_else(|| "incomplete string escape".to_string())?;
+                    let escaped = self
+                        .peek()
+                        .ok_or_else(|| "incomplete string escape".to_string())?;
                     self.position += 1;
                     match escaped {
                         b'"' => output.push('"'),
@@ -165,7 +167,8 @@ impl<'a> JsonParser<'a> {
                                 if !(0xDC00..=0xDFFF).contains(&second) {
                                     return Err("invalid low surrogate".to_string());
                                 }
-                                0x10000 + (((first - 0xD800) as u32) << 10)
+                                0x10000
+                                    + (((first - 0xD800) as u32) << 10)
                                     + (second - 0xDC00) as u32
                             } else if (0xDC00..=0xDFFF).contains(&first) {
                                 return Err("unpaired low surrogate".to_string());
@@ -200,7 +203,9 @@ impl<'a> JsonParser<'a> {
     fn parse_hex4(&mut self) -> std::result::Result<u16, String> {
         let mut value = 0u16;
         for _ in 0..4 {
-            let byte = self.peek().ok_or_else(|| "incomplete Unicode escape".to_string())?;
+            let byte = self
+                .peek()
+                .ok_or_else(|| "incomplete Unicode escape".to_string())?;
             self.position += 1;
             let digit = match byte {
                 b'0'..=b'9' => (byte - b'0') as u16,
@@ -320,11 +325,7 @@ fn valid_text(value: &str, max_chars: usize) -> bool {
     !value.trim().is_empty() && value.chars().count() <= max_chars
 }
 
-fn exact_keys(
-    object: &BTreeMap<String, JsonValue>,
-    required: &[&str],
-    optional: &[&str],
-) -> bool {
+fn exact_keys(object: &BTreeMap<String, JsonValue>, required: &[&str], optional: &[&str]) -> bool {
     required.iter().all(|key| object.contains_key(*key))
         && object.keys().all(|key| {
             required.iter().any(|known| key.as_str() == *known)
@@ -338,7 +339,9 @@ fn parse_selectors(
     max_chars: usize,
 ) -> std::result::Result<Vec<String>, String> {
     let values = as_array(
-        object.get(field).ok_or_else(|| format!("missing {field}"))?,
+        object
+            .get(field)
+            .ok_or_else(|| format!("missing {field}"))?,
     )?;
     if values.is_empty() || values.len() > MAX_SELECTORS {
         return Err(format!("{field} selector count invalid"));
@@ -695,7 +698,10 @@ fn evaluate_values(
     let mut allow = false;
     let mut review = false;
     for rule in &policy.rules {
-        if rule.principals.iter().any(|value| value == &request.principal)
+        if rule
+            .principals
+            .iter()
+            .any(|value| value == &request.principal)
             && rule.actions.iter().any(|value| value == &request.action)
             && rule.targets.iter().any(|value| value == &request.target)
             && rule.scopes.iter().any(|value| value == &request.scope)
@@ -755,11 +761,7 @@ pub fn evaluate_json(
 }
 
 /// Alias for the primary evaluator.
-pub fn evaluate(
-    policy_json: &[u8],
-    request_json: &[u8],
-    now_unix_micros: i128,
-) -> DecisionResult {
+pub fn evaluate(policy_json: &[u8], request_json: &[u8], now_unix_micros: i128) -> DecisionResult {
     evaluate_json(policy_json, request_json, now_unix_micros)
 }
 
@@ -869,6 +871,9 @@ mod tests {
     fn optional_provenance_reference_is_accepted_but_not_authority() {
         let policy = br#"{"version":"p1","default_effect":"DENY","rules":[{"id":"allow","principals":["agent:reader"],"actions":["read"],"targets":["reports:weekly"],"scopes":["summary"],"effect":"ALLOW"}]}"#;
         let request = br#"{"protocol_version":"1.0.0","message_type":"authorization_request","request_id":"550e8400-e29b-41d4-a716-446655440000","issued_at":"2026-11-10T12:00:00Z","expires_at":"2026-11-10T12:01:00Z","principal":"agent:reader","action":"read","target":"reports:weekly","scope":"summary","policy_version":"p1","provenance_ref":"sha256:abc123"}"#;
-        assert_eq!(evaluate_json(policy, request, fixed_now()).decision, "ALLOW");
+        assert_eq!(
+            evaluate_json(policy, request, fixed_now()).decision,
+            "ALLOW"
+        );
     }
 }
