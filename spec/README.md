@@ -38,7 +38,7 @@ JSON Schema Draft 2020-12 is normative for structural validation. Implementation
 7. Request validity MUST be checked against a trusted, timezone-aware clock. The protocol does not itself provide trusted time.
 8. An ALLOW is a decision only. It does not prove that a protected operation was executed through an enforcement boundary.
 9. Implementations MUST preserve unknown security limitations and MUST NOT claim support for contracts or profiles they have not tested.
-10. Standard v1.0.0 reason codes include `EXPLICIT_MATCH`, `EXPLICIT_DENY`, `APPROVAL_REQUIRED`, `NO_MATCH`, and `POLICY_VERSION_MISMATCH`. Other invalidity/failure reason codes are implementation-specific unless a later version standardizes them.
+10. Standard v1.0.0 reason codes include `EXPLICIT_MATCH`, `EXPLICIT_DENY`, `APPROVAL_REQUIRED`, `NO_MATCH`, `POLICY_VERSION_MISMATCH`, `EXPIRED`, `NOT_YET_VALID`, and `INVALID_VALIDITY_WINDOW`. Other invalidity/failure reason codes are implementation-specific unless a later version standardizes them.
 11. Test and conformance outcomes are PASS, FAIL, UNKNOWN, NOT_TESTED, or NOT_APPLICABLE. Missing evidence is not PASS.
 
 ## Decision algorithm
