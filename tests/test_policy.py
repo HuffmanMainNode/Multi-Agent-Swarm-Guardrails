@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from masg.models import Decision
-from masg.policy import PolicyError, evaluate, load_policy, load_request
+from masg.policy import PolicyError, evaluate, evaluate_protocol_json, load_policy, load_request
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -98,6 +98,56 @@ class PolicyTests(unittest.TestCase):
             path.write_text('{"version":"one","default_effect":"DENY","rules":[],"x":NaN}', encoding="utf-8")
             with self.assertRaises(PolicyError):
                 load_policy(path)
+
+
+    def test_protocol_rejects_null_optional_provenance_reference(self):
+        policy = {
+            "version": "p1", "default_effect": "DENY",
+            "rules": [{
+                "id": "allow-read", "principals": ["agent:reader"],
+                "actions": ["read"], "targets": ["reports:weekly"],
+                "scopes": ["summary"], "effect": "ALLOW",
+            }],
+        }
+        request = {
+            "protocol_version": "1.0.0", "message_type": "authorization_request",
+            "request_id": "550e8400-e29b-41d4-a716-446655440000",
+            "issued_at": "2026-11-10T12:00:00Z", "expires_at": "2026-11-10T12:01:00Z",
+            "principal": "agent:reader", "action": "read", "target": "reports:weekly",
+            "scope": "summary", "policy_version": "p1", "provenance_ref": None,
+        }
+        result = evaluate_protocol_json(
+            json.dumps(policy).encode(), json.dumps(request).encode(), now=self.now
+        )
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+
+    def test_protocol_rejects_unpaired_surrogates_in_policy_and_request(self):
+        policy = {
+            "version": "p1", "default_effect": "DENY",
+            "rules": [{
+                "id": "allow-read", "principals": ["agent:\ud800"],
+                "actions": ["read"], "targets": ["reports:weekly"],
+                "scopes": ["summary"], "effect": "ALLOW",
+            }],
+        }
+        request = {
+            "protocol_version": "1.0.0", "message_type": "authorization_request",
+            "request_id": "550e8400-e29b-41d4-a716-446655440000",
+            "issued_at": "2026-11-10T12:00:00Z", "expires_at": "2026-11-10T12:01:00Z",
+            "principal": "agent:reader", "action": "read", "target": "reports:weekly",
+            "scope": "summary", "policy_version": "p1",
+        }
+        result = evaluate_protocol_json(
+            json.dumps(policy).encode(), json.dumps(request).encode(), now=self.now
+        )
+        self.assertEqual(result.reason_code, "POLICY_INVALID")
+
+        policy["rules"][0]["principals"] = ["agent:reader"]
+        request["principal"] = "agent:\ud800"
+        result = evaluate_protocol_json(
+            json.dumps(policy).encode(), json.dumps(request).encode(), now=self.now
+        )
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
 
 
 if __name__ == "__main__":
