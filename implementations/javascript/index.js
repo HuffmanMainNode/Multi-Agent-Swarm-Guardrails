@@ -201,6 +201,23 @@ function timestampMicros(value) {
   if (typeof value !== "string") return null;
   const match = RFC3339.exec(value);
   if (!match || value.startsWith("0000-") || match[3] === "-00:00") return null;
+
+  // Date.parse() may normalize impossible dates (for example, February 30)
+  // instead of rejecting them. Validate RFC 3339 calendar/time components
+  // explicitly so this evaluator agrees with strict parsers in other runtimes.
+  const [year, month, day, hour, minute, second] = [
+    Number(value.slice(0, 4)),
+    Number(value.slice(5, 7)),
+    Number(value.slice(8, 10)),
+    Number(value.slice(11, 13)),
+    Number(value.slice(14, 16)),
+    Number(value.slice(17, 19)),
+  ];
+  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return null;
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const monthDays = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (day < 1 || day > monthDays[month - 1]) return null;
+
   const milliseconds = Date.parse(match[1] + match[3]);
   if (!Number.isFinite(milliseconds)) return null;
   const fraction = BigInt((match[2] || "").padEnd(6, "0") || "0");
