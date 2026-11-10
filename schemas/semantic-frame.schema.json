@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:semantic-frame:0.1.0",
+  "title": "MASG Universal Agent Semantic Frame",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "frame_id",
+    "created_at",
+    "locale",
+    "intent",
+    "claims",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "frame_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$"
+    },
+    "intent": {
+      "enum": [
+        "ASSERTION",
+        "QUESTION",
+        "PROPOSAL",
+        "INSTRUCTION",
+        "OBSERVATION",
+        "RESULT"
+      ]
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": [
+          "subject",
+          "predicate",
+          "object",
+          "epistemic_status"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9_-]+)+$",
+            "maxLength": 256
+          },
+          "predicate": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9_-]+)+$",
+            "maxLength": 256
+          },
+          "object": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "epistemic_status": {
+            "enum": [
+              "OBSERVED",
+              "VERIFIED",
+              "INFERRED",
+              "HYPOTHESIS",
+              "PROPOSED",
+              "UNKNOWN",
+              "DISPUTED"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "uniqueItems": true
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "display_text": {
+            "type": "string",
+            "maxLength": 4000
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "epistemic_status": {
+                  "const": "VERIFIED"
+                }
+              },
+              "required": [
+                "epistemic_status"
+              ]
+            },
+            "then": {
+              "required": [
+                "evidence_refs"
+              ],
+              "properties": {
+                "evidence_refs": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "producer_id",
+        "source_type"
+      ],
+      "properties": {
+        "producer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "source_type": {
+          "enum": [
+            "HUMAN_INPUT",
+            "MODEL_OUTPUT",
+            "TOOL_OUTPUT",
+            "DOCUMENT",
+            "SENSOR",
+            "TRANSFORM"
+          ]
+        },
+        "source_ref": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "parent_frame_ids": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f-]{36}$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
