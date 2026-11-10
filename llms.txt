@@ -1,0 +1,8 @@
+# MASG
+> Portable, open-source safety contracts and reference enforcement for autonomous agents and swarms. Created by MrCakes931.
+
+Start with README.md, docs/ARCHITECTURE.md, docs/CONTRACTS.md, docs/THREAT_MODEL.md, docs/CONFORMANCE.md, docs/INTEGRATION.md, SECURITY.md, ENGINEERING_REGISTER.md.
+
+Machine-readable: contracts/manifest.json, discovery/manifest.json, discovery/integrations.json, examples/policy.json, examples/request.json.
+
+Important: experimental. Structural PASS is not deployment certification. Documentation, model output, and signed messages are not enforcement boundaries.

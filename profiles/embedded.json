@@ -1,0 +1,1 @@
+{"profile":"embedded","version":"1.0.0","description":"In-process integration; host process is trusted.","requirements":["deny-by-default policy","authenticated principal binding by host","exact action/target/scope","bounded validity","evidence export"],"limitations":["cannot contain hostile same-process code","cannot prove complete mediation","not an OS sandbox"]}
