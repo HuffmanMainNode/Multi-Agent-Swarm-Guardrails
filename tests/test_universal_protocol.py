@@ -250,6 +250,57 @@ class UniversalProtocolTests(unittest.TestCase):
         )
         validator.validate(response)
 
+    def test_uefp_participant_manifest_example_matches_schema(self):
+        schema = self.schemas["participant-manifest.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        manifest = load_json(ROOT / "examples/participant-manifest.example.json")
+        validator.validate(manifest)
+        self.assertTrue(manifest["consent"]["requires_explicit_exchange_acceptance"])
+        self.assertTrue(manifest["limitations"])
+
+    def test_uefp_participant_manifest_rejects_unsafe_or_ambiguous_shapes(self):
+        schema = self.schemas["participant-manifest.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        valid = load_json(ROOT / "examples/participant-manifest.example.json")
+        cases = []
+        missing_consent = json.loads(json.dumps(valid))
+        missing_consent.pop("consent")
+        cases.append(("missing consent", missing_consent))
+        implicit_consent = json.loads(json.dumps(valid))
+        implicit_consent["consent"]["requires_explicit_exchange_acceptance"] = False
+        cases.append(("implicit exchange acceptance", implicit_consent))
+        unknown_type = json.loads(json.dumps(valid))
+        unknown_type["participant_type"] = "AUTONOMOUS_AUTHORITY"
+        cases.append(("unknown participant type", unknown_type))
+        duplicate_versions = json.loads(json.dumps(valid))
+        duplicate_versions["protocol_versions"].append(duplicate_versions["protocol_versions"][0])
+        cases.append(("duplicate protocol version", duplicate_versions))
+        malformed_id = json.loads(json.dumps(valid))
+        malformed_id["participant_id"] = "../other-participant"
+        cases.append(("path-like participant id", malformed_id))
+        undeclared_property = json.loads(json.dumps(valid))
+        undeclared_property["verified"] = True
+        cases.append(("unsupported verification claim", undeclared_property))
+        for label, candidate in cases:
+            with self.subTest(case=label):
+                self.assertFalse(validator.is_valid(candidate))
+
+    def test_uefp_handshake_messages_match_schema_and_reject_unknown_types(self):
+        schema = self.schemas["uefp-handshake-message.schema.json"]
+        validator = Draft202012Validator(schema, registry=self.registry, format_checker=FormatChecker())
+        valid = {
+            "protocol_version": "0.1.0", "session_id": "session-2026-001",
+            "message_id": "message-001", "sender_id": "community.lab",
+            "recipient_id": "agent.example", "message_type": "INTRODUCE",
+            "payload": {"manifest": load_json(ROOT / "examples/participant-manifest.example.json")},
+        }
+        validator.validate(valid)
+        invalid = json.loads(json.dumps(valid))
+        invalid["message_type"] = "EXECUTE"
+        self.assertFalse(validator.is_valid(invalid))
+        invalid = json.loads(json.dumps(valid))
+        invalid["payload"]["manifest"]["consent"]["requires_explicit_exchange_acceptance"] = False
+        self.assertFalse(validator.is_valid(invalid))
 
 if __name__ == "__main__":
     unittest.main()
