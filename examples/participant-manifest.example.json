@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "participant_id": "example.community-lab",
+  "participant_type": "SOFTWARE",
+  "display_name": "Community Lab Example",
+  "description": "An illustrative local-first project sharing documented technical methods.",
+  "protocol_versions": ["0.1.0"],
+  "locales": ["en", "es"],
+  "message_formats": ["text/markdown", "application/json"],
+  "capabilities": [
+    {
+      "capability_id": "knowledge.exchange.documentation",
+      "description": "Can exchange public technical documentation and examples.",
+      "status": "DECLARED"
+    },
+    {
+      "capability_id": "protocol.validation.json",
+      "description": "Can validate JSON documents against locally available schemas.",
+      "status": "EXPERIMENTAL"
+    }
+  ],
+  "limitations": [
+    "This example does not represent an authenticated participant.",
+    "Declared capabilities have not been independently tested.",
+    "No remote execution or private-data exchange is offered."
+  ],
+  "consent": {
+    "default_data_sharing": "PUBLIC_ONLY",
+    "requires_explicit_exchange_acceptance": true
+  },
+  "documentation": [
+    "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails"
+  ],
+  "metadata": {
+    "deployment": "local-first",
+    "network_required": false
+  }
+}
