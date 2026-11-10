@@ -288,19 +288,49 @@ class UniversalProtocolTests(unittest.TestCase):
     def test_uefp_handshake_messages_match_schema_and_reject_unknown_types(self):
         schema = self.schemas["uefp-handshake-message.schema.json"]
         validator = Draft202012Validator(schema, registry=self.registry, format_checker=FormatChecker())
-        valid = {
-            "protocol_version": "0.1.0", "session_id": "session-2026-001",
-            "message_id": "message-001", "sender_id": "community.lab",
-            "recipient_id": "agent.example", "message_type": "INTRODUCE",
-            "payload": {"manifest": load_json(ROOT / "examples/participant-manifest.example.json")},
+        manifest = load_json(ROOT / "examples/participant-manifest.example.json")
+        common = {
+            "protocol_version": "0.1.0",
+            "session_id": "session-2026-001",
+            "message_id": "message-001",
+            "sender_id": "community.lab",
+            "recipient_id": "agent.example",
         }
-        validator.validate(valid)
-        invalid = json.loads(json.dumps(valid))
-        invalid["message_type"] = "EXECUTE"
+        valid_messages = [
+            {**common, "message_type": "INTRODUCE", "payload": {"manifest": manifest}},
+            {**common, "message_type": "RESPONSE", "payload": {"manifest": manifest}},
+            {**common, "message_type": "PROPOSE", "payload": {
+                "proposal_id": "proposal-1", "topic": "Compare local learning methods",
+                "data_scope": "Public documentation only", "format": "application/json",
+                "retention": "Do not retain beyond this exchange", "intended_use": "Community learning",
+                "license": "CC-BY-4.0", "provenance": "Contributor-authored public material"
+            }},
+            {**common, "message_type": "ACCEPT", "payload": {"proposal_id": "proposal-1"}},
+            {**common, "message_type": "DECLINE", "payload": {"proposal_id": "proposal-1"}},
+            {**common, "message_type": "EXCHANGE", "payload": {
+                "proposal_id": "proposal-1", "content_format": "text/plain", "content": "Example exchange"
+            }},
+            {**common, "message_type": "CLOSE", "payload": {"reason": "COMPLETED"}},
+        ]
+        for message in valid_messages:
+            with self.subTest(message_type=message["message_type"]):
+                validator.validate(message)
+        invalid = {**common, "message_type": "EXECUTE", "payload": {}}
         self.assertFalse(validator.is_valid(invalid))
-        invalid = json.loads(json.dumps(valid))
-        invalid["payload"]["manifest"]["consent"]["requires_explicit_exchange_acceptance"] = False
+        invalid = {**common, "message_type": "ACCEPT", "payload": {"proposal_id": "proposal-1", "approved": True}}
         self.assertFalse(validator.is_valid(invalid))
+        invalid = {**common, "message_type": "EXCHANGE", "payload": {
+            "proposal_id": "proposal-1", "content_format": "text/plain"
+        }}
+        self.assertFalse(validator.is_valid(invalid))
+        invalid = {**common, "message_type": "INTRODUCE", "payload": {
+            "manifest": {**manifest, "consent": {
+                "default_data_sharing": "PUBLIC_ONLY",
+                "requires_explicit_exchange_acceptance": False
+            }}
+        }}
+        self.assertFalse(validator.is_valid(invalid))
+
 
 if __name__ == "__main__":
     unittest.main()
