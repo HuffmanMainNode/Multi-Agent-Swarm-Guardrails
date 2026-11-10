@@ -13,8 +13,9 @@ Result: 28 unit tests passed on Python 3.11, 3.12, and 3.13, with structural/con
 
 ## Independent broker implementation
 
-PR #4: [Independent Linux execution broker](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/4).
+PR #4: [Independent Linux execution broker](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/4), merged as `1c0295204258a4a92315a9e97dba95a33e8202c4`.
 Tested head: `6885d489f8aa971c5d409c8de5753a539ef540e5`.
+Main-branch CI after merge: [42736182162](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42736182162), all three jobs passed with 46 tests each.
 
 Successful CI runs:
 - [42735881467](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42735881467)
