@@ -1,1 +1,146 @@
-938bb7dbc5ed72b26ae17c90a55cb9b882d6e973
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:extension-manifest:1.0.0",
+  "title": "MASG Namespaced Extension Manifest",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "extension_id",
+    "extension_version",
+    "name",
+    "extension_type",
+    "protocol_versions",
+    "status",
+    "security_critical",
+    "description",
+    "required_contracts",
+    "security_invariants",
+    "limitations"
+  ],
+  "properties": {
+    "manifest_version": {
+      "const": "1.0.0"
+    },
+    "extension_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+){2,}$",
+      "maxLength": 256
+    },
+    "extension_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "extension_type": {
+      "enum": [
+        "domain_profile",
+        "transport_adapter",
+        "identity_adapter",
+        "policy_adapter",
+        "enforcement_adapter",
+        "evidence_adapter",
+        "recovery_adapter"
+      ]
+    },
+    "protocol_versions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      }
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "experimental",
+        "stable",
+        "deprecated"
+      ]
+    },
+    "security_critical": {
+      "type": "boolean"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "required_contracts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^MSC-[0-9]{3}$"
+      }
+    },
+    "requires_extensions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+){2,}$"
+      }
+    },
+    "security_invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "schema_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "vector_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "documentation_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "maintainer": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "source_revision": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}
