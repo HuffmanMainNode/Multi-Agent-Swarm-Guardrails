@@ -218,3 +218,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# MASG local secrets, private material, and runtime evidence
+.env.*
+!.env.example
+*.p12
+*.pfx
+*.keystore
+secrets/
+private/
+*.sqlite
+*.sqlite3
+*.db
+audit/
+evidence/
+runtime/
+state/
