@@ -64,6 +64,7 @@ function validateLocalePack(pack, sourcePack) {
  * MACHINE_DRAFT is used only when allowMachineDrafts is true.
  */
 export function resolveMessage(sourcePack, localePack, messageId, options = {}) {
+  const allowMachineDrafts = record(options) && options.allowMachineDrafts === true;
   validateSourcePack(sourcePack);
   if (typeof messageId !== "string" || !MESSAGE_ID.test(messageId)) fail("invalid message identifier");
   if (!Object.hasOwn(sourcePack.messages, messageId)) throw new RangeError(`unknown message identifier: ${messageId}`);
@@ -80,7 +81,7 @@ export function resolveMessage(sourcePack, localePack, messageId, options = {}) 
   const translated = localePack.messages[messageId];
   if (!translated) return fallback();
   if (translated.status === "HUMAN_REVIEWED" ||
-      (translated.status === "MACHINE_DRAFT" && options.allowMachineDrafts === true)) {
+      (translated.status === "MACHINE_DRAFT" && allowMachineDrafts)) {
     return {
       text: translated.text,
       locale: localePack.locale,
