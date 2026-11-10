@@ -64,7 +64,8 @@ def _validate_locale_pack(pack: Mapping[str, Any], source_pack: Mapping[str, Any
         raise LocalizationError("invalid locale syntax")
     if locale.casefold() == str(source_pack["locale"]).casefold():
         raise LocalizationError("use the source pack for the source locale")
-    if pack.get("source_locale", "").casefold() != source_pack["locale"].casefold():
+    source_locale = pack.get("source_locale")
+    if not isinstance(source_locale, str) or source_locale.casefold() != source_pack["locale"].casefold():
         raise LocalizationError("locale pack source_locale does not match source pack")
     if pack.get("catalog_version") != source_pack["catalog_version"]:
         raise LocalizationError("locale pack catalog version does not match source pack")
@@ -77,7 +78,7 @@ def _validate_locale_pack(pack: Mapping[str, Any], source_pack: Mapping[str, Any
             raise LocalizationError(f"unknown or invalid locale message {message_id!r}")
         status = item.get("status")
         text = item.get("text")
-        if status not in _STATUSES - {"SOURCE"} or not isinstance(text, str):
+        if not isinstance(status, str) or status not in _STATUSES - {"SOURCE"} or not isinstance(text, str):
             raise LocalizationError(f"invalid translation status or text for {message_id!r}")
         if status == "UNTRANSLATED" and text:
             raise LocalizationError(f"untranslated message {message_id!r} must have empty text")
