@@ -15,6 +15,11 @@ class PolicyTests(unittest.TestCase):
  def test_review_not_allow(self):
   r={**self.request,"action":"export","scope":"export:external"}
   self.assertEqual(evaluate(self.policy,r,now=self.now).decision,Decision.REVIEW_REQUIRED)
+ def test_explicit_deny_overrides_allow_independent_of_order(self):
+  allow=self.policy["rules"][0]
+  deny={**allow,"id":"deny-same-action","effect":"DENY"}
+  for rules in ([allow,deny],[deny,allow]):
+   self.assertEqual(evaluate({**self.policy,"rules":rules},self.request,now=self.now).decision,Decision.DENY)
  def test_expired_denies(self):
   r={**self.request,"expires_at":"2026-11-09T11:00:00Z"}
   self.assertEqual(evaluate(self.policy,r,now=self.now).reason_code,"EXPIRED")

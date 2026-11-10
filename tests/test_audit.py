@@ -15,4 +15,9 @@ class AuditTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d)/"ledger.jsonl"; p.write_text("\n")
    self.assertFalse(verify_ledger(p)["valid"])
+ def test_unhashed_extra_field_fails(self):
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d)/"ledger.jsonl"; record=append_event(p,{"type":"test"})
+   record["unhashed_metadata"]="unexpected"; p.write_text(json.dumps(record)+"\n")
+   self.assertFalse(verify_ledger(p)["valid"])
 if __name__=="__main__": unittest.main()

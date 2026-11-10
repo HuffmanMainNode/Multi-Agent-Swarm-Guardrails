@@ -81,19 +81,25 @@ def evaluate(policy: dict[str, Any], request: dict[str, Any], *, now: datetime |
             return deny("DELEGATION_INVALID", "Delegation chain malformed.")
         if len(chain) != len(set(chain)) or request["principal"] in chain:
             return deny("DELEGATION_CYCLE", "Delegation chain contains a cycle.")
+        matches = []
         for rule in policy["rules"]:
-            if not isinstance(rule, dict) or any(not isinstance(rule.get(k), list) for k in ("principals","actions","targets","scopes")):
+            if not isinstance(rule, dict):
                 return deny("POLICY_INVALID", "Policy rule malformed.")
+            fields = ("principals", "actions", "targets", "scopes")
+            if any(not isinstance(rule.get(k), list) or not all(isinstance(x, str) and x for x in rule[k]) for k in fields):
+                return deny("POLICY_INVALID", "Policy rule malformed.")
+            if rule.get("effect") not in {"ALLOW", "DENY", "REVIEW_REQUIRED"}:
+                return deny("POLICY_INVALID", "Policy contains unknown effect.")
             if (request["principal"] in rule["principals"] and request["action"] in rule["actions"]
                 and request["target"] in rule["targets"] and request["scope"] in rule["scopes"]):
-                effect = rule.get("effect")
-                if effect == "ALLOW":
-                    return Evaluation(Decision.ALLOW,"EXPLICIT_MATCH","Exact explicit rule matched.",version)
-                if effect == "REVIEW_REQUIRED":
-                    return Evaluation(Decision.REVIEW_REQUIRED,"APPROVAL_REQUIRED","External approval required.",version)
-                if effect == "DENY":
-                    return deny("EXPLICIT_DENY","Explicit rule denies request.")
-                return deny("POLICY_INVALID","Matched rule has unknown effect.")
+                matches.append(rule["effect"])
+        # Explicit deny dominates regardless of file ordering.
+        if "DENY" in matches:
+            return deny("EXPLICIT_DENY", "At least one matching rule explicitly denies this request.")
+        if "REVIEW_REQUIRED" in matches:
+            return Evaluation(Decision.REVIEW_REQUIRED,"APPROVAL_REQUIRED","A matching rule requires external approval.",version)
+        if "ALLOW" in matches:
+            return Evaluation(Decision.ALLOW,"EXPLICIT_MATCH","An explicit rule authorizes this exact request.",version)
         return deny("NO_MATCH","No explicit rule authorizes this exact request.")
     except (PolicyError, TypeError, ValueError, KeyError):
         return deny("EVALUATION_ERROR","Invalid input; request denied.")

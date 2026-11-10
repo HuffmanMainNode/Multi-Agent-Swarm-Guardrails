@@ -1,4 +1,4 @@
-"""Local JSONL SHA-256 chain; not a signature or immutable remote log."""
+"""Single-writer local JSONL hash chain; not a signature or immutable remote log."""
 import hashlib
 import json
 from pathlib import Path
@@ -28,9 +28,12 @@ def verify_ledger(path: str | Path) -> dict[str,Any]:
                 if not line.strip(): return {"valid":False,"events":count,"last_hash":previous,"error":f"blank line {line_no}"}
                 try: record=json.loads(line)
                 except json.JSONDecodeError: return {"valid":False,"events":count,"last_hash":previous,"error":f"invalid JSON line {line_no}"}
-                if not isinstance(record,dict) or record.get("sequence")!=count+1 or record.get("previous_hash")!=previous:
+                if not isinstance(record,dict) or set(record)!={"sequence","previous_hash","event","hash"}:
+                    return {"valid":False,"events":count,"last_hash":previous,"error":f"unexpected record shape line {line_no}"}
+                if record.get("sequence")!=count+1 or record.get("previous_hash")!=previous:
                     return {"valid":False,"events":count,"last_hash":previous,"error":f"sequence/link mismatch line {line_no}"}
-                if not isinstance(record.get("event"),dict): return {"valid":False,"events":count,"last_hash":previous,"error":f"invalid event line {line_no}"}
+                if not isinstance(record.get("event"),dict):
+                    return {"valid":False,"events":count,"last_hash":previous,"error":f"invalid event line {line_no}"}
                 body={"sequence":record["sequence"],"previous_hash":record["previous_hash"],"event":record["event"]}
                 digest=hashlib.sha256(_canonical(body)).hexdigest()
                 if record.get("hash")!=digest: return {"valid":False,"events":count,"last_hash":previous,"error":f"hash mismatch line {line_no}"}
