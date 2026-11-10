@@ -11,7 +11,14 @@ from pathlib import Path
 try:
     from securesystemslib.signer import CryptoSigner
     from tuf.api.metadata import (
-        TOP_LEVEL_ROLE_NAMES, MetaFile, Metadata, Root, Snapshot, TargetFile, Targets, Timestamp,
+        TOP_LEVEL_ROLE_NAMES,
+        Metadata,
+        MetaFile,
+        Root,
+        Snapshot,
+        TargetFile,
+        Targets,
+        Timestamp,
     )
     from tuf.api.serialization.json import JSONSerializer
     TUF_TESTS_AVAILABLE = True
