@@ -5,10 +5,8 @@ Authorizes only audit.append to the broker-owned ledger. Not a general command r
 """
 from __future__ import annotations
 
-from datetime import datetime
 import json
 import os
-from pathlib import Path
 import socket
 import socketserver
 import stat
@@ -16,6 +14,8 @@ import struct
 import sys
 import threading
 import uuid
+from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 from .audit import append_event
@@ -57,7 +57,7 @@ def _decode(raw: bytes) -> dict[str, Any]:
     except RecursionError as exc:
         raise ValueError("JSON nesting exceeds parser safety limit") from exc
     if not isinstance(value, dict):
-        raise ValueError("request must be a JSON object")
+        raise TypeError("request must be a JSON object")
     pending = [(value, 1)]
     while pending:
         item, depth = pending.pop()
@@ -100,7 +100,10 @@ def _load_principals(path: str | Path) -> dict[int, str]:
     raw = target.read_bytes()
     if len(raw) > 65_536:
         raise BrokerError("principal map exceeds size limit")
-    data = _decode(raw)
+    try:
+        data = _decode(raw)
+    except (TypeError, ValueError, UnicodeDecodeError) as exc:
+        raise BrokerError("principal map must be a valid JSON object") from exc
     result: dict[int, str] = {}
     for key, principal in data.items():
         if not isinstance(key, str) or not key.isascii() or not key.isdecimal():
@@ -177,7 +180,7 @@ class ExecutionBroker:
     def process(self, raw: bytes, peer_uid: int) -> dict[str, Any]:
         try:
             request = _decode(raw)
-        except (ValueError, UnicodeDecodeError, json.JSONDecodeError):
+        except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
             return {"decision": "DENY", "reason_code": "REQUEST_INVALID"}
         if set(request) != {"request_id", "issued_at", "expires_at", "event"}:
             return {"decision": "DENY", "reason_code": "REQUEST_SHAPE_INVALID"}
@@ -222,8 +225,8 @@ class ExecutionBroker:
                 "policy_version": result.policy_version,
             }
         try:
-            issued = datetime.fromisoformat(issued_at.replace("Z", "+00:00"))
-            expires = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            issued = datetime.fromisoformat(issued_at)
+            expires = datetime.fromisoformat(expires_at)
             if (expires - issued).total_seconds() > MAX_REQUEST_TTL_SECONDS:
                 return {"decision": "DENY", "reason_code": "REQUEST_TTL_TOO_LONG"}
             if issued.tzinfo is None or expires.tzinfo is None:

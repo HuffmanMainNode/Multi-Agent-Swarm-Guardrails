@@ -5,7 +5,9 @@ import sys
 from pathlib import Path
 
 from .audit import verify_ledger
-from .broker import BrokerError, serve as serve_broker, submit as submit_broker
+from .broker import BrokerError
+from .broker import serve as serve_broker
+from .broker import submit as submit_broker
 from .conformance import verify_repository
 from .policy import evaluate_files
 

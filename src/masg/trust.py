@@ -5,8 +5,8 @@ to python-tuf. MASG does not implement its own signature scheme or TUF metadata 
 """
 from __future__ import annotations
 
-from pathlib import Path, PurePosixPath
 import stat
+from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 
 

@@ -5,7 +5,7 @@ import socket
 import sys
 import tempfile
 import unittest
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 try:
@@ -34,7 +34,7 @@ class TUFPolicyTests(unittest.TestCase):
         (self.repository / "targets").mkdir()
         self.cache = self.root / "cache"
         self.cache.mkdir(mode=0o700)
-        self.expiry = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(days=2)
+        self.expiry = datetime.now(UTC).replace(microsecond=0) + timedelta(days=2)
         self.signers = {}
         self.root_metadata = Metadata(Root(expires=self.expiry))
         for role in TOP_LEVEL_ROLE_NAMES:
@@ -123,7 +123,7 @@ class TUFPolicyTests(unittest.TestCase):
             self.fetch()
 
     def test_expired_metadata_is_rejected(self):
-        expired = datetime.now(timezone.utc) - timedelta(days=2)
+        expired = datetime.now(UTC) - timedelta(days=2)
         self.publish(b'{"version":"expired","default_effect":"DENY","rules":[]}', 3, expiry=expired)
         with self.assertRaises(PolicyTrustError):
             self.fetch()
