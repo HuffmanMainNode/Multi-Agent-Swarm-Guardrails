@@ -16,7 +16,7 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 - Local JSONL evidence ledger with a SHA-256 hash chain and verifier.
 - Experimental separate-process Linux broker for one fixed protected operation: `audit.append`.
 - Broker derives caller UID from Linux SO_PEERCRED, maps it to a configured principal, rejects caller-supplied identity/operation, requires canonical UUIDv4 request IDs, consumes them before execution, and writes to its own bounded evidence ledger.
-- Optional python-tuf policy verification from an operator-managed local mirror, with out-of-band bootstrap root and persistent metadata cache.
+- Optional python-tuf 7.x policy verification from an operator-managed local mirror, with out-of-band bootstrap root and persistent metadata cache. CI tests signed-target tampering, metadata tampering, expiry, rollback, and fail-closed broker startup.
 - Structural repository conformance CLI, examples, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
 
 ## Quick start
