@@ -11,6 +11,8 @@
 - Add broker CLI serve/append commands, examples, ADR, deployment guidance, and adversarial tests.
 - Record broker test results and residual risks; 46 tests passed on each of Python 3.11, 3.12, and 3.13.
 
+- Merge the independent Linux broker in PR #4; main-branch CI passed all 46 tests on Python 3.11, 3.12, and 3.13.
+
 ## 0.1.0 foundation
 - Ten versioned mandatory safety contract definitions.
 - Local Python deny-by-default policy evaluator.

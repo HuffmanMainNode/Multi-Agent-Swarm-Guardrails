@@ -16,7 +16,7 @@ Initial foundation merged in PR #1. Input/replay hardening merged in PR #2. Adve
 PR #4: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/4
 Branch: security/independent-linux-execution-broker
 Tested head: 6885d489f8aa971c5d409c8de5753a539ef540e5
-Status at checkpoint: CI passed; PR awaits final merge.
+Status: merged in PR #4. Merge commit: 1c0295204258a4a92315a9e97dba95a33e8202c4. Main-branch CI run 42736182162 passed.
 
 Adds an experimental Linux-only separate-process broker for exactly one fixed operation: audit.append. It derives caller UID using SO_PEERCRED, maps UID to an operator-configured principal, does not accept client-supplied identity or operation fields, applies deny-by-default policy, limits request TTL to five minutes, requires canonical UUIDv4 request IDs, consumes a request ID in SQLite, and appends bounded event data to a broker-owned ledger.
 
@@ -37,4 +37,4 @@ All Python 3.11, 3.12, and 3.13 jobs passed. Each ran 46 unit tests, package ins
 Linux only. Processes sharing a UID share an identity. This is local OS identity, not cryptographic workload identity. Policy and UID map require operator-controlled files/directories and are loaded at startup. Local replay DB can be rolled back. Only audit append is exposed. No arbitrary tool executor, shell, filesystem proxy, network proxy, credential revocation, signed policy, anti-rollback, general sandbox, complete mediation proof, fuzz campaign, penetration test, or independent review.
 
 ## Next
-After PR #4 merge, prioritize cryptographic workload identity/revocation and signed policy provenance/anti-rollback. Do not expand broker capabilities until each new operation has a fixed schema, explicit authority mapping, bounded inputs/resources, side-effect evidence, and bypass tests.
+Prioritize cryptographic workload identity/revocation and signed policy provenance/anti-rollback. Do not expand broker capabilities until each new operation has a fixed schema, explicit authority mapping, bounded inputs/resources, side-effect evidence, and bypass tests.
