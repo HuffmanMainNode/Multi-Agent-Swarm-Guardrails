@@ -103,3 +103,5 @@ The shared negative corpus is now eighteen fixtures: ten raw JSON/parser failure
 
 | Locale template generation | Python and JavaScript/TypeScript implemented | Generates a complete UNTRANSLATED message skeleton for a locale; no translation service, no automatic quality claim, and BCP 47 registry validation remains an adapter responsibility. |
 | Controlled concept glossary | Schema-validated | Stable IDs, contextual definitions, domain labels, and unique-ID tests; intentionally not an exhaustive natural-language dictionary. |
+
+| Universal entry and learning pathways | Initial documentation milestone proposed in PR | No-install first lesson, progressive learning paths, plain-language glossary, safe AI collaboration guide, and non-code contribution routes. Documentation does not certify competence; reviewed translations and interactive sandbox remain future work. |
