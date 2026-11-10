@@ -29,11 +29,29 @@
     },
     "issued_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "maxLength": 32,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-](?:0\\d|1\\d|2[0-3]):[0-5]\\d)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "-00:00$"
+          }
+        }
+      ]
     },
     "expires_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "maxLength": 32,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?(?:Z|[+-](?:0\\d|1\\d|2[0-3]):[0-5]\\d)$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "-00:00$"
+          }
+        }
+      ]
     },
     "principal": {
       "type": "string",

@@ -2,7 +2,9 @@ package masg
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
+	"strings"
 	"testing"
 	"time"
 )
@@ -31,7 +33,7 @@ func TestPortableV100Vectors(t *testing.T) {
 		t.Fatal(err)
 	}
 	var vectors []vector
-	if err := decodeUniqueJSON(raw, &vectors); err != nil {
+	if err := decodeUniqueJSON(raw, &vectors, maxVectorJSONBytes); err != nil {
 		t.Fatalf("decode shared vectors: %v", err)
 	}
 	if len(vectors) < 8 {
@@ -100,7 +102,7 @@ func TestPolicyMustDefaultToDeny(t *testing.T) {
 }
 
 func TestExpiredRequestDenied(t *testing.T) {
-	policy := Policy{Version: "p1", DefaultEffect: "DENY"}
+	policy := Policy{Version: "p1", DefaultEffect: "DENY", Rules: []Rule{}}
 	request := Request{
 		ProtocolVersion: ProtocolVersion, MessageType: "authorization_request",
 		RequestID: "550e8400-e29b-41d4-a716-446655440000",
@@ -111,5 +113,97 @@ func TestExpiredRequestDenied(t *testing.T) {
 	got := Evaluate(policy, request, fixedClock())
 	if got.Decision != "DENY" || got.ReasonCode != "EXPIRED" {
 		t.Fatalf("expired request did not fail closed: %+v", got)
+	}
+}
+
+func TestTimestampPrecisionMatchesProtocol(t *testing.T) {
+	policy := Policy{
+		Version: "p1", DefaultEffect: "DENY",
+		Rules: []Rule{{
+			ID: "allow-read", Principals: []string{"agent:reader"},
+			Actions: []string{"read"}, Targets: []string{"reports:weekly"},
+			Scopes: []string{"summary"}, Effect: "ALLOW",
+		}},
+	}
+	request := Request{
+		ProtocolVersion: ProtocolVersion, MessageType: "authorization_request",
+		RequestID: "550e8400-e29b-41d4-a716-446655440008",
+		IssuedAt: "2026-11-10T12:00:00.123456Z",
+		ExpiresAt: "2026-11-10T12:01:00.123456Z",
+		Principal: "agent:reader", Action: "read", Target: "reports:weekly",
+		Scope: "summary", PolicyVersion: "p1",
+	}
+	if got := Evaluate(policy, request, fixedClock()); got.Decision != "ALLOW" {
+		t.Fatalf("six fractional digits should be accepted: %+v", got)
+	}
+	request.IssuedAt = "2026-11-10T12:00:00.1234567Z"
+	if got := Evaluate(policy, request, fixedClock()); got.ReasonCode != "REQUEST_INVALID" {
+		t.Fatalf("seven fractional digits must be rejected: %+v", got)
+	}
+	request.IssuedAt = "2026-11-10T12:00:00-00:00"
+	if got := Evaluate(policy, request, fixedClock()); got.ReasonCode != "REQUEST_INVALID" {
+		t.Fatalf("unknown local offset must be rejected: %+v", got)
+	}
+}
+
+func TestUnicodeLimitsCountCodePoints(t *testing.T) {
+	if !validText(strings.Repeat("é", 1024), 1024) {
+		t.Fatal("1024 Unicode code points should fit the principal limit")
+	}
+	if validText(strings.Repeat("é", 1025), 1024) {
+		t.Fatal("1025 Unicode code points must exceed the principal limit")
+	}
+}
+
+func TestPolicyLimitsMatchSchema(t *testing.T) {
+	base := Policy{
+		Version: "p1", DefaultEffect: "DENY",
+		Rules: []Rule{{
+			ID: "rule-1", Principals: []string{"agent:reader"},
+			Actions: []string{"read"}, Targets: []string{"reports:weekly"},
+			Scopes: []string{"summary"}, Effect: "ALLOW",
+		}},
+	}
+	if err := validatePolicy(base); err != nil {
+		t.Fatalf("valid schema policy rejected: %v", err)
+	}
+	tooLongAction := base
+	tooLongAction.Rules = append([]Rule(nil), base.Rules...)
+	tooLongAction.Rules[0].Actions = []string{strings.Repeat("x", 257)}
+	if err := validatePolicy(tooLongAction); err == nil {
+		t.Fatal("action exceeding 256 code points must be rejected")
+	}
+	tooManySelectors := base
+	tooManySelectors.Rules = append([]Rule(nil), base.Rules...)
+	tooManySelectors.Rules[0].Principals = make([]string, 129)
+	for i := range tooManySelectors.Rules[0].Principals {
+		tooManySelectors.Rules[0].Principals[i] = fmt.Sprintf("agent:%d", i)
+	}
+	if err := validatePolicy(tooManySelectors); err == nil {
+		t.Fatal("more than 128 selectors must be rejected")
+	}
+	if err := validatePolicy(Policy{Version: "p1", DefaultEffect: "DENY"}); err == nil {
+		t.Fatal("missing rules array must be rejected")
+	}
+}
+
+func TestExcessiveJSONNestingFailsClosed(t *testing.T) {
+	policy := []byte(`{"version":"p1","default_effect":"DENY","rules":[]}`)
+	request := []byte(`{"x":` + strings.Repeat("[", 33) + "0" + strings.Repeat("]", 33) + "}")
+	got := EvaluateJSON(policy, request, fixedClock())
+	if got.Decision != "DENY" || got.ReasonCode != "REQUEST_INVALID" {
+		t.Fatalf("excessive nesting did not fail closed: %+v", got)
+	}
+}
+
+func TestJSONDepthBoundary(t *testing.T) {
+	var value any
+	atLimit := []byte(strings.Repeat("[", 32) + "0" + strings.Repeat("]", 32))
+	if err := decodeUniqueJSON(atLimit, &value, maxVectorJSONBytes); err != nil {
+		t.Fatalf("32 container levels should be accepted: %v", err)
+	}
+	overLimit := []byte(strings.Repeat("[", 33) + "0" + strings.Repeat("]", 33))
+	if err := decodeUniqueJSON(overLimit, &value, maxVectorJSONBytes); err == nil {
+		t.Fatal("33 container levels must be rejected")
 	}
 }

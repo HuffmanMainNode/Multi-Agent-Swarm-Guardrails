@@ -1,6 +1,16 @@
 # Changelog
 
 ## Unreleased
+- Record passing cross-language protocol parity CI for complete Python and Go request envelopes, strict raw JSON parsing, schema-aligned limits, Unicode code-point handling, timestamp rules and JSON depth boundary tests.
+- Add a strict Python `evaluate_protocol_json` entry point mirroring Go raw-JSON parsing, including duplicate-key, invalid UTF-8, non-standard constant, nesting-depth and byte-limit rejection.
+- Align Python and Go policy constraints with the normative schema: required rule IDs, 1,000-rule cap, 128-entry selector cap, field-specific string limits and Unicode code-point counting.
+- Add a Python full-envelope protocol evaluator so shared vectors exercise the same v1.0.0 request envelope as Go rather than a stripped internal request.
+- Standardize RFC 3339 timestamp precision at six fractional digits and reject unknown local offset `-00:00`; bound policy/request JSON input sizes consistently.
+- Add cross-language regression tests for full-envelope requirements, provenance references, Unicode boundaries and timestamp edge cases.
+- Align Python and Go policy constraints with the normative schema: required rule IDs, 1,000-rule cap, 128-entry selector cap, field-specific string limits and Unicode code-point counting.
+- Add a Python full-envelope protocol evaluator so shared vectors exercise the same v1.0.0 request envelope as Go rather than a stripped internal request.
+- Standardize RFC 3339 timestamp precision at six fractional digits and reject unknown local offset `-00:00`; bound policy/request JSON input sizes consistently.
+- Add cross-language regression tests for full-envelope requirements, provenance references, Unicode boundaries and timestamp edge cases.
 - Define a namespaced extension package model so independent communities can adapt MASG to domains, transports, identity providers, policy engines, enforcement, evidence, and recovery without silently changing core semantics.
 - Add an extension manifest schema and generic tool-action mapping example, explicitly marked as documentation-only and not a working adapter.
 - Add an independent Go reference evaluator using only the Go standard library; it consumes the shared v1.0.0 decision vectors without a Python dependency and publishes an explicit embedded-only limitation/conformance manifest.

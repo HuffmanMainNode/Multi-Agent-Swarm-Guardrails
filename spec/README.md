@@ -25,7 +25,7 @@ It does not standardize an execution broker transport, identity provider, crypto
 - `../vectors/v1.0.0/`
 - `../docs/EXTENSION_MODEL.md`
 
-JSON Schema Draft 2020-12 is normative for structural validation. Implementations MUST reject duplicate JSON object keys, non-finite numeric constants, unknown fields in protocol envelopes, invalid UTF-8, and values exceeding declared limits. A schema-valid document is not necessarily authorized or safe.
+JSON Schema Draft 2020-12 is normative for structural validation. Implementations MUST reject duplicate JSON object keys, non-finite numeric constants, unknown fields in protocol envelopes, invalid UTF-8, and values exceeding declared limits. Timestamp strings use RFC 3339 with an explicit known offset, at most six fractional-second digits, and MUST NOT use the unknown-local-offset marker `-00:00`. A schema-valid document is not necessarily authorized or safe.
 
 ## Protocol invariants
 

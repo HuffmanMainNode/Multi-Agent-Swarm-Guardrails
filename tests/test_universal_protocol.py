@@ -8,7 +8,7 @@ import unittest
 from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
-from masg.policy import evaluate
+from masg.policy import PolicyError, _check_json_depth, evaluate, evaluate_protocol, evaluate_protocol_json
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
@@ -52,17 +52,71 @@ class UniversalProtocolTests(unittest.TestCase):
         fixed_now = datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc)
         for vector in self.vectors:
             request = vector["request"]
-            internal_request = {
-                key: request[key]
-                for key in (
-                    "principal", "action", "target", "scope",
-                    "request_id", "issued_at", "expires_at", "policy_version",
-                )
-            }
-            result = evaluate(vector["policy"], internal_request, now=fixed_now)
+            result = evaluate_protocol(vector["policy"], request, now=fixed_now)
             with self.subTest(vector=vector["vector_id"]):
                 self.assertEqual(result.decision.value, vector["expected"]["decision"])
                 self.assertEqual(result.reason_code, vector["expected"]["reason_code"])
+
+    def test_json_depth_boundary_is_exactly_32_containers(self):
+        _check_json_depth(b"[" * 32 + b"0" + b"]" * 32)
+        with self.assertRaises(PolicyError):
+            _check_json_depth(b"[" * 33 + b"0" + b"]" * 33)
+
+    def test_strict_json_protocol_entrypoint_accepts_valid_envelope(self):
+        vector = self.vectors[0]
+        result = evaluate_protocol_json(
+            json.dumps(vector["policy"]).encode("utf-8"),
+            json.dumps(vector["request"]).encode("utf-8"),
+            now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc),
+        )
+        self.assertEqual(result.decision.value, "ALLOW")
+
+    def test_strict_json_protocol_entrypoint_rejects_duplicate_keys(self):
+        policy_json = b'{"version":"p1","default_effect":"DENY","rules":[]}'
+        request_json = b'{"protocol_version":"1.0.0","protocol_version":"1.0.0"}'
+        result = evaluate_protocol_json(
+            policy_json, request_json,
+            now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc),
+        )
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+
+    def test_strict_json_protocol_entrypoint_rejects_depth_utf8_and_size(self):
+        policy_json = b'{"version":"p1","default_effect":"DENY","rules":[]}'
+        now = datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc)
+        nested = b'{"x":' + (b"[" * 33) + b"0" + (b"]" * 33) + b"}"
+        self.assertEqual(evaluate_protocol_json(policy_json, nested, now=now).reason_code, "REQUEST_INVALID")
+        self.assertEqual(evaluate_protocol_json(policy_json, b"\\xff", now=now).reason_code, "REQUEST_INVALID")
+        self.assertEqual(evaluate_protocol_json(policy_json, b" " * 65537, now=now).reason_code, "REQUEST_INVALID")
+
+    def test_protocol_evaluator_requires_complete_envelope(self):
+        request = dict(self.vectors[0]["request"])
+        request.pop("policy_version")
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+
+    def test_protocol_evaluator_accepts_non_authoritative_provenance_reference(self):
+        request = {**self.vectors[0]["request"], "provenance_ref": "sha256:abc123"}
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.decision.value, "ALLOW")
+
+    def test_schema_rejects_unknown_offset_and_excess_precision(self):
+        schema = self.schemas["decision-request.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        valid = dict(self.vectors[0]["request"])
+        valid["issued_at"] = "2026-11-10T12:00:00.123456Z"
+        self.assertTrue(validator.is_valid(valid))
+        valid["issued_at"] = "2026-11-10T12:00:00.1234567Z"
+        self.assertFalse(validator.is_valid(valid))
+        valid["issued_at"] = "2026-11-10T12:00:00-00:00"
+        self.assertFalse(validator.is_valid(valid))
+
+    def test_protocol_timestamp_precision_is_bounded(self):
+        request = {**self.vectors[0]["request"], "issued_at": "2026-11-10T12:00:00.1234567Z"}
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
+        request["issued_at"] = "2026-11-10T12:00:00-00:00"
+        result = evaluate_protocol(self.vectors[0]["policy"], request, now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc))
+        self.assertEqual(result.reason_code, "REQUEST_INVALID")
 
     def test_protocol_envelopes_reject_unknown_fields(self):
         schema = self.schemas["decision-request.schema.json"]

@@ -20,6 +20,8 @@ No language SDK is the source of truth. The normative source is `spec/`, `schema
 
 A Python package cannot enforce a Rust process's system calls merely by being imported. An embedded library cannot protect against a hostile host process that controls the same address space. A Linux SO_PEERCRED broker is not portable to Windows or browser runtimes. Hardware-backed claims require hardware-specific attestation and independent verification.
 
+Protocol v1.0.0 also fixes cross-language input limits: policy documents are bounded to 1 MiB, request envelopes to 64 KiB, policies to 1,000 rules, selector arrays to 128 entries, and selector text lengths follow the field limits in the normative JSON Schema. String limits count Unicode code points, not UTF-8 bytes. Timestamps permit zero to six fractional-second digits and require a known explicit offset; `-00:00` is rejected.
+
 Implementations MUST declare:
 - languages, runtimes, operating systems and transport adapters;
 - supported protocol and contract versions;
@@ -49,7 +51,7 @@ Profiles are not marketing tiers. A deployment may be isolated for one path and 
 7. Publish an implementation manifest and conformance report, including limitations.
 8. Integrate only the capabilities whose evidence is adequate for the deployment threat model.
 
-An implementation may replace the Python reference completely. It does not need to call Python, run MASG's package, or depend on a MASG-operated service.
+An implementation may replace the Python reference completely. It does not need to call Python, run MASG's package, or depend on a MASG-operated service. Python's `evaluate_protocol` accepts complete parsed envelopes; `evaluate_protocol_json` is the strict byte-oriented entry point for untrusted JSON. Go's `EvaluateJSON` is its independent equivalent. Both are tested against the same eight decision/time vectors.
 
 ## Compatibility rule
 
