@@ -10,7 +10,7 @@ This document defines an additive architecture. It does not change MASG protocol
 
 ### 1. Human-language localization
 
-Human-facing labels, guides, errors, and learning material may be localized into any language with a BCP 47 language tag.
+Human-facing labels, guides, errors, and learning material may be localized into any language with a BCP 47 language tag. The current JSON Schema checks a conservative syntax pattern only; implementations must use a standards-aware BCP 47 parser when registered-subtag validation or canonicalization is required.
 
 - English is the initial authoritative source locale.
 - Translation packs are optional, portable files that can be cloned or installed locally.
