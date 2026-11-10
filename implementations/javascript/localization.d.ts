@@ -37,3 +37,9 @@ export declare function resolveMessage(
   messageId: string,
   options?: { allowMachineDrafts?: boolean },
 ): ResolvedMessage;
+
+export declare function createTranslationTemplate(
+  sourcePack: TranslationPack,
+  locale: string,
+  textDirection?: "ltr" | "rtl" | "auto",
+): TranslationPack;
