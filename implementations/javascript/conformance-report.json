@@ -4,57 +4,117 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T05:22:44Z",
+  "tested_at": "2026-11-10T05:23:35Z",
   "conformance_scope": "portable_policy_decision_and_time_vectors_only",
   "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-EXPIRED-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-NOT-YET-VALID-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
     },
     {
       "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
       "status": "PASS",
-      "notes": "Passed the shared MASG v1.0.0 policy-decision/time vector in Node.js 22 CI.",
+      "notes": "Passed on the recorded source revision in the Node.js 22 CI job; scope is limited to this declared vector.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335"
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-002",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-003",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-004",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-005",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-006",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-007",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-008",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-009",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-010",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
     }
   ],
   "limitations": [
@@ -66,7 +126,8 @@
     "PASS applies only to the eight portable policy-decision and request-time vectors in the embedded profile.",
     "The same ten parser-negative fixtures also pass in the Node.js 22 CI job; those regression tests are separate from this eight-vector report.",
     "The caller supplies principal and JavaScript Date clock; neither is authenticated.",
-    "This is not a security certification, complete mediation result, production readiness claim or independent assessment."
+    "This is not a security certification, complete mediation result, production readiness claim or independent assessment.",
+    "Overall PASS applies only to the eight shared policy/time vectors and ten shared parser-negative fixtures on the recorded revision; it is not MSC conformance or deployment security assurance."
   ],
   "assessor": "Self-reported project test artifact; not an independent assessment.",
   "source_revision": "e09527b28b28198b1f7a41a055f3a45dd1ac7a5b"
