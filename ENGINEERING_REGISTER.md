@@ -83,3 +83,15 @@ PR #20 merged as `31f3c9d1f60bf71363250965a2db32d811cd9d3d`. Tested head `283bc3
 ## JavaScript implementation evidence
 
 JavaScript 0.1.0, Node.js 22+, dependency-free, TypeScript declarations included. Tested source revision `e09527b28b28198b1f7a41a055f3a45dd1ac7a5b`; CI run 42761807335 passed the Node.js job and the Python 3.11/3.12/3.13, Go, and Rust jobs. The JavaScript report is PASS only for the eight portable policy/time vectors in the embedded profile. The same ten parser-negative fixtures pass in its CI job but are not included in the eight-vector report scope. All ten MSC statuses remain NOT_TESTED. No identity authentication, trusted clock, side-effect mediation, deployment certification or independent review is claimed.
+
+
+## Universal language and AI semantic interoperability
+
+| Area | Status | Evidence and limitation |
+|---|---|---|
+| Independent language implementations | Four reference implementations | Python, Go, Rust, and JavaScript; JavaScript PR #22 merged with TypeScript declarations. Shared decision/time and parser-negative tests pass; this is not deployment security certification. |
+| Human-language localization | Initial package framework | BCP 47 translation-pack schema, English source catalog, stable concept glossary, and untranslated Spanish template. No non-English pack is marked human reviewed. |
+| Translation quality controls | Specified | Machine drafts remain distinct from human-reviewed translations; reviewed entries require reviewer and timestamp. Translation review is not a correctness guarantee. |
+| UASR semantic interchange | Experimental proposal | Typed JSON semantic frame with explicit epistemic status, provenance, and evidence requirement for VERIFIED claims. No production parser, transport, model adapter, or authorization role. |
+| Compact encoding | Research candidate | JSON is the inspectable baseline; deterministic CBOR requires benchmarks and independent round-trip conformance before adoption. No custom binary format or token-efficiency claim. |
+
