@@ -43,7 +43,7 @@ class UniversalProtocolTests(unittest.TestCase):
         self.assertGreaterEqual(len(self.schemas), 6)
 
     def test_all_portable_vectors_match_their_schema(self):
-        self.assertGreaterEqual(len(self.vectors), 4)
+        self.assertGreaterEqual(len(self.vectors), 8)
         for vector in self.vectors:
             with self.subTest(vector=vector.get("vector_id")):
                 self.vector_validator.validate(vector)

@@ -54,7 +54,7 @@ For a structurally valid, authenticated request:
 8. Otherwise return DENY with reason code NO_MATCH.
 9. On any error or unavailable required control, do not return ALLOW.
 
-This algorithm is a specification target. The Python evaluator/broker and independent Go evaluator implement different subsets; the Go report passes only the five portable policy-decision vectors in the embedded profile. Neither result certifies all contracts or a deployed system; consult each implementation manifest, contract status and limitations.
+This algorithm is a specification target. The Python evaluator/broker and independent Go evaluator implement different subsets; the Go report passes eight portable policy-decision and request-time vectors in the embedded profile. Neither result certifies all contracts or a deployed system; consult each implementation manifest, contract status and limitations.
 
 ## Versioning and extensibility
 
