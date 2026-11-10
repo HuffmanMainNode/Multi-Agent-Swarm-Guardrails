@@ -58,6 +58,15 @@ def _decode(raw: bytes) -> dict[str, Any]:
         raise ValueError("JSON nesting exceeds parser safety limit") from exc
     if not isinstance(value, dict):
         raise ValueError("request must be a JSON object")
+    pending = [(value, 1)]
+    while pending:
+        item, depth = pending.pop()
+        if depth > 32:
+            raise ValueError("JSON nesting exceeds broker depth limit")
+        if isinstance(item, dict):
+            pending.extend((child, depth + 1) for child in item.values())
+        elif isinstance(item, list):
+            pending.extend((child, depth + 1) for child in item)
     return value
 
 
@@ -144,9 +153,17 @@ class ExecutionBroker:
             request.get("request_id"), request.get("issued_at"),
             request.get("expires_at"), request.get("event"),
         )
+        if not isinstance(request_id, str) or len(request_id) != 36:
+            return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
+        try:
+            parsed_id = uuid.UUID(request_id)
+            if parsed_id.version != 4 or str(parsed_id) != request_id:
+                return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
+        except (ValueError, AttributeError):
+            return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
+
         if (
-            not isinstance(request_id, str) or len(request_id) != 36
-            or not isinstance(issued_at, str) or len(issued_at) > 64
+            not isinstance(issued_at, str) or len(issued_at) > 64
             or not isinstance(expires_at, str) or len(expires_at) > 64
             or not isinstance(event, dict) or set(event) != {"kind", "details"}
             or not isinstance(event.get("kind"), str) or not event["kind"].strip()
@@ -155,13 +172,6 @@ class ExecutionBroker:
             or len(event["details"]) > MAX_EVENT_DETAILS
         ):
             return {"decision": "DENY", "reason_code": "REQUEST_FIELDS_INVALID"}
-
-        try:
-            parsed_id = uuid.UUID(request_id)
-            if parsed_id.version != 4 or str(parsed_id) != request_id:
-                return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
-        except (ValueError, AttributeError):
-            return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
 
         policy_request = {
             "principal": principal, "action": OPERATION, "target": TARGET, "scope": SCOPE,
