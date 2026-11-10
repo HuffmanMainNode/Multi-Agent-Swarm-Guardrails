@@ -2,9 +2,9 @@ import socket
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from masg.identity import SpiffeJwtSvidVerifier, VerifiedWorkloadIdentity, WorkloadIdentityError
 
