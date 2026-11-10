@@ -39,7 +39,7 @@
     }
   ],
   "limitations": [
-    "No CI result has yet been recorded for this source revision.",
+    "CI validates only the five portable policy-decision vectors; it does not test a deployed integration or protected side effect.",
     "The evaluator does not authenticate principal identity or mediate side effects.",
     "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load or penetration tests."
   ],
