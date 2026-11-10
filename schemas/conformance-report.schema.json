@@ -10,6 +10,7 @@
     "protocol_version",
     "profile",
     "tested_at",
+    "conformance_scope",
     "overall_status",
     "results",
     "limitations",
@@ -106,6 +107,11 @@
     "source_revision": {
       "type": "string",
       "maxLength": 128
+    },
+    "conformance_scope": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
     }
   },
   "additionalProperties": false

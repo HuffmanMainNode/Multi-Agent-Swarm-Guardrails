@@ -4,33 +4,38 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T03:10:00Z",
-  "overall_status": "UNKNOWN",
+  "tested_at": "2026-11-10T03:10:22Z",
+  "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
-      "status": "NOT_TESTED",
-      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747590691"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
-      "status": "NOT_TESTED",
-      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747590691"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
-      "status": "NOT_TESTED",
-      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747590691"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
-      "status": "NOT_TESTED",
-      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747590691"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
-      "status": "NOT_TESTED",
-      "notes": "Report template; update to PASS only after running the Go CI job for this source revision."
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747590691"
     }
   ],
   "limitations": [
@@ -39,7 +44,10 @@
     "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load or penetration tests."
   ],
   "notices": [
-    "A PASS for portable vectors would not establish deployment security, complete mediation, certification or production readiness."
+    "PASS applies only to the five portable policy-decision vectors in this report's declared scope.",
+    "This is not a security certification, complete mediation result, production readiness claim or independent assessment.",
+    "The Go evaluator accepts a principal assertion from its caller and does not authenticate identity or mediate any side effect."
   ],
-  "assessor": "Self-reported project test artifact; not an independent assessment."
+  "assessor": "Self-reported project test artifact; not an independent assessment.",
+  "conformance_scope": "portable_policy_decision_vectors_only"
 }
