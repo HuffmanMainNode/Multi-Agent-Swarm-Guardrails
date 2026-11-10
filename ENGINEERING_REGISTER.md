@@ -6,7 +6,7 @@ Last updated: 2026-11-10
 |---|---|---|
 | Ten mandatory contracts | Specified | Machine-readable catalog; only a subset of requirements is executable |
 | Universal protocol v1.0.0 | Implemented specification baseline | Normative language-neutral decision semantics, versioning, trust boundaries, policy-version binding, JSON Schemas and portable vectors; merged PR #10 |
-| Shared parser-negative fixtures | PASS in CI | Ten hex-encoded malformed raw-document fixtures run unchanged through Python, Go and Rust; PR #20 run 42761090847 and post-merge main run 42761152825 passed; deterministic regression baseline, not exhaustive fuzzing |
+| Shared parser-negative fixtures | PASS in CI | Ten hex-encoded malformed raw-document fixtures run unchanged through Python, Go, Rust and JavaScript; PR #20 run 42761090847 and post-merge main run 42761152825 passed; deterministic regression baseline, not exhaustive fuzzing |
 | Portable conformance artifacts | PASS in PR CI | JSON Schema Draft 2020-12 validation and shared decision vectors run against Python 3.11/3.12/3.13; PR run 42746824887 passed; this is not deployment certification |
 | Independent language implementations | Python, Go, Rust, and JavaScript reference implementations | Go 0.1.1 and Rust 0.1.0 are independent standard-library-only evaluators; both pass the same eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Java/C#/TypeScript implementation yet |
 | Namespaced extension model | Specified | Versioned extension manifest schema, domain/transport/identity/policy/enforcement/evidence/recovery types, fail-closed compatibility rules; example is documentation-only; merged PR #13 |
@@ -78,3 +78,8 @@ Rust 0.1.0 under `implementations/rust/` passed CI run 42752336251: rustfmt, Cli
 ## Parser-negative regression evidence
 
 PR #20 merged as `31f3c9d1f60bf71363250965a2db32d811cd9d3d`. Tested head `283bc384f3c5a9f00e67289ed543282a2906b51b`; PR CI run 42761090847 passed; post-merge main CI run 42761152825 passed. Ten shared raw-byte fixtures are executed by Python, Go, and Rust. These cases prove only the listed failure behaviors. They are not a fuzz campaign, memory-safety assessment, or full protocol conformance result.
+
+
+## JavaScript implementation evidence
+
+JavaScript 0.1.0, Node.js 22+, dependency-free, TypeScript declarations included. Tested source revision `e09527b28b28198b1f7a41a055f3a45dd1ac7a5b`; CI run 42761807335 passed the Node.js job and the Python 3.11/3.12/3.13, Go, and Rust jobs. The JavaScript report is PASS only for the eight portable policy/time vectors in the embedded profile. The same ten parser-negative fixtures pass in its CI job but are not included in the eight-vector report scope. All ten MSC statuses remain NOT_TESTED. No identity authentication, trusted clock, side-effect mediation, deployment certification or independent review is claimed.

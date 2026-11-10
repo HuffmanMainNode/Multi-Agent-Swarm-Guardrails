@@ -61,7 +61,7 @@ The evaluator requires timezone-aware RFC3339 request timestamps and an aware ev
 ## Universal protocol limits
 
 - Protocol v1.0.0 standardizes policy/decision envelopes and conformance artifacts; it does not standardize a universal execution transport, arbitrary protected executor, identity provider, sandbox, or orchestration protocol.
-- Python, Go 0.1.1, Rust 0.1.0, and a JavaScript reference implementation are included (JavaScript support remains experimental until CI passes). Go and Rust pass the same eight shared v1.0.0 policy-decision/time vectors and ten shared raw-parser negative fixtures, plus implementation-specific parser/limit regression tests in the embedded profile; neither authenticates principals or mediates side effects. Java, C#, and JavaScript/TypeScript implementations have not yet been added.
+- Python, Go 0.1.1, Rust 0.1.0, and JavaScript 0.1.0 reference implementations are included. Go, Rust, and JavaScript pass the same eight shared v1.0.0 policy-decision/time vectors and ten shared raw-parser negative fixtures, plus implementation-specific parser/limit regression tests in the embedded profile; none authenticates principals or mediates side effects. Java and C# implementations have not yet been added.
 - The shared parser-negative corpus contains ten deterministic malformed-document cases; it is a regression baseline, not exhaustive fuzz coverage. Shared decision vectors currently cover a small set of policy outcomes. They do not cover all identity, replay, delegation, recovery, runtime mediation, concurrency, distributed, or hardware-assurance behaviors.
 - No signed envelope or cross-language canonical JSON signature profile is defined. Do not treat JSON serialization bytes as a stable signature input.
 - The namespaced extension model and manifest schema define packaging and compatibility rules, not trust. The example tool-action profile is documentation only; no MCP/A2A adapter, extension publisher authentication, signature verification, or discovery registry is implemented.
@@ -74,7 +74,7 @@ The structural verifier checks repository artifacts only. Unit tests exercise re
 
 ## Cross-language protocol limits
 
-Protocol v1.0.0 defines a maximum 1 MiB policy document, 64 KiB request envelope, 1,000 policy rules, and 128 selectors per selector field. Field string limits follow the normative JSON Schemas and count Unicode code points, not UTF-8 bytes. Timestamp strings allow zero to six fractional-second digits and require a known explicit offset; the RFC 3339 unknown-local-offset marker `-00:00` is rejected. The Python and Go protocol entry points are tested against these constraints. The legacy Python evaluator API is a local internal API; protocol consumers should use `evaluate_protocol`.
+Protocol v1.0.0 defines a maximum 1 MiB policy document, 64 KiB request envelope, 1,000 policy rules, and 128 selectors per selector field. Field string limits follow the normative JSON Schemas and count Unicode code points, not UTF-8 bytes. Timestamp strings allow zero to six fractional-second digits and require a known explicit offset; the RFC 3339 unknown-local-offset marker `-00:00` is rejected. The Python, Go, Rust, and JavaScript protocol entry points are tested against these constraints. The legacy Python evaluator API is a local internal API; protocol consumers should use `evaluate_protocol`.
 
 
 ## Cross-language protocol parser and limits
