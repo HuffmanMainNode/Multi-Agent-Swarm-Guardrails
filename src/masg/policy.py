@@ -105,7 +105,7 @@ def load_request(path: str | Path) -> dict[str, Any]:
     request = _load(path, max_bytes=MAX_REQUEST_BYTES)
     if not set(request).issubset(REQUEST_KEYS):
         raise PolicyError("request contains unknown fields")
-    required = REQUEST_KEYS - {"delegation_chain"}
+    required = REQUEST_KEYS - {"delegation_chain", "policy_version"}
     for key in required:
         if not _text(request.get(key), f"request.{key}"):
             raise PolicyError(f"request.{key} must be a non-empty string of at most 1024 characters")
@@ -156,7 +156,7 @@ def evaluate(
             return deny("POLICY_INVALID", "Policy version is invalid.")
         if not isinstance(request, dict) or not set(request).issubset(REQUEST_KEYS):
             return deny("REQUEST_INVALID", "Request shape is invalid.")
-        required = REQUEST_KEYS - {"delegation_chain"}
+        required = REQUEST_KEYS - {"delegation_chain", "policy_version"}
         if any(not _text(request.get(key), key) for key in required):
             return deny("REQUEST_INVALID", "Required request fields are missing or invalid.")
         issued = _time(request["issued_at"], "issued_at")

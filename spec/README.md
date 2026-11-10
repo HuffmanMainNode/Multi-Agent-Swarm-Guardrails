@@ -36,7 +36,7 @@ JSON Schema Draft 2020-12 is normative for structural validation. Implementation
 7. Request validity MUST be checked against a trusted, timezone-aware clock. The protocol does not itself provide trusted time.
 8. An ALLOW is a decision only. It does not prove that a protected operation was executed through an enforcement boundary.
 9. Implementations MUST preserve unknown security limitations and MUST NOT claim support for contracts or profiles they have not tested.
-10. Standard v1.0.0 decision reason codes are `EXPLICIT_MATCH`, `EXPLICIT_DENY`, `APPROVAL_REQUIRED`, and `NO_MATCH` for the corresponding policy outcomes. Other invalidity/failure reason codes are implementation-specific unless a later version standardizes them.
+10. Standard v1.0.0 reason codes include `EXPLICIT_MATCH`, `EXPLICIT_DENY`, `APPROVAL_REQUIRED`, `NO_MATCH`, and `POLICY_VERSION_MISMATCH`. Other invalidity/failure reason codes are implementation-specific unless a later version standardizes them.
 11. Test and conformance outcomes are PASS, FAIL, UNKNOWN, NOT_TESTED, or NOT_APPLICABLE. Missing evidence is not PASS.
 
 ## Decision algorithm
@@ -44,12 +44,12 @@ JSON Schema Draft 2020-12 is normative for structural validation. Implementation
 For a structurally valid, authenticated request:
 1. Validate protocol version, request identifier, timestamp syntax and validity window.
 2. Resolve identity using the adapter's declared trust mechanism. Do not trust caller-supplied principal fields without independent verification.
-3. Load a trusted policy version and verify its integrity according to the deployment profile.
+3. Load a trusted policy version, require the request's policy_version to match it exactly, and verify its integrity according to the deployment profile.
 4. Collect rules whose principal, action, target, and scope each exactly match.
 5. If any matching rule has effect DENY, return DENY.
 6. Otherwise, if any matching rule has effect REVIEW_REQUIRED, return REVIEW_REQUIRED.
 7. Otherwise, if any matching rule has effect ALLOW, return ALLOW.
-8. Otherwise return DENY with DEFAULT_DENY.
+8. Otherwise return DENY with reason code NO_MATCH.
 9. On any error or unavailable required control, do not return ALLOW.
 
 This algorithm is a specification target. The current Python evaluator and broker implement only subsets; consult the implementation manifest, contract status and limitations.

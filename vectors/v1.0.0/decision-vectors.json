@@ -190,5 +190,49 @@
       "decision": "REVIEW_REQUIRED",
       "reason_code": "APPROVAL_REQUIRED"
     }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
+    "category": "policy_integrity",
+    "description": "A request bound to a different policy version is denied before authorization.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440004",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:01:00Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "different-policy-version"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "POLICY_VERSION_MISMATCH"
+    }
   }
 ]

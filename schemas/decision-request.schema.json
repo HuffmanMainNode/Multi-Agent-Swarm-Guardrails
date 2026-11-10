@@ -12,7 +12,8 @@
     "principal",
     "action",
     "target",
-    "scope"
+    "scope",
+    "policy_version"
   ],
   "properties": {
     "protocol_version": {

@@ -56,7 +56,7 @@ class UniversalProtocolTests(unittest.TestCase):
                 key: request[key]
                 for key in (
                     "principal", "action", "target", "scope",
-                    "request_id", "issued_at", "expires_at",
+                    "request_id", "issued_at", "expires_at", "policy_version",
                 )
             }
             result = evaluate(vector["policy"], internal_request, now=fixed_now)
