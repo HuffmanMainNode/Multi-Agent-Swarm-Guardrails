@@ -28,3 +28,10 @@ Both resolvers use human-reviewed text by default and never perform network tran
 
 - schemas/core-glossary.schema.json: validates the controlled contextual concept glossary.
 - Python masg.localization.create_translation_template(source_pack, locale) and JavaScript createTranslationTemplate(sourcePack, locale): generate a full untranslated template for a new locale without translation services.
+
+## Learning and participation entry points
+- docs/START_HERE.md: no-install, no-coding first lesson and route selector for first-time visitors.
+- docs/LEARNING_PATHWAYS.md: progressive paths from first computer concepts to local testing, contribution, and independent implementations.
+- docs/GLOSSARY_FOR_HUMANS.md: plain-language computing and protocol glossary.
+- docs/AI_COLLABORATION_FOR_LEARNERS.md: safe AI tutor, pair-programming, review, and translation guidance.
+New contributors may participate through documentation, accessibility feedback, language review, testing, or code. Do not assume technical experience.
