@@ -257,7 +257,13 @@ class BrokerTests(unittest.TestCase):
                 )
 
         self.policy.write_text(json.dumps({
-            "version": "spiffe-expiry-test-v1", "default_effect": "ALLOW", "rules": [],
+            "version": "spiffe-expiry-test-v1", "default_effect": "DENY",
+            "rules": [{
+                "id": "allow-spiffe-audit",
+                "principals": ["spiffe://example.org/agent/test"],
+                "actions": ["audit.append"], "targets": ["audit-ledger"],
+                "scopes": ["append"], "effect": "ALLOW",
+            }],
         }), encoding="utf-8")
         broker = ExecutionBroker(
             policy_path=self.policy, principal_map_path=None,
