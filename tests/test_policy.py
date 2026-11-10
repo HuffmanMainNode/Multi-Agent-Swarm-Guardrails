@@ -100,6 +100,22 @@ class PolicyTests(unittest.TestCase):
                 load_policy(path)
 
 
+
+    def test_all_shared_parser_negative_vectors_fail_closed(self):
+        fixtures_path = ROOT / "vectors/v1.0.0/parser-negative-vectors.json"
+        fixtures = json.loads(fixtures_path.read_text(encoding="utf-8"))
+        self.assertEqual(len(fixtures), 21)
+        for fixture in fixtures:
+            result = evaluate_protocol_json(
+                bytes.fromhex(fixture["policy_json_hex"]),
+                bytes.fromhex(fixture["request_json_hex"]),
+                now=self.now,
+            )
+            self.assertEqual(result.decision, Decision.DENY, fixture["fixture_id"])
+            self.assertEqual(
+                result.reason_code, fixture["expected_reason_code"], fixture["fixture_id"]
+            )
+
     def test_protocol_rejects_null_optional_provenance_reference(self):
         policy = {
             "version": "p1", "default_effect": "DENY",
