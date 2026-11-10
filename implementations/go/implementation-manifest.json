@@ -2,7 +2,7 @@
   "manifest_version": "1.0.0",
   "implementation_id": "masg-go-reference",
   "name": "MASG Go Reference Evaluator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "source_url": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/tree/main/implementations/go",
   "languages": [
     "Go"

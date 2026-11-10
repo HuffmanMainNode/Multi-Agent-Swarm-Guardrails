@@ -82,3 +82,8 @@ Protocol v1.0.0 defines a maximum 1 MiB policy document, 64 KiB request envelope
 Protocol v1.0.0 defines a maximum 1 MiB policy document, 64 KiB request envelope, 32 JSON nesting levels, 1,000 policy rules, and 128 selectors per selector field. Field string limits follow the normative JSON Schemas and count Unicode code points, not UTF-8 bytes. Timestamp strings allow zero to six fractional-second digits and require a known explicit offset; the RFC 3339 unknown-local-offset marker `-00:00` is rejected.
 
 The Python protocol entry points are `evaluate_protocol` for an already-parsed complete envelope and `evaluate_protocol_json` for untrusted serialized bytes. The latter rejects duplicate keys, invalid UTF-8, non-standard constants, excessive nesting and oversized inputs. Go's `EvaluateJSON` applies equivalent raw-document checks. Passing these parser tests does not authenticate the principal or prove side-effect mediation.
+
+
+## Cross-language conformance status
+
+Python and Go currently pass eight shared v1.0.0 decision/time vectors and CI regression tests for schema limits and strict parsing. Python's protocol entry points are `evaluate_protocol` and `evaluate_protocol_json`; Go's are `Evaluate` and `EvaluateJSON`. This is limited evaluator/parser interoperability. No Rust, Java, C#, or TypeScript implementation is included yet. Neither implementation authenticates principal identity on its own or proves complete mediation, deployment isolation, safe side effects, or production readiness.

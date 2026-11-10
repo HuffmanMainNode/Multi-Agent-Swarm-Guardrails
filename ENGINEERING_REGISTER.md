@@ -43,3 +43,8 @@ The v1.0.0 shared-vector harness now passes the complete request envelope to Pyt
 
 
 Cross-language raw parser parity: Python `evaluate_protocol_json` and Go `EvaluateJSON` reject duplicate keys, invalid UTF-8, non-standard JSON constants, non-object envelopes, unknown fields, excessive nesting and over-limit byte sizes. This is parser/evaluator conformance only; it is not identity or enforcement certification.
+
+
+## Cross-language parity evidence
+
+PR #16 tested head `1b95c53aefd366f5364417b5bdfc6f07b78b95a8`; CI run 42750849476 passed Python 3.11/3.12/3.13 and Go vet/race tests. The Python shared-vector harness now evaluates the complete request envelope; Python `evaluate_protocol_json` and Go `EvaluateJSON` apply equivalent strict raw-JSON checks. Both implementations match the schema's rule IDs, array and field limits, Unicode code-point semantics, optional provenance field, timestamp precision and JSON depth/size boundaries. Eight vectors are covered; MSC statuses remain untested and no deployment assurance is claimed.

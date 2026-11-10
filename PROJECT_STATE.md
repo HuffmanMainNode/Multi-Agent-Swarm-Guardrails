@@ -113,3 +113,18 @@ Changes prepared: Python full-envelope `evaluate_protocol` entry point; complete
 Status: open engineering work. CI and merge not yet confirmed.
 
 Cross-language parser parity: Python now exposes `evaluate_protocol_json` for strict raw-envelope parsing; Go exposes `EvaluateJSON`. Both enforce duplicate-key, UTF-8, JSON depth and byte-size checks before decision evaluation. CI for PR #16 is being rerun after the latest parser tests.
+
+
+## Cross-language semantic parity milestone (PR #16)
+
+PR: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/16
+Branch: `protocol/cross-language-semantic-parity`
+Tested head: `1b95c53aefd366f5364417b5bdfc6f07b78b95a8`
+CI run: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476
+CI result: PASS (Python 3.11, 3.12, 3.13; Go vet; Go race tests).
+
+The Python vector harness now evaluates the complete v1.0.0 request envelope through `evaluate_protocol`; untrusted serialized JSON can use `evaluate_protocol_json` to enforce duplicate-key, UTF-8, constant, nesting and byte-size rules. Go's `EvaluateJSON` performs the equivalent raw-document checks. Both implementations align with the normative schema for required rule IDs, rule/selector counts, field-specific string limits, Unicode code-point counting, optional provenance references, timestamp precision and known-offset requirements.
+
+The eight shared vectors cover exact ALLOW, default DENY, explicit DENY precedence, REVIEW_REQUIRED, policy-version mismatch, expired, not-yet-valid and invalid validity window. Additional CI tests cover schema boundaries, Unicode, duplicate keys, invalid UTF-8, unknown fields, oversized inputs and exact JSON depth boundary.
+
+Scope remains narrow: this establishes protocol parsing and policy-decision interoperability between two implementations. It does not authenticate identity, provide universal execution mediation, prove isolation, or certify deployments. PR #16 merge status must be checked separately.

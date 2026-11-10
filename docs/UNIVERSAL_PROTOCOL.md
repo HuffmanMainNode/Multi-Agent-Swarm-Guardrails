@@ -51,7 +51,7 @@ Profiles are not marketing tiers. A deployment may be isolated for one path and 
 7. Publish an implementation manifest and conformance report, including limitations.
 8. Integrate only the capabilities whose evidence is adequate for the deployment threat model.
 
-An implementation may replace the Python reference completely. It does not need to call Python, run MASG's package, or depend on a MASG-operated service.
+An implementation may replace the Python reference completely. It does not need to call Python, run MASG's package, or depend on a MASG-operated service. Python's `evaluate_protocol` accepts complete parsed envelopes; `evaluate_protocol_json` is the strict byte-oriented entry point for untrusted JSON. Go's `EvaluateJSON` is its independent equivalent. Both are tested against the same eight decision/time vectors.
 
 ## Compatibility rule
 

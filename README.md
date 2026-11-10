@@ -19,6 +19,18 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 - Optional python-tuf 7.x policy verification from an operator-managed local mirror, with out-of-band bootstrap root and persistent metadata cache. CI tests signed-target tampering, metadata tampering, expiry, rollback, and fail-closed broker startup.
 - Structural repository conformance CLI, examples, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
 
+## Universal protocol and language independence
+
+The normative protocol lives in `spec/`, `schemas/`, and `vectors/v1.0.0/`. It is independent of the Python package, operating system, transport, model framework, or orchestration engine.
+
+- Python provides `evaluate_protocol` for complete parsed envelopes and `evaluate_protocol_json` for strict raw JSON parsing.
+- Go provides an independent standard-library-only `Evaluate` / `EvaluateJSON` implementation.
+- Both implementations consume the same eight versioned decision/time vectors. CI checks Python 3.11, 3.12, 3.13 and Go race-enabled tests.
+- Rust, Java, C#, JavaScript/TypeScript, and other runtimes can implement the same schemas and vectors without importing Python, using Go, or calling a MASG-hosted service.
+- Transport, identity provider, policy engine, enforcement broker, and runtime adapters remain replaceable. An adapter is not trusted merely because it implements the interface; it must publish evidence and limitations.
+
+The current shared suite establishes a narrow policy-decision and request-time baseline. It does not prove authenticated identity, complete mediation, isolation, safe side effects, or production readiness. See [Universal Protocol](docs/UNIVERSAL_PROTOCOL.md), [Known Limitations](docs/LIMITATIONS.md), and the Go implementation's own report.
+
 ## Quick start
 Requires Python 3.11+.
 

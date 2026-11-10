@@ -1,72 +1,73 @@
 {
   "report_version": "1.0.0",
   "implementation_id": "masg-go-reference",
-  "implementation_version": "0.1.0",
+  "implementation_version": "0.1.1",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T03:25:00Z",
+  "tested_at": "2026-11-10T03:41:00Z",
   "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-EXPIRED-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-NOT-YET-VALID-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     },
     {
       "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+      "notes": "Passed shared v1.0.0 portable vector in Go race-enabled CI; the same vectors are evaluated by Python's complete-envelope protocol entry point.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476"
     }
   ],
   "limitations": [
-    "CI validates eight portable policy-decision and request-time vectors; it does not test a deployed integration or protected side effect.",
+    "Conformance report covers eight portable policy-decision and request-time vectors only.",
     "The evaluator does not authenticate principal identity or mediate side effects.",
-    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load or penetration tests."
+    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load, penetration or independent-assessment result is implied."
   ],
   "notices": [
     "PASS applies only to the eight portable policy-decision and request-time vectors in this report's declared scope.",
+    "Go and Python raw parsers have separate regression tests for duplicate keys, invalid UTF-8, unknown fields, JSON depth and size limits; those tests do not certify a deployment.",
     "This is not a security certification, complete mediation result, production readiness claim or independent assessment.",
     "The Go evaluator accepts a principal assertion from its caller and does not authenticate identity or mediate any side effect."
   ],
   "assessor": "Self-reported project test artifact; not an independent assessment.",
   "conformance_scope": "portable_policy_decision_and_time_vectors_only",
-  "source_revision": "16921af9334166bc8e60f7da7c736e5d85cbb48e"
+  "source_revision": "1b95c53aefd366f5364417b5bdfc6f07b78b95a8"
 }
