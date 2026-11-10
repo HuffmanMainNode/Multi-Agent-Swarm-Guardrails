@@ -85,7 +85,8 @@ class UniversalProtocolTests(unittest.TestCase):
         )
         manifest_validator.validate(manifest)
         report_validator.validate(report)
-        self.assertEqual(report["overall_status"], "UNKNOWN")
+        self.assertEqual(report["overall_status"], "PASS")
+        self.assertEqual(report["conformance_scope"], "portable_policy_decision_vectors_only")
 
     def test_response_schema_accepts_standard_decision(self):
         response = {
