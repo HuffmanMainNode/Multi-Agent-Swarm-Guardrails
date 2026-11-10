@@ -33,6 +33,7 @@ class UniversalProtocolTests(unittest.TestCase):
     def setUpClass(cls):
         cls.schemas, cls.registry = load_schemas()
         cls.vectors = load_json(VECTOR_FILE)
+        cls.parser_vectors = load_json(ROOT / "vectors/v1.0.0/parser-negative-vectors.json")
         cls.vector_validator = Draft202012Validator(
             cls.schemas["conformance-vector.schema.json"],
             registry=cls.registry,
@@ -47,6 +48,24 @@ class UniversalProtocolTests(unittest.TestCase):
         for vector in self.vectors:
             with self.subTest(vector=vector.get("vector_id")):
                 self.vector_validator.validate(vector)
+
+    def test_shared_parser_negative_vectors_match_their_schema(self):
+        schema = self.schemas["parser-negative-vector.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        self.assertGreaterEqual(len(self.parser_vectors), 10)
+        for fixture in self.parser_vectors:
+            with self.subTest(fixture=fixture["fixture_id"]):
+                validator.validate(fixture)
+
+    def test_python_parser_matches_shared_negative_vectors(self):
+        for fixture in self.parser_vectors:
+            result = evaluate_protocol_json(
+                bytes.fromhex(fixture["policy_json_hex"]),
+                bytes.fromhex(fixture["request_json_hex"]),
+                now=datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc),
+            )
+            with self.subTest(fixture=fixture["fixture_id"]):
+                self.assertEqual(result.reason_code, fixture["expected_reason_code"])
 
     def test_reference_evaluator_matches_shared_decision_vectors(self):
         fixed_now = datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc)

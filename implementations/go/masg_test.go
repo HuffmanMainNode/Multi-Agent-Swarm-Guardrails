@@ -1,6 +1,7 @@
 package masg
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -47,6 +48,41 @@ func TestPortableV100Vectors(t *testing.T) {
 			}
 			if got.ReasonCode != testVector.Expected.ReasonCode {
 				t.Fatalf("reason = %s, want %s", got.ReasonCode, testVector.Expected.ReasonCode)
+			}
+		})
+	}
+}
+
+func TestSharedParserNegativeVectors(t *testing.T) {
+	raw, err := os.ReadFile("../../vectors/v1.0.0/parser-negative-vectors.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixtures []struct {
+		FixtureID string `json:"fixture_id"`
+		PolicyHex string `json:"policy_json_hex"`
+		RequestHex string `json:"request_json_hex"`
+		ExpectedReason string `json:"expected_reason_code"`
+	}
+	if err := json.Unmarshal(raw, &fixtures); err != nil {
+		t.Fatal(err)
+	}
+	if len(fixtures) < 10 {
+		t.Fatalf("expected at least ten shared parser fixtures, got %d", len(fixtures))
+	}
+	now := fixedClock()
+	for _, fixture := range fixtures {
+		t.Run(fixture.FixtureID, func(t *testing.T) {
+			policy, err := hex.DecodeString(fixture.PolicyHex)
+			if err != nil { t.Fatal(err) }
+			request, err := hex.DecodeString(fixture.RequestHex)
+			if err != nil { t.Fatal(err) }
+			got := EvaluateJSON(policy, request, now)
+			if got.ReasonCode != fixture.ExpectedReason {
+				t.Fatalf("reason = %s, want %s", got.ReasonCode, fixture.ExpectedReason)
+			}
+			if got.Decision != "DENY" {
+				t.Fatalf("malformed input did not deny: %+v", got)
 			}
 		})
 	}

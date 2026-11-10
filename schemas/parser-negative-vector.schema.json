@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:parser-negative-vector:1.0.0",
+  "title": "MASG Shared Raw-JSON Parser Negative Vector",
+  "type": "object",
+  "required": [
+    "fixture_version",
+    "fixture_id",
+    "category",
+    "description",
+    "policy_json_hex",
+    "request_json_hex",
+    "expected_reason_code"
+  ],
+  "properties": {
+    "fixture_version": {
+      "const": "1.0.0"
+    },
+    "fixture_id": {
+      "type": "string",
+      "pattern": "^MASG-PARSER-[A-Z0-9-]{3,120}$"
+    },
+    "category": {
+      "enum": [
+        "duplicate_policy_key",
+        "duplicate_request_key",
+        "invalid_utf8_request",
+        "nonstandard_nan",
+        "unknown_request_field",
+        "non_object_request",
+        "trailing_request_data",
+        "excessive_request_depth",
+        "oversized_request",
+        "unknown_policy_field"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "policy_json_hex": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})+$"
+    },
+    "request_json_hex": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{2})+$"
+    },
+    "expected_reason_code": {
+      "enum": [
+        "POLICY_INVALID",
+        "REQUEST_INVALID"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
