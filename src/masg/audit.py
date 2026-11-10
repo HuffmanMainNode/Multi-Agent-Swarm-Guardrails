@@ -42,7 +42,7 @@ def append_event(path: str | Path, event: dict[str, Any]) -> dict[str, Any]:
     digest = hashlib.sha256(_canonical(body)).hexdigest()
     record = {**body, "hash": digest}
     with target.open("a", encoding="utf-8") as stream:
-        stream.write(json.dumps(record, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\\n")
+        stream.write(json.dumps(record, sort_keys=True, ensure_ascii=False, allow_nan=False) + "\n")
         stream.flush()
         os.fsync(stream.fileno())
     return record
