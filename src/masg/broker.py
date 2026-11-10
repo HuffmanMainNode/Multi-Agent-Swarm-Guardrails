@@ -70,8 +70,20 @@ def _decode(raw: bytes) -> dict[str, Any]:
     return value
 
 
+def _operator_directory(path: str | Path, label: str) -> Path:
+    target = Path(path)
+    try:
+        metadata = target.lstat()
+    except OSError as exc:
+        raise BrokerError(f"{label} cannot be inspected") from exc
+    if not stat.S_ISDIR(metadata.st_mode) or metadata.st_mode & 0o022:
+        raise BrokerError(f"{label} must be an operator-controlled directory, not group/world-writable")
+    return target
+
+
 def _regular_operator_file(path: str | Path, label: str) -> Path:
     target = Path(path)
+    _operator_directory(target.parent, f"{label} parent directory")
     try:
         metadata = target.lstat()
     except OSError as exc:
@@ -129,8 +141,11 @@ class ExecutionBroker:
         replay_path = Path(replay_db)
         ledger = Path(ledger_path)
         for path, label in ((replay_path, "replay database"), (ledger, "evidence ledger")):
+            _operator_directory(path.parent, f"{label} parent directory")
             if path.is_symlink():
                 raise BrokerError(f"{label} must not be a symlink")
+            if path.exists() and not stat.S_ISREG(path.lstat().st_mode):
+                raise BrokerError(f"{label} must be a regular file")
         if replay_path.resolve() == ledger.resolve():
             raise BrokerError("replay database and evidence ledger must be different files")
         self.replay = ReplayStore(replay_path)
@@ -265,8 +280,7 @@ def serve(
     if not sys.platform.startswith("linux"):
         raise BrokerError("broker server currently supports Linux only")
     path = Path(socket_path)
-    if not path.parent.is_dir():
-        raise BrokerError("socket parent directory must already exist and be operator-controlled")
+    _operator_directory(path.parent, "socket parent directory")
     if path.exists() or path.is_symlink():
         raise BrokerError("socket path already exists; inspect it and remove stale sockets manually")
     broker = ExecutionBroker(

@@ -4,13 +4,15 @@ import socket
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from masg.audit import verify_ledger
-from masg.broker import ExecutionBroker, _ThreadedUnixServer, _RequestHandler, submit
+from masg.broker import BrokerError, ExecutionBroker, _ThreadedUnixServer, _RequestHandler, submit
+from masg.replay import ReplayStoreError
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -108,14 +110,49 @@ class BrokerTests(unittest.TestCase):
         self.assertFalse(self.ledger.exists())
 
     def test_replay_store_failure_fails_closed(self):
-        replay_dir = self.root / "not-a-database"
-        replay_dir.mkdir()
-        broker = ExecutionBroker(
-            policy_path=self.policy, principal_map_path=self.principals,
-            replay_db=replay_dir, ledger_path=self.ledger,
-        )
-        self.assertEqual(broker.process(json.dumps(self.request).encode(), os.getuid())["reason_code"], "REPLAY_STORE_UNAVAILABLE")
+        with patch.object(self.broker.replay, "consume", side_effect=ReplayStoreError("simulated failure")):
+            result = self.broker.process(json.dumps(self.request).encode(), os.getuid())
+        self.assertEqual(result["reason_code"], "REPLAY_STORE_UNAVAILABLE")
         self.assertFalse(self.ledger.exists())
+
+    def test_symlink_policy_file_rejected(self):
+        link = self.root / "policy-link.json"
+        link.symlink_to(self.policy)
+        with self.assertRaises(BrokerError):
+            ExecutionBroker(
+                policy_path=link, principal_map_path=self.principals,
+                replay_db=self.replay, ledger_path=self.ledger,
+            )
+
+    def test_group_writable_config_directory_rejected(self):
+        unsafe = self.root / "unsafe"
+        unsafe.mkdir()
+        policy = unsafe / "policy.json"
+        principals = unsafe / "principals.json"
+        policy.write_text(self.policy.read_text(encoding="utf-8"), encoding="utf-8")
+        principals.write_text(self.principals.read_text(encoding="utf-8"), encoding="utf-8")
+        unsafe.chmod(0o777)
+        try:
+            with self.assertRaises(BrokerError):
+                ExecutionBroker(
+                    policy_path=policy, principal_map_path=principals,
+                    replay_db=self.replay, ledger_path=self.ledger,
+                )
+        finally:
+            unsafe.chmod(0o700)
+
+    def test_group_writable_state_directory_rejected(self):
+        unsafe = self.root / "unsafe-state"
+        unsafe.mkdir()
+        unsafe.chmod(0o777)
+        try:
+            with self.assertRaises(BrokerError):
+                ExecutionBroker(
+                    policy_path=self.policy, principal_map_path=self.principals,
+                    replay_db=unsafe / "replay.sqlite3", ledger_path=self.ledger,
+                )
+        finally:
+            unsafe.chmod(0o700)
 
     def test_corrupt_ledger_prevents_execution(self):
         self.ledger.write_text("not-json\n", encoding="utf-8")
