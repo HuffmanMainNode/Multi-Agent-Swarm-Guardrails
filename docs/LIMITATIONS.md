@@ -61,7 +61,7 @@ The evaluator requires timezone-aware RFC3339 request timestamps and an aware ev
 ## Universal protocol limits
 
 - Protocol v1.0.0 standardizes policy/decision envelopes and conformance artifacts; it does not standardize a universal execution transport, arbitrary protected executor, identity provider, sandbox, or orchestration protocol.
-- Python and Go reference implementations are included. Go 0.1.1 passes eight shared v1.0.0 policy-decision/time vectors in the embedded profile and strict parser/limit regression tests; it does not authenticate principals or mediate side effects. Rust, Java, C#, and JavaScript/TypeScript implementations have not yet been added.
+- Python, Go 0.1.1, and Rust 0.1.0 reference implementations are included. Go and Rust pass the same eight shared v1.0.0 policy-decision/time vectors and strict parser/limit regression tests in the embedded profile; neither authenticates principals or mediates side effects. Java, C#, and JavaScript/TypeScript implementations have not yet been added.
 - Shared vectors currently cover a small set of policy outcomes. They do not cover all identity, replay, delegation, recovery, runtime mediation, concurrency, distributed, or hardware-assurance behaviors.
 - No signed envelope or cross-language canonical JSON signature profile is defined. Do not treat JSON serialization bytes as a stable signature input.
 - The namespaced extension model and manifest schema define packaging and compatibility rules, not trust. The example tool-action profile is documentation only; no MCP/A2A adapter, extension publisher authentication, signature verification, or discovery registry is implemented.
@@ -87,3 +87,6 @@ The Python protocol entry points are `evaluate_protocol` for an already-parsed c
 ## Cross-language conformance status
 
 Python and Go currently pass eight shared v1.0.0 decision/time vectors and CI regression tests for schema limits and strict parsing. Python's protocol entry points are `evaluate_protocol` and `evaluate_protocol_json`; Go's are `Evaluate` and `EvaluateJSON`. This is limited evaluator/parser interoperability. No Rust, Java, C#, or TypeScript implementation is included yet. Neither implementation authenticates principal identity on its own or proves complete mediation, deployment isolation, safe side effects, or production readiness.
+
+
+Rust 0.1.0 is dependency-free and passed formatting, Clippy, shared-vector and parser/limit CI tests. Its report is narrowly scoped to eight vectors. All MSC statuses remain NOT_TESTED; it does not provide identity, replay, broker, sandbox, evidence, recovery or complete mediation.

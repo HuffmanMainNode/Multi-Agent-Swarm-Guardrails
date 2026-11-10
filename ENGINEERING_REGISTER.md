@@ -7,7 +7,7 @@ Last updated: 2026-11-10
 | Ten mandatory contracts | Specified | Machine-readable catalog; only a subset of requirements is executable |
 | Universal protocol v1.0.0 | Implemented specification baseline | Normative language-neutral decision semantics, versioning, trust boundaries, policy-version binding, JSON Schemas and portable vectors; merged PR #10 |
 | Portable conformance artifacts | PASS in PR CI | JSON Schema Draft 2020-12 validation and shared decision vectors run against Python 3.11/3.12/3.13; PR run 42746824887 passed; this is not deployment certification |
-| Independent language implementations | Python and Go reference implementations | Go 0.1.1 uses only the standard library and passes eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Rust/Java/C#/TypeScript implementation yet |
+| Independent language implementations | Python and Go reference implementations | Go 0.1.1 and Rust 0.1.0 are independent standard-library-only evaluators; both pass the same eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Java/C#/TypeScript implementation yet |
 | Namespaced extension model | Specified | Versioned extension manifest schema, domain/transport/identity/policy/enforcement/evidence/recovery types, fail-closed compatibility rules; example is documentation-only; merged PR #13 |
 | Go portable decision conformance | PASS in CI, narrowly scoped | Go vet and race-enabled tests pass; eight shared vectors; PR #16 CI run 42750992748 and post-merge main run 42751069709; report scope is policy-decision/time vectors only, not MSC certification |
 | Strict policy/request parsing | Implemented in reference evaluator | Duplicate keys, non-standard constants, unknown fields, malformed selectors, and oversized inputs rejected |
@@ -58,3 +58,8 @@ Main commit `019cd466583779fe38441ef5e62be32e5b1cc191`; post-merge CI `427510697
 ## Rust implementation checkpoint
 
 A third implementation is under review in `implementations/rust/`. It uses only the Rust standard library and has its own strict JSON parser. Status remains NOT_TESTED until the Rust CI job compiles and executes the shared vectors. Do not count it as a supported implementation or conformance PASS before CI succeeds.
+
+
+## Rust reference status
+
+Rust 0.1.0 under `implementations/rust/` passed CI run 42752336251: rustfmt, Clippy with warnings denied, and shared-vector/parser tests. The implementation is dependency-free and passes all eight v1.0.0 decision/time vectors. Its report scope is only those vectors; all MSC statuses remain NOT_TESTED. It does not authenticate principals or mediate side effects. PR #18 is open pending final merge.
