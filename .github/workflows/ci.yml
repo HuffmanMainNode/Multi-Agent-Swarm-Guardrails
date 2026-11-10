@@ -1,0 +1,32 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install package
+        run: python -m pip install --no-deps -e .
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Structural verifier
+        run: masg verify --root .
+      - name: JSON syntax
+        run: |
+          python -m json.tool contracts/manifest.json > /dev/null
+          python -m json.tool examples/policy.json > /dev/null
+          python -m json.tool examples/request.json > /dev/null
