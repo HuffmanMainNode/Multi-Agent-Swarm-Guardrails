@@ -1,6 +1,7 @@
 """Separate-process Linux broker for one narrowly allowlisted protected operation.
 
-Uses Linux SO_PEERCRED to derive caller UID; never accepts a principal from the request.
+Uses Linux SO_PEERCRED for local peer provenance. Optional SPIFFE mode validates
+JWT-SVIDs through the local Workload API; no client-supplied principal is trusted.
 Authorizes only audit.append to the broker-owned ledger. Not a general command runner.
 """
 from __future__ import annotations
@@ -19,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from .audit import append_event
-from .identity import SpiffeJwtSvidVerifier, VerifiedWorkloadIdentity, WorkloadIdentityError
+from .identity import SpiffeJwtSvidVerifier, WorkloadIdentityError
 from .policy import evaluate, load_policy
 from .replay import ReplayStore, ReplayStoreError
 
