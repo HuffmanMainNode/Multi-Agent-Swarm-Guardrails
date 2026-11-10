@@ -58,3 +58,14 @@ UASR is experimental and separate from authorization protocol v1.0.0. No hidden-
 - [x] Add Python and JavaScript/TypeScript template generators that create untranslated packs for any syntactically valid locale tag.
 - [x] Add a schema and uniqueness checks for the controlled contextual glossary of protocol and security terms.
 - [ ] Add Go and Rust template generators with matching behavior.
+
+## Universal access and learning
+
+- [x] Publish a no-install, no-code first lesson using existing request and policy examples.
+- [x] Publish learning paths from first computer concepts through independent implementation.
+- [x] Publish a plain-language computing/protocol glossary and safe AI collaboration guide.
+- [ ] Add reviewed translations of the beginner entry points, beginning with community-selected languages; keep machine drafts visibly unreviewed.
+- [ ] Add accessible, low-bandwidth, mobile-aware learning examples and text alternatives for visual material.
+- [ ] Add a browser-based, optional, sandboxed practice environment only after its threat model, isolation, data handling, and maintenance costs are reviewed. It must not be required to use the repository.
+- [ ] Create small, independently checkable exercises for JSON, schemas, test vectors, localization, and semantic frames.
+- [ ] Invite novice usability testing and publish what confused participants and what was changed.
