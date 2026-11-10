@@ -4,6 +4,7 @@
 - Add optional SPIFFE JWT-SVID validation through the local Workload API for the Linux broker. Validated SPIFFE IDs become exact policy principals; legacy UID mapping remains available.
 - Add per-request online validation, bounded bearer-token input, explicit audience configuration, fail-closed provider errors, request-expiry binding to SVID expiry, and tests with an injected Workload API client.
 - Document py-spiffe 0.4.0 provenance caveat, bearer-token limitations, and outstanding live SPIRE/X.509-SVID work.
+- Merge optional SPIFFE JWT-SVID workload identity integration in PR #8; post-merge main CI run 42744955882 passed 75 tests on each supported Python version.
 - Add experimental Linux separate-process execution broker using SO_PEERCRED.
 - Derive caller principal from operator-configured OS UID mapping; reject caller-supplied identity and operation fields.
 - Expose only the fixed audit.append operation; no shell, arbitrary path, executable, or command support.

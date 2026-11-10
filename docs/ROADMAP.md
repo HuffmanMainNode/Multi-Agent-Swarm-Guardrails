@@ -11,7 +11,7 @@ Priorities are ordered by security dependency, not feature count.
 - [x] Experimental Linux separate-process broker for one fixed audit append operation.
 
 ## Critical engineering
-1. [ ] Optional SPIFFE JWT-SVID validation through local Workload API implemented on branch; complete live SPIRE integration/rotation/revocation tests and sender-constrained X.509-SVID/mTLS before marking complete.
+1. [x] Optional SPIFFE JWT-SVID validation through local Workload API merged in PR #8. Remaining: live SPIRE interoperability/rotation/revocation tests and sender-constrained X.509-SVID/mTLS.
 2. [x] Optional TUF policy client verifies signatures, metadata versions/expiry, snapshots, and target hashes from a local mirror. Remaining: repository publishing/signing workflow and independently protected rollback-resistant cache.
 3. Cryptographically bound capability delegation with strict attenuation.
 4. Typed protected-executor interface and explicit capability registry; no arbitrary shell execution.
