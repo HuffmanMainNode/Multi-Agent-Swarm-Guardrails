@@ -1,1 +1,45 @@
-{"schema_version":"1.0.0","name":"Multi-Agent Swarm Guardrails","short_name":"MASG","creator":"MrCakes931","repository":"https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails","license":"Apache-2.0","purpose":"Portable safety contracts and reference enforcement for autonomous agent systems.","adoption_model":"Cloneable, local-first, offline-capable; no required MASG-hosted service.","entrypoints":{"human":"README.md","machine":"llms.txt","contracts":"contracts/manifest.json","integration":"docs/INTEGRATION.md","security":"SECURITY.md","citation":"CITATION.cff"},"capabilities":["contract_catalog","local_policy_evaluation","local_evidence_hash_chain","repository_structure_verification"],"not_capabilities":["hosted_runtime","identity_provider","OS_sandbox","universal_kill_switch","security_certification"],"network_required_for_core":false,"status":"experimental"}
+{
+  "schema_version": "1.0.0",
+  "name": "Multi-Agent Swarm Guardrails",
+  "short_name": "MASG",
+  "creator": "MrCakes931",
+  "repository": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails",
+  "license": "Apache-2.0",
+  "purpose": "Portable safety contracts and reference enforcement for autonomous agent systems.",
+  "adoption_model": "Cloneable, local-first, offline-capable; no required MASG-hosted service.",
+  "entrypoints": {
+    "human": "README.md",
+    "machine": "llms.txt",
+    "contracts": "contracts/manifest.json",
+    "integration": "docs/INTEGRATION.md",
+    "security": "SECURITY.md",
+    "citation": "CITATION.cff",
+    "universal_language": "docs/UNIVERSAL_LANGUAGE_ARCHITECTURE.md",
+    "semantic_interchange": "docs/AI_SEMANTIC_INTERCHANGE.md",
+    "localization": "localization/README.md",
+    "glossary": "localization/glossary/core-concepts.json"
+  },
+  "capabilities": [
+    "contract_catalog",
+    "local_policy_evaluation",
+    "local_evidence_hash_chain",
+    "repository_structure_verification",
+    "cross_language_protocol_implementations",
+    "human_language_localization_catalog",
+    "experimental_semantic_frame_schema"
+  ],
+  "not_capabilities": [
+    "hosted_runtime",
+    "identity_provider",
+    "OS_sandbox",
+    "universal_kill_switch",
+    "security_certification",
+    "automatic_translation_service",
+    "guaranteed_translation_accuracy",
+    "model_internal_reasoning_access",
+    "universal_semantic_equivalence",
+    "AI_semantic_frame_authorization"
+  ],
+  "network_required_for_core": false,
+  "status": "experimental"
+}

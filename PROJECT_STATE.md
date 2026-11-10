@@ -204,3 +204,13 @@ CI result: PASS for Node.js 22, Python 3.11/3.12/3.13, Go vet/race, Rust fmt/Cli
 JavaScript is the fourth independent implementation. It is dependency-free, uses a bounded strict JSON parser, provides TypeScript declarations, and passes the same eight policy/time vectors and ten shared parser-negative fixtures. Its conformance report is PASS only for the eight policy/time vectors in the embedded profile. All ten MSC statuses remain NOT_TESTED. The caller supplies the principal and Date clock; neither is authenticated. It does not mediate protected side effects, provide replay, identity, sandbox, evidence, or recovery services.
 
 The implementation is tested but not yet merged. Do not count it as part of main until PR #22 is merged and post-merge CI passes.
+
+
+## Universal language and AI semantic interoperability checkpoint
+
+- PR #22 merged: independent JavaScript 0.1.0 reference evaluator with TypeScript declarations, Node.js 22 CI, strict bounded JSON parsing, and shared v1.0.0 vectors/parser-negative fixtures. Merge commit: `a6aa2677636a640d9c0f23280a87124a7401eed1`. Six final CI checks passed.
+- Four independent language implementations now exist: Python, Go, Rust, and JavaScript. The normative protocol remains language-neutral; no hosted MASG service is required.
+- A calendar-validation regression was added to the JavaScript evaluator to reject impossible RFC 3339 dates/times rather than accepting JavaScript date normalization.
+- The next update introduces BCP 47 localization packs, stable concept IDs, a human-review workflow, and an experimental UASR semantic-frame proposal. English is the source locale; Spanish is an untranslated template only.
+- UASR is not part of authorization protocol v1.0.0. It does not expose hidden model reasoning, authenticate identity, authorize actions, or prove truth.
+- Deterministic CBOR is a candidate encoding only. No custom binary language or token-efficiency claim is standardized.

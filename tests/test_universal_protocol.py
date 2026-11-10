@@ -181,6 +181,38 @@ class UniversalProtocolTests(unittest.TestCase):
                 self.assertTrue(report["limitations"])
                 self.assertTrue(all(item["status"] == "NOT_TESTED" for item in manifest["contract_status"]))
 
+    def test_localization_source_and_untranslated_template_match_schema(self):
+        schema = self.schemas["translation-pack.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        source = load_json(ROOT / "localization/locales/en/messages.json")
+        template = load_json(ROOT / "localization/locales/es/messages.template.json")
+        validator.validate(source)
+        validator.validate(template)
+        self.assertEqual(source["locale"], source["source_locale"])
+        self.assertTrue(all(item["status"] == "SOURCE" for item in source["messages"].values()))
+        self.assertTrue(all(item["status"] == "UNTRANSLATED" and item["text"] == "" for item in template["messages"].values()))
+
+        reviewed = dict(template)
+        reviewed["messages"] = dict(template["messages"])
+        first_id = next(iter(reviewed["messages"]))
+        reviewed["messages"][first_id] = {
+            "text": "Texto revisado",
+            "status": "HUMAN_REVIEWED",
+            "review": {"reviewer": "community-reviewer", "reviewed_at": "2026-11-10T05:00:00Z"},
+        }
+        validator.validate(reviewed)
+        reviewed["messages"][first_id].pop("review")
+        self.assertFalse(validator.is_valid(reviewed))
+
+    def test_semantic_frame_schema_requires_evidence_for_verified_claims(self):
+        schema = self.schemas["semantic-frame.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        frame = load_json(ROOT / "examples/semantic-frame.example.json")
+        validator.validate(frame)
+        invalid = json.loads(json.dumps(frame))
+        invalid["claims"][0].pop("evidence_refs")
+        self.assertFalse(validator.is_valid(invalid))
+
     def test_example_extension_manifest_matches_schema(self):
         manifest = load_json(
             ROOT / "extensions/examples/generic-tool-action/manifest.json"

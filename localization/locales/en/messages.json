@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "locale": "en",
+  "source_locale": "en",
+  "catalog_version": "1.0.0",
+  "text_direction": "ltr",
+  "messages": {
+    "masg.ui.authorization_denied": {
+      "text": "Authorization denied",
+      "status": "SOURCE"
+    },
+    "masg.ui.review_required": {
+      "text": "Human review required",
+      "status": "SOURCE"
+    },
+    "masg.ui.unknown_status": {
+      "text": "Status unknown",
+      "status": "SOURCE"
+    },
+    "masg.ui.source_fallback": {
+      "text": "Showing the authoritative source language because a reviewed translation is unavailable.",
+      "status": "SOURCE"
+    },
+    "masg.ui.translation_unreviewed": {
+      "text": "This translation has not been reviewed by a human contributor.",
+      "status": "SOURCE"
+    },
+    "masg.ui.conformance_scope": {
+      "text": "Conformance applies only to the tests and environment listed in the report.",
+      "status": "SOURCE"
+    }
+  }
+}

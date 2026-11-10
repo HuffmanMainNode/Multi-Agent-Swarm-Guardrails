@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "locale": "es",
+  "source_locale": "en",
+  "catalog_version": "1.0.0",
+  "text_direction": "ltr",
+  "messages": {
+    "masg.ui.authorization_denied": {
+      "text": "",
+      "status": "UNTRANSLATED"
+    },
+    "masg.ui.review_required": {
+      "text": "",
+      "status": "UNTRANSLATED"
+    },
+    "masg.ui.unknown_status": {
+      "text": "",
+      "status": "UNTRANSLATED"
+    },
+    "masg.ui.source_fallback": {
+      "text": "",
+      "status": "UNTRANSLATED"
+    },
+    "masg.ui.translation_unreviewed": {
+      "text": "",
+      "status": "UNTRANSLATED"
+    },
+    "masg.ui.conformance_scope": {
+      "text": "",
+      "status": "UNTRANSLATED"
+    }
+  }
+}

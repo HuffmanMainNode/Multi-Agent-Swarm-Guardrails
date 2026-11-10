@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:translation-pack:1.0.0",
+  "title": "MASG Translation Pack",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "locale",
+    "source_locale",
+    "catalog_version",
+    "messages"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$"
+    },
+    "source_locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$"
+    },
+    "catalog_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "text_direction": {
+      "enum": [
+        "ltr",
+        "rtl",
+        "auto"
+      ]
+    },
+    "messages": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^[a-z][a-z0-9]*(\\.[a-z0-9_-]+)+$": {
+          "type": "object",
+          "required": [
+            "text",
+            "status"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "maxLength": 4000
+            },
+            "status": {
+              "enum": [
+                "SOURCE",
+                "UNTRANSLATED",
+                "MACHINE_DRAFT",
+                "HUMAN_REVIEWED",
+                "NEEDS_REVISION"
+              ]
+            },
+            "review": {
+              "type": "object",
+              "required": [
+                "reviewer",
+                "reviewed_at"
+              ],
+              "properties": {
+                "reviewer": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "reviewed_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "notes": {
+                  "type": "string",
+                  "maxLength": 2000
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "HUMAN_REVIEWED"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "required": [
+                  "review"
+                ],
+                "properties": {
+                  "text": {
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "UNTRANSLATED"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "text": {
+                    "maxLength": 0
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "SOURCE"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "text": {
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
