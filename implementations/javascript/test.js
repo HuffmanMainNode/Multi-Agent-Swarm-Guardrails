@@ -17,7 +17,7 @@ test("all shared MASG v1.0.0 decision/time vectors pass", () => {
 });
 
 test("all shared parser-negative fixtures fail closed identically", () => {
-  assert.equal(parserVectors.length, 18);
+  assert.equal(parserVectors.length, 21);
   for (const fixture of parserVectors) {
     const result = evaluateJSON(Buffer.from(fixture.policy_json_hex, "hex"), Buffer.from(fixture.request_json_hex, "hex"), fixedNow);
     assert.equal(result.decision, "DENY", fixture.fixture_id);

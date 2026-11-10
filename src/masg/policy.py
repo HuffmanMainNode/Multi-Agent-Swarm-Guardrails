@@ -74,6 +74,20 @@ def _reject_constant(value: str) -> None:
     raise PolicyError(f"non-standard JSON numeric constant: {value}")
 
 
+def _reject_surrogates(value: Any) -> None:
+    """Reject escaped unpaired UTF-16 surrogates; protocol strings are Unicode scalar values."""
+    if isinstance(value, str):
+        if any(0xD800 <= ord(character) <= 0xDFFF for character in value):
+            raise PolicyError("JSON contains an unpaired Unicode surrogate")
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            _reject_surrogates(key)
+            _reject_surrogates(item)
+    elif isinstance(value, list):
+        for item in value:
+            _reject_surrogates(item)
+
+
 def _load(path: str | Path, *, max_bytes: int) -> dict[str, Any]:
     try:
         raw = Path(path).read_bytes()
@@ -90,6 +104,7 @@ def _load(path: str | Path, *, max_bytes: int) -> dict[str, Any]:
         )
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise PolicyError(f"invalid UTF-8 JSON: {exc}") from exc
+    _reject_surrogates(value)
     if not isinstance(value, dict):
         raise PolicyError("top-level JSON must be an object")
     return value
@@ -281,6 +296,7 @@ def _decode_json_object(raw: bytes, *, max_bytes: int, label: str) -> dict[str, 
         )
     except (UnicodeDecodeError, json.JSONDecodeError, RecursionError) as exc:
         raise PolicyError(f"{label} is not valid UTF-8 JSON: {exc}") from exc
+    _reject_surrogates(value)
     if not isinstance(value, dict):
         raise PolicyError(f"{label} JSON must be an object")
     return value
