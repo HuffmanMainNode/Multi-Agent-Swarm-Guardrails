@@ -26,7 +26,8 @@
     "repository_structure_verification",
     "cross_language_protocol_implementations",
     "human_language_localization_catalog",
-    "experimental_semantic_frame_schema"
+    "experimental_semantic_frame_schema",
+    "offline_human_language_fallback_resolvers"
   ],
   "not_capabilities": [
     "hosted_runtime",
@@ -38,7 +39,8 @@
     "guaranteed_translation_accuracy",
     "model_internal_reasoning_access",
     "universal_semantic_equivalence",
-    "AI_semantic_frame_authorization"
+    "AI_semantic_frame_authorization",
+    "automatic_machine_translation"
   ],
   "network_required_for_core": false,
   "status": "experimental"

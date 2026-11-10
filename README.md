@@ -38,7 +38,7 @@ The current shared suite establishes a narrow policy-decision and request-time b
 MASG separates human-language localization, programming-language implementations, and machine-readable semantic exchange. These layers are related but are not interchangeable.
 
 - [Universal Language Architecture](docs/UNIVERSAL_LANGUAGE_ARCHITECTURE.md) explains the human-language, programming-language, semantic, and encoding layers.
-- [Localization packs](localization/README.md) define portable BCP 47 language packages, stable message IDs, source-language fallback, and human-review status. English is the source locale; the Spanish file is an untranslated template, not a completed translation.
+- [Localization packs](localization/README.md) define portable BCP 47 language packages, stable message IDs, source-language fallback, and human-review status. Python and JavaScript offline resolvers use human-reviewed translations by default; machine drafts require explicit opt-in. English is the source locale; the Spanish file is an untranslated template, not a completed translation.
 - [Core concept glossary](localization/glossary/core-concepts.json) provides stable concept IDs independent of translated labels.
 - [Universal Agent Semantic Representation (UASR)](docs/AI_SEMANTIC_INTERCHANGE.md) is an experimental proposal for typed claims, provenance, and epistemic status. Its JSON schema and example are not part of MASG authorization protocol v1.0.0.
 - JSON remains the inspectable baseline. Deterministic CBOR is only a candidate compact encoding pending interoperability and efficiency benchmarks.

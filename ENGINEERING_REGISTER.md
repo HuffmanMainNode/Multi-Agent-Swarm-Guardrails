@@ -95,3 +95,6 @@ JavaScript 0.1.0, Node.js 22+, dependency-free, TypeScript declarations included
 | UASR semantic interchange | Experimental proposal | Typed JSON semantic frame with explicit epistemic status, provenance, and evidence requirement for VERIFIED claims. No production parser, transport, model adapter, or authorization role. |
 | Compact encoding | Research candidate | JSON is the inspectable baseline; deterministic CBOR requires benchmarks and independent round-trip conformance before adoption. No custom binary format or token-efficiency claim. |
 
+
+
+| Offline localization resolver | Python and JavaScript implementation under PR review | Uses human-reviewed translations by default, source fallback for missing/unreviewed/needs-revision entries, explicit machine-draft opt-in, and reviewer metadata checks; no network translation or full BCP 47 registry validation. |

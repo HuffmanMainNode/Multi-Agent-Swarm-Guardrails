@@ -34,3 +34,16 @@ The package includes TypeScript declarations. It does not require Python, Go, Ru
 The caller supplies the principal and JavaScript Date clock. Neither is authenticated by this package. An ALLOW is a policy decision, not proof that an action was safely executed.
 
 Passing shared fixtures does not certify a deployment or establish MSC conformance. The implementation manifest and conformance report state its narrow scope.
+
+## Offline localization helper
+
+The `./localization` subpath exports `resolveMessage(sourcePack, localePack, messageId, options)`. It uses HUMAN_REVIEWED text by default, falls back to the source locale for untranslated or needs-revision entries, and requires explicit `{ allowMachineDrafts: true }` to use a MACHINE_DRAFT. It performs no network access or machine translation.
+
+```js
+import { resolveMessage } from "@masg/reference-javascript/localization";
+
+const result = resolveMessage(englishPack, spanishPack, "masg.ui.authorization_denied");
+console.log(result.text, result.locale, result.usedFallback);
+```
+
+The helper performs runtime consistency checks, not full JSON Schema or IANA BCP 47 registry validation. Validate packs against the repository schema before distribution.
