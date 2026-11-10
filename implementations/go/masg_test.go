@@ -59,6 +59,15 @@ func TestDuplicateJSONKeysFailClosed(t *testing.T) {
 	}
 }
 
+func TestInvalidUTF8FailsClosed(t *testing.T) {
+	policy := []byte(`{"version":"p1","default_effect":"DENY","rules":[]}`)
+	request := []byte{0xff, 0xfe, '{', '}'}
+	got := EvaluateJSON(policy, request, fixedClock())
+	if got.Decision != "DENY" || got.ReasonCode != "REQUEST_INVALID" {
+		t.Fatalf("invalid UTF-8 did not fail closed: %+v", got)
+	}
+}
+
 func TestUnknownRequestFieldFailsClosed(t *testing.T) {
 	policy := []byte(`{"version":"p1","default_effect":"DENY","rules":[]}`)
 	request := Request{

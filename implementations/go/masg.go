@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 const (
@@ -221,6 +222,9 @@ func EvaluateJSON(policyJSON, requestJSON []byte, now time.Time) Result {
 }
 
 func decodeUniqueJSON(raw []byte, target any) error {
+	if !utf8.Valid(raw) {
+		return errors.New("invalid UTF-8")
+	}
 	if len(raw) == 0 || len(raw) > maxJSONBytes {
 		return errors.New("JSON size invalid")
 	}
