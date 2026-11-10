@@ -267,9 +267,6 @@ func decodeUniqueJSON(raw []byte, target any, maxBytes int) error {
 }
 
 func parseValue(decoder *json.Decoder, depth int) (any, error) {
-	if depth > maxJSONDepth {
-		return nil, errors.New("JSON nesting too deep")
-	}
 	token, err := decoder.Token()
 	if err != nil {
 		return nil, err
@@ -277,6 +274,9 @@ func parseValue(decoder *json.Decoder, depth int) (any, error) {
 	delimiter, isDelimiter := token.(json.Delim)
 	if !isDelimiter {
 		return token, nil
+	}
+	if depth > maxJSONDepth {
+		return nil, errors.New("JSON nesting too deep")
 	}
 	switch delimiter {
 	case '{':
