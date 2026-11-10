@@ -27,7 +27,12 @@ def main(argv: list[str] | None = None) -> int:
     broker_sub = broker.add_subparsers(dest="broker_command", required=True)
     serve = broker_sub.add_parser("serve", help="serve the fixed audit.append operation")
     serve.add_argument("--socket", required=True)
-    serve.add_argument("--policy", required=True)
+    policy_source = serve.add_mutually_exclusive_group(required=True)
+    policy_source.add_argument("--policy", help="load an operator-managed local policy file")
+    policy_source.add_argument("--tuf-repository", help="load a policy from a local TUF mirror")
+    serve.add_argument("--tuf-bootstrap-root", help="out-of-band trusted TUF root metadata")
+    serve.add_argument("--tuf-cache", help="persistent protected TUF metadata/target cache")
+    serve.add_argument("--policy-target", default="policies/active.json")
     serve.add_argument("--principal-map", required=True)
     serve.add_argument("--replay-db", required=True)
     serve.add_argument("--ledger", required=True)
@@ -51,7 +56,9 @@ def main(argv: list[str] | None = None) -> int:
             serve_broker(
                 socket_path=args.socket, policy_path=args.policy,
                 principal_map_path=args.principal_map, replay_db=args.replay_db,
-                ledger_path=args.ledger,
+                ledger_path=args.ledger, tuf_repository=args.tuf_repository,
+                tuf_bootstrap_root=args.tuf_bootstrap_root, tuf_cache=args.tuf_cache,
+                policy_target=args.policy_target,
             )
         except (BrokerError, OSError, ValueError) as exc:
             print(json.dumps({"decision": "DENY", "reason_code": "BROKER_START_FAILED", "detail": str(exc)}), file=sys.stderr)

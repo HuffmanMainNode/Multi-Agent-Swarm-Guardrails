@@ -4,6 +4,8 @@ Adopter guidance; no recovery engine is implemented.
 
 Use separate agent identities, short-lived scoped credentials, reviewed policy changes, pinned dependencies/tool-server versions, restricted filesystem and egress, bounded recursion/retries/cost/time, and evidence storage outside agent write authority.
 
+For policy distribution, prefer TUF mode when publisher authentication and update freshness are required. Provision the root bootstrap independently of the mirror, keep the TUF metadata cache persistent and protected, and do not restore older cache snapshots without a trust recovery review. The local mirror can be copied into an offline environment; MASG does not host it. Keep private TUF signing keys out of the repository and ordinary backups.
+
 For the experimental Linux broker:
 - Run it under a dedicated non-root service account.
 - Run each agent under a distinct OS UID when distinct authority is required.

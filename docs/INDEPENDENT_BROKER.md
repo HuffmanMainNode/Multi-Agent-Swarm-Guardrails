@@ -30,7 +30,7 @@ Unknown UIDs, malformed requests, denied policy, replay-store errors, replay, an
 - It does not authenticate an agent cryptographically or establish identity beyond the local OS UID.
 - It does not distinguish two agents running under the same OS UID.
 - It does not protect against root, the broker service account, a compromised host kernel, or an attacker who can alter broker-owned state.
-- It does not sign policy, prevent policy rollback, or provide distributed revocation/replay.
+- Static policy mode does not authenticate policy publishers. Optional TUF mode verifies policy publisher metadata and target bytes; its cache rollback resistance depends on protected persistent storage.
 - It does not guarantee that every other application side effect uses the broker.
 - It does not provide a portable Windows/macOS broker. This reference requires Linux `SO_PEERCRED`.
 - It is not a sandbox. The broker's own process and filesystem permissions must be configured by the operator.
@@ -74,6 +74,24 @@ Example principal map, where `1001` must be replaced with the actual dedicated a
 ```
 
 Both files must be regular files and must not be group-writable or world-writable. Keep them in operator-controlled directories. Restart the broker to load a reviewed policy change.
+
+## TUF-backed policy source
+
+Instead of `--policy`, operators may supply a local TUF mirror and an out-of-band bootstrap root:
+
+```bash
+masg broker serve \\
+  --socket /run/masg/broker.sock \\
+  --tuf-repository /srv/masg/tuf-mirror \\
+  --tuf-bootstrap-root /etc/masg/trusted-root.json \\
+  --tuf-cache /var/lib/masg/tuf-cache \\
+  --policy-target policies/active.json \\
+  --principal-map /etc/masg/principals.json \\
+  --replay-db /var/lib/masg/replay.sqlite3 \\
+  --ledger /var/lib/masg/evidence.jsonl
+```
+
+Install the optional dependency with `python -m pip install 'masg-guardrails[tuf]'`. The bootstrap root must be provisioned out-of-band. The TUF metadata cache must persist and be protected against rollback. Only one broker instance may use a given cache at a time. Any TUF verification or retrieval failure prevents startup; the broker never falls back to unsigned policy. See [TUF Policy Trust](TUF_POLICY_TRUST.md) for the trust model, mirror layout, cache assumptions, and limitations.
 
 ## Start the broker
 

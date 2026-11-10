@@ -16,6 +16,7 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 - Local JSONL evidence ledger with a SHA-256 hash chain and verifier.
 - Experimental separate-process Linux broker for one fixed protected operation: `audit.append`.
 - Broker derives caller UID from Linux SO_PEERCRED, maps it to a configured principal, rejects caller-supplied identity/operation, requires canonical UUIDv4 request IDs, consumes them before execution, and writes to its own bounded evidence ledger.
+- Optional python-tuf policy verification from an operator-managed local mirror, with out-of-band bootstrap root and persistent metadata cache.
 - Structural repository conformance CLI, examples, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
 
 ## Quick start
@@ -25,7 +26,7 @@ Requires Python 3.11+.
 python -m venv .venv
 # Linux/macOS: . .venv/bin/activate
 # Windows: .venv\\Scripts\\Activate.ps1
-python -m pip install -e .
+python -m pip install -e .  # add [tuf] for TUF policy-source support
 masg verify --root .
 masg evaluate --policy examples/policy.json --request examples/request.json
 python -m unittest discover -s tests -v
@@ -37,7 +38,7 @@ Without `--replay-db`, replay protection is disabled. With it, an ALLOW consumes
 
 The broker is a separate process, not an in-process middleware hook. It uses Linux Unix-domain-socket peer credentials to derive the caller UID, maps that UID to an operator-configured principal, and authorizes one fixed operation: appending a bounded event to the broker-owned evidence ledger. The client cannot choose a principal, action, target, scope, path, executable, or command.
 
-See [docs/INDEPENDENT_BROKER.md](docs/INDEPENDENT_BROKER.md) for dedicated service-account setup, UID separation, policy, socket permissions, operation, and residual risks.
+See [docs/INDEPENDENT_BROKER.md](docs/INDEPENDENT_BROKER.md) for dedicated service-account setup, UID separation, policy, socket permissions, operation, and residual risks. Optional TUF-backed policy verification is documented in [docs/TUF_POLICY_TRUST.md](docs/TUF_POLICY_TRUST.md).
 
 This first broker is deliberately narrow. It is not an arbitrary tool executor, a sandbox, or proof that every side effect in an adopting application is mediated. Processes sharing a UID share the same broker identity.
 
@@ -69,14 +70,14 @@ The evaluator currently emits ALLOW, REVIEW_REQUIRED, or DENY. Unknown, malforme
 This is an experimental reference implementation, not a certified security product:
 - Principal strings in the local evaluator are assertions, not authenticated identities.
 - The broker's identity signal is the local OS UID, not cryptographic workload identity.
-- Policy files are not cryptographically signed or provenance-verified.
+- Static policy-file mode is not publisher-authenticated. Optional TUF mode verifies policy metadata and target signatures/hashes; its cache must be protected from rollback.
 - SQLite replay protection is local; a database rollback can reset its history.
 - Delegation cycle checks are not capability attenuation.
 - A local hash chain cannot prevent whole-file replacement by an attacker controlling the file and checkpoint.
 - The structural verifier does not test a live deployment or prove complete enforcement mediation.
 - The broker supports Linux only and exposes one fixed audit append operation.
 - Python in-process code cannot isolate a hostile process controlling the same interpreter.
-- No MCP, A2A, ACS, OPA, Cedar, SPIFFE/SPIRE, or OS sandbox adapter is implemented.
+- No MCP, A2A, ACS, OPA, Cedar, SPIFFE/SPIRE, or OS sandbox adapter is implemented. MASG does not provide a TUF repository publisher or manage signing keys.
 
 Read [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md), and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 

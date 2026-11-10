@@ -11,6 +11,7 @@ Last updated: 2026-11-10
 | Replay resistance | Local reference control | SQLite atomic one-time UUIDv4 request-ID consumption in broker; rollback/fresh IDs remain possible |
 | Evidence ledger | Experimental local format | SHA-256 chain; broker serializes its own appends; no independent checkpoint or anti-rollback |
 | Structural verifier | Implemented | Checks repository structure/catalog shape; does not verify deployments |
+| Policy publisher authentication | Optional experimental TUF client | python-tuf verifies metadata signatures, versions, expiry, and policy target hashes from a local mirror; bootstrap root is out-of-band; cache rollback protection is an adopter responsibility |
 | Independent execution broker | Implemented as experimental Linux reference | Separate process, SO_PEERCRED UID mapping, fixed audit.append allowlist, five-minute TTL, UUIDv4 IDs, 32-level JSON cap, bounded inputs, 32-handler cap |
 | Broker configuration | Hardened baseline | Rejects symlink/special config files and group/world-writable config/state/socket parent directories |
 | Broker tests | PASS in CI | 46 tests per Python version, 3.11/3.12/3.13; tested head 6885d489f8aa971c5d409c8de5753a539ef540e5; merged PR #4 |
@@ -20,7 +21,7 @@ Last updated: 2026-11-10
 
 ## Critical gaps
 
-Cryptographic workload identity and revocation; signed policy provenance and anti-rollback; authenticated request identity and distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
+Cryptographic workload identity and revocation; stronger rollback-resistant TUF cache storage; TUF repository publishing/signing workflow; authenticated request identity and distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
 
 ## Validation boundary
 

@@ -130,12 +130,34 @@ class ExecutionBroker:
     """Authorize and execute the fixed audit.append operation."""
 
     def __init__(
-        self, *, policy_path: str | Path, principal_map_path: str | Path,
+        self, *, policy_path: str | Path | None = None, principal_map_path: str | Path,
         replay_db: str | Path, ledger_path: str | Path,
+        tuf_repository: str | Path | None = None,
+        tuf_bootstrap_root: str | Path | None = None,
+        tuf_cache: str | Path | None = None,
+        policy_target: str = "policies/active.json",
     ) -> None:
         if not sys.platform.startswith("linux") or not hasattr(socket, "SO_PEERCRED"):
             raise BrokerError("execution broker currently supports Linux only")
-        policy_file = _regular_operator_file(policy_path, "policy file")
+        tuf_args = (tuf_repository, tuf_bootstrap_root, tuf_cache)
+        if policy_path is not None:
+            if any(value is not None for value in tuf_args):
+                raise BrokerError("choose either a static policy or TUF policy source, not both")
+            policy_file = _regular_operator_file(policy_path, "policy file")
+        else:
+            if not all(value is not None for value in tuf_args):
+                raise BrokerError("TUF policy source requires repository, bootstrap root, and cache")
+            try:
+                from .trust import fetch_verified_policy
+                policy_file = fetch_verified_policy(
+                    repository_root=tuf_repository,
+                    bootstrap_root=tuf_bootstrap_root,
+                    cache_dir=tuf_cache,
+                    target_name=policy_target,
+                )
+                policy_file = _regular_operator_file(policy_file, "verified TUF policy target")
+            except Exception as exc:
+                raise BrokerError("TUF policy verification failed; protected broker startup denied") from exc
         self.policy = load_policy(policy_file)
         self.principals = _load_principals(principal_map_path)
         replay_path = Path(replay_db)
@@ -273,8 +295,10 @@ class _ThreadedUnixServer(socketserver.ThreadingMixIn, socketserver.UnixStreamSe
 
 
 def serve(
-    *, socket_path: str | Path, policy_path: str | Path, principal_map_path: str | Path,
-    replay_db: str | Path, ledger_path: str | Path,
+    *, socket_path: str | Path, policy_path: str | Path | None = None,
+    principal_map_path: str | Path, replay_db: str | Path, ledger_path: str | Path,
+    tuf_repository: str | Path | None = None, tuf_bootstrap_root: str | Path | None = None,
+    tuf_cache: str | Path | None = None, policy_target: str = "policies/active.json",
 ) -> None:
     """Serve until interrupted. Existing socket paths are never unlinked automatically."""
     if not sys.platform.startswith("linux"):
@@ -286,6 +310,8 @@ def serve(
     broker = ExecutionBroker(
         policy_path=policy_path, principal_map_path=principal_map_path,
         replay_db=replay_db, ledger_path=ledger_path,
+        tuf_repository=tuf_repository, tuf_bootstrap_root=tuf_bootstrap_root,
+        tuf_cache=tuf_cache, policy_target=policy_target,
     )
     server = _ThreadedUnixServer(str(path), _RequestHandler)
     server.broker = broker  # type: ignore[attr-defined]

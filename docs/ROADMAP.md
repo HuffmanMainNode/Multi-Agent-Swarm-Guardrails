@@ -12,7 +12,7 @@ Priorities are ordered by security dependency, not feature count.
 
 ## Critical engineering
 1. Authenticated workload identity and revocation integration beyond local OS UID.
-2. Signed policy provenance, freshness, and anti-rollback update process.
+2. Complete TUF policy publishing/signing workflow and independently protected rollback-resistant metadata cache; client verification is now available as an optional integration.
 3. Cryptographically bound capability delegation with strict attenuation.
 4. Typed protected-executor interface and explicit capability registry; no arbitrary shell execution.
 5. Expand broker operation-by-operation only after threat model, allowlist, resource limits, authorization, evidence, and bypass tests exist.

@@ -6,7 +6,7 @@ The reference package parses local JSON; requires deny-by-default; matches princ
 The broker derives peer UID through Linux SO_PEERCRED, maps it to a configured principal, rejects caller-supplied identity/operation fields, applies a five-minute maximum request lifetime, consumes request IDs locally, and appends bounded events to its own ledger.
 
 ## Not implemented
-No cryptographic workload identity, credential issuance/revocation, signed policy, signed evidence, trusted timestamp, immutable remote log, distributed replay cache, arbitrary-tool broker, general filesystem/network mediation, complete action-path discovery, independent guardian, human approval binding, or legality decision. It does not prove all application side effects traverse the broker.
+No cryptographic workload identity, credential issuance/revocation, signed evidence, trusted timestamp, immutable remote log, distributed replay cache, arbitrary-tool broker, general filesystem/network mediation, complete action-path discovery, independent guardian, human approval binding, or legality decision. Optional TUF-backed policy publisher authentication is available through a local mirror; static policy mode remains unsigned and TUF cache rollback protection depends on protected persistent storage. It does not prove all application side effects traverse the broker.
 
 ## Adopter requirements
 Use distinct OS identities for agents; bind decisions to authenticated identities; protect policy source; mediate every protected side effect; use scoped credentials; implement revocation and replay protection; isolate enforcement where needed; protect evidence outside agent authority; and test deployed paths.

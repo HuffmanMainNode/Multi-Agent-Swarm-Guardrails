@@ -13,6 +13,9 @@
 
 - Merge the independent Linux broker in PR #4; main-branch CI passed all 46 tests on Python 3.11, 3.12, and 3.13.
 
+- Add optional python-tuf 7.x policy retrieval from an operator-managed local mirror; verify out-of-band bootstrap root, metadata signatures/versions/expiry, snapshot consistency, and target hashes before broker policy load.
+- Add fail-closed TUF broker startup mode, persistent metadata cache requirements, optional dependency extra, TUF adversarial tests, and publishing/operations guidance. Static policy mode remains unauthenticated.
+
 ## 0.1.0 foundation
 - Ten versioned mandatory safety contract definitions.
 - Local Python deny-by-default policy evaluator.

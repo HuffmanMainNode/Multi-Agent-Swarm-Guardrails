@@ -1,6 +1,6 @@
 # Integration Guide
 
-Place MASG at the protected side-effect boundary. Do not rely on prompts, agent self-report, or UI confirmation as sole authorization.
+Place MASG at the protected side-effect boundary. Do not rely on prompts, agent self-report, or UI confirmation as sole authorization. Where policy publisher authentication and update freshness are required, use the optional TUF policy source with an out-of-band bootstrap root and persistent protected cache.
 
 1. Receive a typed action request.
 2. Bind it to authenticated principal from host identity system.
