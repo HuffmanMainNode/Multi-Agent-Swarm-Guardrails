@@ -1,0 +1,79 @@
+{
+  "manifest_version": "1.0.0",
+  "implementation_id": "masg-go-reference",
+  "name": "MASG Go Reference Evaluator",
+  "version": "0.1.0",
+  "source_url": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/tree/main/implementations/go",
+  "languages": [
+    "Go"
+  ],
+  "runtimes": [
+    "Go standard library"
+  ],
+  "protocol_versions": [
+    "1.0.0"
+  ],
+  "supported_profiles": [
+    "embedded"
+  ],
+  "contract_status": [
+    {
+      "contract_id": "MSC-001",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-002",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-003",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-004",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-005",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-006",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-007",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-008",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-009",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-010",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    }
+  ],
+  "limitations": [
+    "Only policy-decision semantics and portable vectors are implemented.",
+    "Principal authentication, execution mediation, replay storage, evidence integrity, isolation and recovery are not implemented.",
+    "No Go adapter has been independently security assessed."
+  ],
+  "conformance_report": "conformance-report.json",
+  "maintainer": "MrCakes931",
+  "updated_at": "2026-11-10T03:14:35Z"
+}

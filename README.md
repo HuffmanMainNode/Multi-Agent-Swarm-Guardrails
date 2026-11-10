@@ -85,6 +85,8 @@ Read [docs/UNIVERSAL_PROTOCOL.md](docs/UNIVERSAL_PROTOCOL.md), [SECURITY.md](SEC
 
 MASG's normative protocol is language-neutral. Python is the first reference implementation, not a required runtime. The versioned specification, JSON Schemas, portable decision vectors, and implementation guide are in [spec/](spec/README.md), [schemas/](schemas/), [vectors/](vectors/), and [docs/IMPLEMENTING_IN_ANY_LANGUAGE.md](docs/IMPLEMENTING_IN_ANY_LANGUAGE.md). Independent Rust, Go, Java, C#, JavaScript/TypeScript, and future implementations can consume the same contracts and test vectors without depending on the Python package.
 
+A first standalone Go evaluator is now available under [implementations/go/](implementations/go/README.md). It consumes the shared v1.0.0 vectors without Python or third-party Go modules. Its PASS is limited to portable policy-decision vectors in the embedded profile; it does not authenticate identities or mediate execution. Rust, Java, C#, and JavaScript/TypeScript implementations have not yet been added.
+
 A conformance PASS applies only to the implementation, version, profile, tests, and environment reported. It is not certification or proof of production security.
 
 ## Interoperability
