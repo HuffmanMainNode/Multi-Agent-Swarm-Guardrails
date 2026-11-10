@@ -78,7 +78,7 @@ UASR is experimental and separate from authorization protocol v1.0.0. No hidden-
 
 - [x] Publish experimental UEFP introduction and design principles.
 - [x] Publish an experimental participant-manifest JSON Schema and illustrative example.
-- [ ] Define normative handshake messages and a versioned state machine.
+- [x] Publish experimental UEFP 0.1.0 message-envelope schema and state-machine draft; normative stabilization and implementation remain open.
 - [ ] Add positive and negative participant-manifest and handshake test vectors.
 - [ ] Add independent validators and conformance tests in multiple languages.
 - [ ] Design consent and exchange metadata for data scope, purpose, retention, attribution, and license.

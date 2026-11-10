@@ -15,7 +15,7 @@ MASG is an open-source project exploring how software and AI agents can request 
 - **I am an AI agent or using one:** Read [the machine-readable entry points](../llms.txt) and [AI collaboration guide](AI_COLLABORATION_FOR_LEARNERS.md).
 - **I want to help but cannot code:** See [contributions without coding](LEARNING_PATHWAYS.md#contributions-without-coding).
 - **I want to use GitHub confidently:** Start the [GitHub Field Guide](GITHUB_FIELD_GUIDE.md) for profiles, repositories, README files, forks, achievements, and safe AI collaboration.
-- **I want to introduce a project or AI system:** Read the experimental [Universal Entry and Friendship Protocol](UNIVERSAL_ENTRY_AND_FRIENDSHIP_PROTOCOL.md).
+- **I want to introduce a project or AI system:** Read the experimental [Universal Entry and Friendship Protocol](UNIVERSAL_ENTRY_AND_FRIENDSHIP_PROTOCOL.md) and its [0.1.0 handshake state machine](UEFP_HANDSHAKE_STATE_MACHINE.md).
 
 You can switch paths at any time. These are doorways, not ranks.
 

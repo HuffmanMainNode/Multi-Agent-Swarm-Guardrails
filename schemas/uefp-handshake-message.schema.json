@@ -1,0 +1,280 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:uefp-handshake-message:0.1.0",
+  "title": "UEFP Handshake Message",
+  "description": "Experimental transport-independent message envelope. Validation does not authenticate sender identity or authorize actions.",
+  "type": "object",
+  "required": [
+    "protocol_version",
+    "session_id",
+    "message_id",
+    "sender_id",
+    "recipient_id",
+    "message_type",
+    "payload"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": "0.1.0"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "message_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "sender_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "recipient_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "message_type": {
+      "enum": [
+        "INTRODUCE",
+        "RESPONSE",
+        "PROPOSE",
+        "ACCEPT",
+        "DECLINE",
+        "EXCHANGE",
+        "CLOSE"
+      ]
+    },
+    "in_reply_to": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "INTRODUCE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "manifest"
+            ],
+            "properties": {
+              "manifest": {
+                "$ref": "urn:masg:schema:participant-manifest:0.1.0"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "RESPONSE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "manifest"
+            ],
+            "properties": {
+              "manifest": {
+                "$ref": "urn:masg:schema:participant-manifest:0.1.0"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "PROPOSE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "proposal_id",
+              "topic",
+              "data_scope",
+              "format",
+              "retention",
+              "intended_use",
+              "license",
+              "provenance"
+            ],
+            "properties": {
+              "proposal_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "topic": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "data_scope": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "format": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "retention": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "intended_use": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "license": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "provenance": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "enum": [
+              "ACCEPT",
+              "DECLINE"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "proposal_id"
+            ],
+            "properties": {
+              "proposal_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "EXCHANGE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "proposal_id",
+              "content_format",
+              "content"
+            ],
+            "properties": {
+              "proposal_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "content_format": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "content": {
+                "type": [
+                  "object",
+                  "array",
+                  "string",
+                  "number",
+                  "boolean",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "CLOSE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "enum": [
+                  "COMPLETED",
+                  "DECLINED",
+                  "CANCELLED",
+                  "POLICY_STOP",
+                  "ERROR"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

@@ -34,6 +34,7 @@ jobs:
           python -m json.tool examples/request.json > /dev/null
           python -m json.tool examples/broker-policy.example.json > /dev/null
           python -m json.tool examples/broker-principals.example.json > /dev/null
+          python -m json.tool examples/participant-manifest.example.json > /dev/null
           for file in schemas/*.json vectors/v1.0.0/*.json implementations/go/*.json implementations/rust/*.json implementations/javascript/*.json extensions/examples/generic-tool-action/*.json; do python -m json.tool "$file" > /dev/null; done
 
   go-reference:

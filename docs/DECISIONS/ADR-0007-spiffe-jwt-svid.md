@@ -1,4 +1,4 @@
-# ADR-0005: Optional SPIFFE JWT-SVID Workload Identity
+# ADR-0007: Optional SPIFFE JWT-SVID Workload Identity
 
 - Status: Accepted for experimental integration
 - Date: 2026-11-10
