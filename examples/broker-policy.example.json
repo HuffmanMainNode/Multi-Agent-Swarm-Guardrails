@@ -1,0 +1,14 @@
+{
+  "version": "broker-policy-v1",
+  "default_effect": "DENY",
+  "rules": [
+    {
+      "id": "agent-may-append-evidence",
+      "principals": ["agent:evidence-writer"],
+      "actions": ["audit.append"],
+      "targets": ["audit-ledger"],
+      "scopes": ["append"],
+      "effect": "ALLOW"
+    }
+  ]
+}

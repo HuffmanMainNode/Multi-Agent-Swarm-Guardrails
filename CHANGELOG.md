@@ -1,13 +1,13 @@
 # Changelog
 
 ## Unreleased
-- Reject duplicate JSON keys, non-standard numeric constants, unknown fields, malformed selectors, and oversized policy/request inputs.
-- Require strict timezone-aware RFC3339 timestamps and reject naive evaluation clocks.
-- Add optional atomic SQLite request-ID consumption and fail-closed replay-store errors.
-- Add concurrent replay tests and replay persistence tests.
-- Harden evidence-ledger parsing and fsync appended records.
-- Expand contract-catalog structural validation and adversarial tamper tests.
-- Record second-pass adversarial review findings and explicit residual limitations.
+- Add experimental Linux separate-process execution broker using SO_PEERCRED.
+- Derive caller principal from operator-configured OS UID mapping; reject caller-supplied identity and operation fields.
+- Expose only the fixed audit.append operation; no shell, arbitrary path, executable, or command support.
+- Add bounded broker requests/events, five-minute maximum request lifetime, three-second socket read timeout, and 32-handler cap.
+- Add local replay consumption before protected ledger append and fail-closed behavior.
+- Add broker CLI serve/append commands, examples, ADR, deployment guidance, and adversarial tests.
+- Update architecture, limitations, integration, operations, roadmap, and engineering checkpoint.
 
 ## 0.1.0 foundation
 - Ten versioned mandatory safety contract definitions.

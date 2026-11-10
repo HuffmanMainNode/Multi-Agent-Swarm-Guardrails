@@ -10,41 +10,21 @@ License: Apache-2.0
 Public, portable, independently verifiable safety substrate for autonomous agents and swarms. Not a hosted service or centralized command center.
 
 ## Current milestone
-Initial foundation merged in PR #1. Second-pass hardening merged in PR #2.
+Initial foundation merged in PR #1. Input/replay hardening merged in PR #2. Adversarial review records merged in PR #3.
 
-Second-pass merge commit: 4a8adac5308e0414018484f68ca4b28d43a053cd.
-PR #2 tested head: aab694b0a58a6ccc741376628498bc9820b88107.
+## New critical engineering branch
+Branch: security/independent-linux-execution-broker
 
-## Implemented reference capabilities
-- Ten versioned mandatory safety contract definitions.
-- Python local policy evaluator with strict JSON parsing, bounded inputs, exact selectors, explicit-deny precedence, strict RFC3339 timestamps, and deny-by-default behavior.
-- Optional SQLite atomic one-time request-ID consumption.
-- Local JSONL hash-chain evidence ledger with strict verification and file fsync.
-- Structural verifier for repository structure and contract catalog shape.
-- CLI, examples, unit tests, Python 3.11/3.12/3.13 CI.
-- Architecture, threat model, security boundaries, interoperability, limitations, profiles, discovery metadata, governance, contribution templates, ADRs, and adversarial test record.
+Adds an experimental Linux-only separate-process broker for exactly one fixed operation: audit.append. It derives caller UID using SO_PEERCRED, maps UID to an operator-configured principal, does not accept client-supplied identity or operation fields, applies deny-by-default policy, limits request TTL to five minutes, consumes a request ID in SQLite, and appends bounded event data to a broker-owned ledger.
 
-## Validation evidence
-GitHub Actions run 42734201509 passed all three matrix jobs on the tested PR head. Each job ran 28 unit tests, the structural/contract verifier, and JSON syntax checks. All passed.
+New CLI:
+- masg broker serve --socket ... --policy ... --principal-map ... --replay-db ... --ledger ...
+- masg broker append --socket ... --request ...
 
-The test run initially exposed a newline-encoding defect in the hardened JSONL writer. The job log was inspected, the defect corrected, and the matrix rerun successfully. The final result is recorded in docs/STRESS_TEST_RESULTS.md.
+New tests exercise UID mapping, caller identity spoofing, schema restrictions, oversized event rejection, duplicate JSON, excessive TTL, policy denial, replay store failure, corrupt ledger, concurrent duplicate requests, and real Unix socket peer-credential roundtrip.
 
-## Current truth and limits
-- Experimental reference implementation, not a production security boundary.
-- Principal strings are not authenticated.
-- Policy source is not signed or rollback-protected.
-- Replay protection is optional and local; database rollback and fresh fabricated IDs remain possible.
-- Delegation cycle rejection is not capability attenuation.
-- Ledger is single-writer and replaceable without an independent checkpoint.
-- Structural verification does not certify live deployment.
-- No external protocol adapters, isolated enforcement process, hardware attestation, fuzz campaign, penetration test, or independent review.
+## Security limitations
+Linux only. Processes sharing a UID share an identity. Policy and UID map require operator-controlled permissions and are loaded at startup. Local replay DB can be rolled back. Only audit append is exposed. No arbitrary tool executor, shell, filesystem proxy, network proxy, cryptographic workload identity, revocation, signed policy, anti-rollback, general sandbox, complete mediation proof, fuzz campaign, penetration test, or independent review.
 
-## Next engineering priorities
-1. Authenticated workload identity and revocation integration.
-2. Signed policy provenance and anti-rollback policy updates.
-3. Capability-set delegation attenuation with cryptographically bound delegations.
-4. Isolated enforcement broker and protected executor; prove bypass behavior across declared paths.
-5. Independent evidence checkpoint and portable signed evidence profile.
-6. Deployment-level conformance runner, schema validation, fuzzing, performance tests, and independent review.
-
-Keep implementation, specification, plans, and independent verification distinct. Never invent tests, benchmarks, adoption, or certification.
+## Next
+Wait for the new CI matrix. Investigate all failures from logs before changes. Merge only after the complete matrix and tests pass. Then perform a final source/tree review and update the register with exact CI and merge evidence.
