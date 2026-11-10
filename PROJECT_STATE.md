@@ -185,3 +185,22 @@ Rust CI initially caught formatting and Clippy warnings in the new test helper; 
 Scope: ten deterministic parser-negative regressions. They are not exhaustive fuzzing, parser memory-safety proof, hostile-load resilience, identity conformance, runtime mediation, or deployment certification. Go/Rust conformance reports remain scoped to the eight positive policy/time vectors; parser-negative regression results are separate CI evidence. All ten MSC statuses remain NOT_TESTED for both independent implementations.
 
 Next quality gate: differential/property testing and fuzzing across the three evaluators; then a Node/TypeScript reference adapter and a portable offline conformance runner. Keep the identity, enforcement, recovery, and supply-chain gaps open.
+
+
+## JavaScript reference implementation (under review)
+
+Branch: `implementations/javascript-reference`
+Node.js 22+, dependency-free ES module with TypeScript declaration file. Intended to consume the same eight decision/time vectors and ten parser-negative fixtures as Python, Go, and Rust. Implements a bounded strict JSON parser, duplicate-key rejection, UTF-8 validation, field/selector bounds, UUIDv4, RFC3339 time checks, and exact-match deny-by-default decisions. CI and conformance report remain pending; do not count it as a supported implementation until tests pass.
+
+
+## Independent JavaScript implementation milestone
+
+Branch: `implementations/javascript-reference`
+Implementation: `implementations/javascript/`, package `@masg/reference-javascript` 0.1.0.
+Tested source revision: `e09527b28b28198b1f7a41a055f3a45dd1ac7a5b`
+CI run: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761807335
+CI result: PASS for Node.js 22, Python 3.11/3.12/3.13, Go vet/race, Rust fmt/Clippy/tests.
+
+JavaScript is the fourth independent implementation. It is dependency-free, uses a bounded strict JSON parser, provides TypeScript declarations, and passes the same eight policy/time vectors and ten shared parser-negative fixtures. Its conformance report is PASS only for the eight policy/time vectors in the embedded profile. All ten MSC statuses remain NOT_TESTED. The caller supplies the principal and Date clock; neither is authenticated. It does not mediate protected side effects, provide replay, identity, sandbox, evidence, or recovery services.
+
+The implementation is tested but not yet merged. Do not count it as part of main until PR #22 is merged and post-merge CI passes.

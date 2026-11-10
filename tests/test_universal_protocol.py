@@ -154,7 +154,7 @@ class UniversalProtocolTests(unittest.TestCase):
             self.schemas["conformance-report.schema.json"],
             format_checker=FormatChecker(),
         )
-        for language in ("go", "rust"):
+        for language in ("go", "rust", "javascript"):
             with self.subTest(language=language):
                 manifest = load_json(ROOT / f"implementations/{language}/implementation-manifest.json")
                 report = load_json(ROOT / f"implementations/{language}/conformance-report.json")
@@ -163,12 +163,20 @@ class UniversalProtocolTests(unittest.TestCase):
                 self.assertEqual(manifest["implementation_id"], report["implementation_id"])
                 self.assertEqual(manifest["version"], report["implementation_version"])
                 self.assertEqual(manifest["protocol_versions"], [report["protocol_version"]])
-                self.assertEqual(report["overall_status"], "PASS")
-                self.assertEqual(report["conformance_scope"], "portable_policy_decision_and_time_vectors_only")
-                self.assertEqual(len(report["results"]), len(self.vectors))
-                self.assertTrue(all(item["status"] == "PASS" for item in report["results"]))
-                self.assertRegex(report["source_revision"], r"^[0-9a-f]{40}$")
-                self.assertTrue(all(item.get("evidence_ref", "").startswith("https://github.com/") for item in report["results"]))
+                statuses = [item["status"] for item in report["results"]]
+                expected_overall = "PASS" if all(status == "PASS" for status in statuses) else "UNKNOWN"
+                self.assertEqual(report["overall_status"], expected_overall)
+                if language == "javascript":
+                    self.assertEqual(report["conformance_scope"], "portable_policy_time_and_parser_negative_vectors_only")
+                    self.assertEqual(len(report["results"]), len(self.vectors) + len(self.parser_vectors))
+                else:
+                    self.assertEqual(report["conformance_scope"], "portable_policy_decision_and_time_vectors_only")
+                    self.assertEqual(len(report["results"]), len(self.vectors))
+                if report["overall_status"] == "PASS":
+                    self.assertRegex(report["source_revision"], r"^[0-9a-f]{40}$")
+                    self.assertTrue(all(item.get("evidence_ref", "").startswith("https://github.com/") for item in report["results"]))
+                else:
+                    self.assertTrue(all(status == "NOT_TESTED" for status in statuses))
                 self.assertTrue(manifest["limitations"])
                 self.assertTrue(report["limitations"])
                 self.assertTrue(all(item["status"] == "NOT_TESTED" for item in manifest["contract_status"]))

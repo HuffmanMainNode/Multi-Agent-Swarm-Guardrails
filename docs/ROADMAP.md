@@ -24,10 +24,11 @@ Priorities are ordered by security dependency, not feature count.
 - [x] Python reference evaluator.
 - [x] Independent Go standard-library evaluator with race-enabled CI.
 - [x] Independent Rust standard-library evaluator with formatting, Clippy and tests.
-- [x] Validate Go and Rust implementation manifests/reports against normative schemas in Python CI.
+- [x] Independent JavaScript evaluator with TypeScript declarations and Node.js 22 CI.
+- [x] Validate Go, Rust, and JavaScript implementation manifests/reports against normative schemas in Python CI.
 - [x] Add ten shared malformed-input/parser-negative fixtures consumed unchanged by Python, Go, and Rust.
 - [ ] Add cross-language differential/property-based testing and fuzz campaigns.
-- [ ] Add JavaScript/TypeScript implementation for common agent/tool ecosystems.
+- [ ] Add framework-specific JavaScript/TypeScript integration adapters after identity and enforcement mappings are defined.
 - [ ] Add a portable CLI conformance runner that can validate any implementation report offline.
 - [ ] Add a real transport adapter (MCP candidate) only after identity and bypass contracts are defined.
 

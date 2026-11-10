@@ -25,8 +25,9 @@ The normative protocol lives in `spec/`, `schemas/`, and `vectors/v1.0.0/`. It i
 
 - Python provides `evaluate_protocol` for complete parsed envelopes and `evaluate_protocol_json` for strict raw JSON parsing.
 - Go 0.1.1 provides an independent standard-library-only `Evaluate` / `EvaluateJSON` implementation.
-- Rust 0.1.0 provides a third independent, dependency-free evaluator with its own strict JSON parser.
-- All three implementations consume the same eight versioned decision/time vectors. CI checks Python 3.11, 3.12, 3.13, Go race-enabled tests, and Rust formatting, Clippy, and tests.
+- Rust 0.1.0 provides an independent, dependency-free evaluator with its own strict JSON parser.
+- JavaScript 0.1.0 provides a fourth dependency-free evaluator for Node.js 22+, with TypeScript declarations and its own bounded strict JSON parser.
+- All four implementations consume the same eight versioned decision/time vectors and ten shared malformed-input fixtures. CI checks Python 3.11, 3.12, 3.13, Go race-enabled tests, Rust formatting/Clippy/tests, and Node.js 22 tests.
 - Java, C#, JavaScript/TypeScript, and other runtimes can implement the same schemas and vectors without importing Python, using Go/Rust, or calling a MASG-hosted service.
 - Transport, identity provider, policy engine, enforcement broker, and runtime adapters remain replaceable. An adapter is not trusted merely because it implements the interface; it must publish evidence and limitations.
 

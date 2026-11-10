@@ -1,0 +1,134 @@
+{
+  "report_version": "1.0.0",
+  "implementation_id": "masg-javascript-reference",
+  "implementation_version": "0.1.0",
+  "protocol_version": "1.0.0",
+  "profile": "embedded",
+  "tested_at": "2026-11-10T05:27:10Z",
+  "conformance_scope": "portable_policy_time_and_parser_negative_vectors_only",
+  "overall_status": "PASS",
+  "results": [
+    {
+      "test_id": "MASG-V1-ALLOW-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-DEFAULT-DENY-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-DENY-PRECEDENCE-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-REVIEW-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-EXPIRED-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-NOT-YET-VALID-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-002",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-003",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-004",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-005",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-006",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-007",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-008",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-009",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-010",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    }
+  ],
+  "limitations": [
+    "Conformance report covers eight shared policy-decision/request-time vectors and ten deterministic parser-negative fixtures only.",
+    "The evaluator does not authenticate principal identity or mediate side effects.",
+    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz campaign, load test, penetration test or independent assessment is implied."
+  ],
+  "notices": [
+    "PASS applies only to the eight shared policy-decision/time vectors and ten shared parser-negative fixtures in the embedded profile.",
+    "Parser-negative fixtures are deterministic regression cases, not exhaustive fuzzing or parser memory-safety proof.",
+    "The caller supplies principal and JavaScript Date clock; neither is authenticated.",
+    "This is not a security certification, complete mediation result, MSC conformance, production readiness claim or independent assessment.",
+    "Overall PASS covers only the eight shared policy/time vectors and ten shared parser-negative fixtures. It is not MSC conformance, deployment security assurance, or independent review."
+  ],
+  "assessor": "Self-reported project test artifact; not an independent assessment.",
+  "source_revision": "da8ec519e1ca1d1f7e8a2baeae0a9f7e38159c4d"
+}
