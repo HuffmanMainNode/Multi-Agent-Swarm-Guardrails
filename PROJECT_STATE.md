@@ -235,6 +235,8 @@ The localization follow-on also adds Python and JavaScript/TypeScript template g
 A documentation-first milestone adds a no-install, no-code entry point, progressive learning paths, a plain-language computing/protocol glossary, and safe AI tutoring/review guidance. It explicitly welcomes non-code contributions such as clarity reports, accessibility feedback, language review, and reproducible testing. This is a learning and access layer; it does not change protocol authority, runtime behavior, or security claims. Reviewed translations, accessible interactive exercises, and any browser sandbox remain future work.
 
 
-## UEFP schema and handshake definition maintenance (in progress)
+## UEFP schema and handshake definition maintenance (PR #29)
 
-This maintenance change adds executable JSON Schema validation for the experimental participant manifest and defines the UEFP 0.1.0 message envelope and single-session consent state machine. The schema and state machine remain experimental; no network transport, authentication, trust decision, remote execution, or automated consent manager is implemented. Conformance is limited to schema-valid messages and deterministic transition rules described in the specification.
+Completed in PR #29. Added executable Draft 2020-12 validation for the participant-manifest example and six malformed manifest variants; added a message-envelope schema for all seven UEFP 0.1.0 message types and tests for valid and invalid message shapes; published the experimental single-session consent state machine; corrected the duplicate ADR-0005 numbering by renaming the SPIFFE decision to ADR-0007.
+
+PR CI passed Python 3.11, 3.12, and 3.13, Go vet/race tests, Rust formatting/Clippy/tests, and Node.js 22 tests. These checks establish schema and existing implementation test results only. UEFP still has no transport, authenticated identity, cryptographic acceptance binding, stateful session engine, automated consent manager, remote execution, or shared transition conformance suite.
