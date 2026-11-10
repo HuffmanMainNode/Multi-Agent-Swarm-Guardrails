@@ -100,3 +100,6 @@ JavaScript 0.1.0, Node.js 22+, dependency-free, TypeScript declarations included
 ## RFC 3339 cross-language validation evidence
 
 The shared negative corpus is now eighteen fixtures: ten raw JSON/parser failures and eight RFC 3339 calendar/clock/offset failures. PR #24's initial tested head `9061662d860f80bb0bbd0cb50841d68355fed963` passed all six implementation jobs in CI run 42762823222. The report metadata update was subsequently validated in CI run 42762900442. The fixtures are deterministic regression tests, not exhaustive parser fuzzing or security assurance.
+
+| Locale template generation | Python and JavaScript/TypeScript implemented | Generates a complete UNTRANSLATED message skeleton for a locale; no translation service, no automatic quality claim, and BCP 47 registry validation remains an adapter responsibility. |
+| Controlled concept glossary | Schema-validated | Stable IDs, contextual definitions, domain labels, and unique-ID tests; intentionally not an exhaustive natural-language dictionary. |
