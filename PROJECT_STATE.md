@@ -111,3 +111,5 @@ Branch: `protocol/cross-language-semantic-parity`
 Goal: eliminate differences between normative JSON Schemas and Python/Go decision evaluators.
 Changes prepared: Python full-envelope `evaluate_protocol` entry point; complete request envelopes used by Python shared-vector tests; aligned policy/rule/selector limits and required rule IDs; Unicode code-point counting; shared timestamp precision and known-offset rule; optional provenance_ref support; explicit policy/request byte limits; new edge-case tests.
 Status: open engineering work. CI and merge not yet confirmed.
+
+Cross-language parser parity: Python now exposes `evaluate_protocol_json` for strict raw-envelope parsing; Go exposes `EvaluateJSON`. Both enforce duplicate-key, UTF-8, JSON depth and byte-size checks before decision evaluation. CI for PR #16 is being rerun after the latest parser tests.

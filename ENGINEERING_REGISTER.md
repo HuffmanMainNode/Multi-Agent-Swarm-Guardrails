@@ -40,3 +40,6 @@ PR #8's SPIFFE integration passed its 75-test Python 3.11/3.12/3.13 matrix, Ruff
 ## Cross-language parity checkpoint
 
 The v1.0.0 shared-vector harness now passes the complete request envelope to Python's `evaluate_protocol`, rather than stripping protocol fields before evaluation. Python and Go now align with the published schema for rule IDs, 1,000-rule and 128-selector limits, field-specific selector lengths, Unicode code-point counting, policy/request JSON byte caps, optional provenance references, and RFC 3339 timestamp precision/known-offset behavior. CI evidence is pending for PR `protocol/cross-language-semantic-parity`; do not describe these changes as merged or passed until the run completes.
+
+
+Cross-language raw parser parity: Python `evaluate_protocol_json` and Go `EvaluateJSON` reject duplicate keys, invalid UTF-8, non-standard JSON constants, non-object envelopes, unknown fields, excessive nesting and over-limit byte sizes. This is parser/evaluator conformance only; it is not identity or enforcement certification.

@@ -16,6 +16,31 @@ from .replay import ReplayStore, ReplayStoreError
 
 MAX_POLICY_BYTES = 1_048_576
 MAX_REQUEST_BYTES = 65_536
+MAX_JSON_DEPTH = 32
+
+
+def _check_json_depth(raw: bytes) -> None:
+    depth = 0
+    in_string = False
+    escaped = False
+    for byte in raw:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif byte == 0x5C:
+                escaped = True
+            elif byte == 0x22:
+                in_string = False
+        elif byte == 0x22:
+            in_string = True
+        elif byte in (0x7B, 0x5B):
+            depth += 1
+            if depth > MAX_JSON_DEPTH:
+                raise PolicyError("JSON nesting exceeds the protocol limit")
+        elif byte in (0x7D, 0x5D):
+            depth -= 1
+
+
 MAX_RULES = 1_000
 MAX_SELECTORS = 128
 MAX_TEXT_LENGTH = 1_024
@@ -56,6 +81,7 @@ def _load(path: str | Path, *, max_bytes: int) -> dict[str, Any]:
         raise PolicyError(f"cannot read input: {exc}") from exc
     if len(raw) > max_bytes:
         raise PolicyError(f"input exceeds {max_bytes} byte limit")
+    _check_json_depth(raw)
     try:
         value = json.loads(
             raw.decode("utf-8"),
@@ -243,6 +269,23 @@ UUID_V4 = re.compile(
 )
 
 
+def _decode_json_object(raw: bytes, *, max_bytes: int, label: str) -> dict[str, Any]:
+    if not isinstance(raw, bytes) or not raw or len(raw) > max_bytes:
+        raise PolicyError(f"{label} JSON size is invalid")
+    _check_json_depth(raw)
+    try:
+        value = json.loads(
+            raw.decode("utf-8"),
+            object_pairs_hook=_reject_duplicate_keys,
+            parse_constant=_reject_constant,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError, RecursionError) as exc:
+        raise PolicyError(f"{label} is not valid UTF-8 JSON: {exc}") from exc
+    if not isinstance(value, dict):
+        raise PolicyError(f"{label} JSON must be an object")
+    return value
+
+
 def evaluate_protocol(
     policy: dict[str, Any],
     envelope: dict[str, Any],
@@ -281,6 +324,31 @@ def evaluate_protocol(
         for field in ("principal", "action", "target", "scope", "request_id", "issued_at", "expires_at", "policy_version")
     }
     return evaluate(policy, internal_request, now=now)
+
+
+def evaluate_protocol_json(
+    policy_json: bytes,
+    request_json: bytes,
+    *,
+    now: datetime | None = None,
+) -> Evaluation:
+    """Strictly parse and evaluate complete v1.0.0 JSON documents.
+
+    Duplicate keys, invalid UTF-8, non-standard constants, excessive nesting,
+    non-object top-level values, and oversized documents fail closed.
+    """
+    try:
+        policy = _decode_json_object(policy_json, max_bytes=MAX_POLICY_BYTES, label="Policy")
+    except PolicyError:
+        return Evaluation(Decision.DENY, "POLICY_INVALID", "Policy JSON is invalid.", "UNKNOWN")
+    version = policy.get("version", "UNKNOWN")
+    if not isinstance(version, str):
+        version = "UNKNOWN"
+    try:
+        envelope = _decode_json_object(request_json, max_bytes=MAX_REQUEST_BYTES, label="Request")
+    except PolicyError:
+        return Evaluation(Decision.DENY, "REQUEST_INVALID", "Request JSON is invalid.", version)
+    return evaluate_protocol(policy, envelope, now=now)
 
 
 def evaluate_files(

@@ -186,3 +186,12 @@ func TestPolicyLimitsMatchSchema(t *testing.T) {
 		t.Fatal("missing rules array must be rejected")
 	}
 }
+
+func TestExcessiveJSONNestingFailsClosed(t *testing.T) {
+	policy := []byte(`{"version":"p1","default_effect":"DENY","rules":[]}`)
+	request := []byte(`{"x":` + strings.Repeat("[", 33) + "0" + strings.Repeat("]", 33) + "}")
+	got := EvaluateJSON(policy, request, fixedClock())
+	if got.Decision != "DENY" || got.ReasonCode != "REQUEST_INVALID" {
+		t.Fatalf("excessive nesting did not fail closed: %+v", got)
+	}
+}

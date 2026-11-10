@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Add a strict Python `evaluate_protocol_json` entry point mirroring Go raw-JSON parsing, including duplicate-key, invalid UTF-8, non-standard constant, nesting-depth and byte-limit rejection.
 - Align Python and Go policy constraints with the normative schema: required rule IDs, 1,000-rule cap, 128-entry selector cap, field-specific string limits and Unicode code-point counting.
 - Add a Python full-envelope protocol evaluator so shared vectors exercise the same v1.0.0 request envelope as Go rather than a stripped internal request.
 - Standardize RFC 3339 timestamp precision at six fractional digits and reject unknown local offset `-00:00`; bound policy/request JSON input sizes consistently.
