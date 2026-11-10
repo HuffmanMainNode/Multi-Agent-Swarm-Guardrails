@@ -802,6 +802,58 @@ mod tests {
         }
     }
 
+    fn decode_hex(input: &str) -> std::result::Result<Vec<u8>, String> {
+        if input.len() & 1 == 1 {
+            return Err("hex string has odd length".to_string());
+        }
+        input
+            .as_bytes()
+            .chunks(2)
+            .map(|pair| {
+                let high = (pair[0] as char)
+                    .to_digit(16)
+                    .ok_or_else(|| "invalid hex".to_string())?;
+                let low = (pair[1] as char)
+                    .to_digit(16)
+                    .ok_or_else(|| "invalid hex".to_string())?;
+                Ok(((high << 4) | low) as u8)
+            })
+            .collect()
+    }
+
+    #[test]
+    fn shared_parser_negative_vectors_match() {
+        let path = format!(
+            "{}/../../vectors/v1.0.0/parser-negative-vectors.json",
+            env!("CARGO_MANIFEST_DIR")
+        );
+        let raw = std::fs::read(path).unwrap();
+        let fixtures = parse_json(&raw, MAX_VECTOR_BYTES).unwrap();
+        let fixtures = as_array(&fixtures).unwrap();
+        assert!(fixtures.len() >= 10);
+        for fixture in fixtures {
+            let object = as_object(fixture).unwrap();
+            let policy = decode_hex(
+                as_string(&object["policy_json_hex"], "policy_json_hex")
+                    .unwrap()
+                    .as_str(),
+            )
+            .unwrap();
+            let request = decode_hex(
+                as_string(&object["request_json_hex"], "request_json_hex")
+                    .unwrap()
+                    .as_str(),
+            )
+            .unwrap();
+            let expected =
+                as_string(&object["expected_reason_code"], "expected_reason_code").unwrap();
+            let id = as_string(&object["fixture_id"], "fixture_id").unwrap();
+            let result = evaluate_json(&policy, &request, fixed_now());
+            assert_eq!(result.decision, "DENY", "{id}");
+            assert_eq!(result.reason_code, expected, "{id}");
+        }
+    }
+
     #[test]
     fn duplicate_keys_fail_closed() {
         let policy = br#"{"version":"p1","default_effect":"DENY","rules":[]}"#;

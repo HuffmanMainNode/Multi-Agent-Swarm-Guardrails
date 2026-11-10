@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Add ten shared raw-parser negative fixtures, hex-encoded to represent malformed UTF-8 and duplicate-key documents, and execute the same cases in Python, Go, and Rust.
+- Validate the parser-negative fixture schema and require all three implementations to deny malformed policy/request inputs with the specified reason code.
 - Validate both Go and Rust implementation manifests and conformance reports against the normative JSON Schemas; cross-check implementation IDs, versions, protocol version, eight-vector scope, PASS statuses, source revisions, evidence links and explicit limitations.
 - Correct the durable project checkpoint to reflect that Rust PR #18 is merged and its Rust CI passed; explicitly supersede stale pending-status entries.
 - Add an independent dependency-free Rust reference evaluator and CI job. Rust 0.1.0 passes all eight shared v1.0.0 decision/time vectors, formatting, Clippy and parser/limit tests; conformance remains narrowly scoped to those vectors.

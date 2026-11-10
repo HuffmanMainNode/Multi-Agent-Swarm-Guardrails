@@ -161,3 +161,10 @@ This supersedes the earlier text in this file stating Rust PR #18 was pending or
 The Python CI suite now validates the Go and Rust implementation manifests and conformance reports against the normative schemas, checks matching implementation IDs/versions/protocol versions, checks the declared eight-vector scope, and requires explicit PASS results, source revision identifiers, evidence links, and visible limitations.
 
 Next quality gate: broaden portable conformance beyond eight policy/time cases, add shared parser-negative fixtures, and run independent differential/property/fuzz testing. Then prioritize the MCP transport adapter only with explicit identity mapping and bypass tests. Keep X.509-SVID/mTLS, live SPIRE, TUF publisher workflow/cache anti-rollback, delegation attenuation, typed executor, complete mediation, recovery, and external security review as open critical work.
+
+
+## Shared parser-negative conformance milestone (in progress)
+
+Branch: `conformance/shared-parser-negative-vectors`
+Protocol: MASG v1.0.0.
+Added ten language-neutral raw parser-negative fixtures encoded as hexadecimal bytes. Cases include duplicate keys in policy/request, invalid UTF-8, non-standard NaN, unknown fields, non-object roots, trailing data, excessive nesting and oversized request bodies. The same fixtures are executed by Python, Go, and Rust, with fail-closed decision and reason-code assertions. CI is pending; no parser-negative conformance claim until all three implementation jobs pass.

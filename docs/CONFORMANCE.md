@@ -6,7 +6,7 @@ Run `masg verify --root .`. The current verifier checks required repository file
 
 ## Universal protocol conformance
 
-The normative language-neutral protocol is in [spec/README.md](../spec/README.md). JSON Schemas are under [schemas/](../schemas/), and portable decision vectors are under [vectors/v1.0.0/](../vectors/v1.0.0/). Python CI validates the schemas and vectors and executes the decision vectors against the Python reference evaluator. Other language implementations MUST consume the same fixtures unchanged and publish their own conformance reports.
+The normative language-neutral protocol is in [spec/README.md](../spec/README.md). JSON Schemas are under [schemas/](../schemas/), portable decision vectors and shared raw-parser negative fixtures are under [vectors/v1.0.0/](../vectors/v1.0.0/). Python CI validates the schemas and vectors and executes the decision vectors against the Python reference evaluator. Other language implementations MUST consume the same decision and parser-negative fixtures unchanged and publish their own conformance reports. The parser-negative suite currently covers ten malformed-input cases across policy and request documents; it is a baseline, not exhaustive fuzz coverage.
 
 A future full conformance runner must identify implementation/version/profile/configuration/commit; exercise positive, negative, malformed, expiry, replay, partition, and bypass cases; retain attributable integrity-protected evidence; distinguish controls inside the agent process from independently enforced controls; and report skipped/unsupported tests.
 
