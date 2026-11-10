@@ -39,6 +39,8 @@ New contributors may participate through documentation, accessibility feedback, 
 ## Global entry and GitHub participation
 - docs/UNIVERSAL_ENTRY_AND_FRIENDSHIP_PROTOCOL.md: experimental UEFP proposal for independent participants to introduce themselves, compare declared communication capabilities, and propose consent-based knowledge exchange. Not an identity, trust, authorization, or execution service.
 - schemas/participant-manifest.schema.json and examples/participant-manifest.example.json: experimental self-description format; schema validity does not authenticate identity or prove capability.
+- schemas/uefp-handshake-message.schema.json: experimental 0.1.0 message envelope schema.
+- docs/UEFP_HANDSHAKE_STATE_MACHINE.md: experimental single-session state machine and explicit-consent transitions; no transport or stateful engine is implemented.
 - docs/GITHUB_FIELD_GUIDE.md: practical guide to profiles, repository creation, README writing, forks/upstream hygiene, achievements without spam, repository organization, international collaboration, and directing AI assistants safely.
 - templates/profile/README.md: adaptable personal profile README template.
 - templates/repository/README.md: reusable project README template.
