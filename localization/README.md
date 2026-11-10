@@ -41,3 +41,9 @@ Consumers must fall back to the English source for missing, invalid, or unreview
 Copy `locales/es/messages.template.json`, change the locale to your BCP 47 tag, and submit a pull request. Leave untranslated values empty. Add human translations only when you can review them competently. Include regional context where relevant.
 
 The project welcomes new language packs and corrections. Contributors should disclose machine assistance and avoid claiming native-speaker review they did not perform.
+
+## Runtime resolvers
+
+The Python reference package provides `masg.localization.resolve_message`; the JavaScript reference package exports `@masg/reference-javascript/localization`. Both are offline resolvers, not translation engines.
+
+They use HUMAN_REVIEWED text by default. UNTRANSLATED, NEEDS_REVISION, missing entries, and absent locale packs fall back to the English source. MACHINE_DRAFT text is available only through an explicit opt-in. Human-reviewed entries without reviewer metadata are rejected. Runtime helpers perform basic consistency checks; validate packs against the JSON Schema and use a standards-aware BCP 47 parser where full registry validation is required.
