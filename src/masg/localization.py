@@ -123,6 +123,6 @@ def resolve_message(
         return ResolvedMessage(source_item["text"], source_pack["locale"], "SOURCE", True)
 
     status = translated["status"]
-    if status == "HUMAN_REVIEWED" or (status == "MACHINE_DRAFT" and allow_machine_drafts):
+    if status == "HUMAN_REVIEWED" or (status == "MACHINE_DRAFT" and allow_machine_drafts is True):
         return ResolvedMessage(translated["text"], locale_pack["locale"], status, False)
     return ResolvedMessage(source_item["text"], source_pack["locale"], "SOURCE", True)
