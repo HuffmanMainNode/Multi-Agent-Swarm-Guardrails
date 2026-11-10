@@ -12,7 +12,7 @@ go test -race ./...
 go vet ./...
 ```
 
-The tests load the shared fixtures from `../../vectors/v1.0.0/decision-vectors.json`. The initial v1.0.0 portable policy-decision vector suite passed in CI run [42747590691](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747590691) using `go test -race -count=1 ./...`. Do not edit expected outcomes to make an implementation pass; investigate semantic disagreement first.
+The tests load the shared fixtures from `../../vectors/v1.0.0/decision-vectors.json`. The initial v1.0.0 portable policy-decision vector suite passed in CI run [42747836468](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42747836468) using `go test -race -count=1 ./...`. Do not edit expected outcomes to make an implementation pass; investigate semantic disagreement first.
 
 ## Implemented
 
