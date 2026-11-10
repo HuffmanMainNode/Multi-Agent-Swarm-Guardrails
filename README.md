@@ -1,2 +1,78 @@
-# Multi-Agent-Swarm-Guardrails
-Portable, open-source safety infrastructure for autonomous AI agents and swarms. Verifiable security contracts, enforcement and interoperability.ai-agents, agent-security, multi-agent-systems, swarm-intelligence, ai-safety, cybersecurity, open-source, security-standards, autonomous-agents, conformance-testing
+# Multi-Agent Swarm Guardrails (MASG)
+
+**Portable, independently verifiable safety infrastructure for autonomous agents and multi-agent systems.** Created by **MrCakes931**.
+
+MASG is an open-source safety substrate existing systems can clone and integrate without moving their models, prompts, memory, orchestration, data, credentials, or infrastructure into a MASG-operated service.
+
+> No verified authorization, no protected execution.
+
+No hosted control plane, paid API, mandatory telemetry, central registry, or vendor-specific runtime is required.
+
+## Initial implementation
+- Ten versioned mandatory safety contract definitions.
+- Dependency-free Python reference policy evaluator with deny-by-default behavior.
+- Exact principal/action/target/scope matching and request validity checks.
+- Local JSONL evidence ledger with a SHA-256 hash chain and verifier.
+- Structural repository conformance CLI.
+- Example policy/request, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
+
+## Quick start
+Requires Python 3.11+.
+
+```bash
+python -m venv .venv
+# Linux/macOS: . .venv/bin/activate
+# Windows: .venv\Scripts\Activate.ps1
+python -m pip install -e .
+masg verify --root .
+masg evaluate --policy examples/policy.json --request examples/request.json
+python -m unittest discover -s tests -v
+```
+
+The example ALLOW means only that the local request exactly matched the local example policy. It does not authenticate the principal, protect policy provenance, isolate the process, or prove downstream execution is mediated.
+
+## Mandatory Safety Contracts
+| ID | Requirement |
+|---|---|
+| MSC-001 | Policy Integrity |
+| MSC-002 | Capability Authorization |
+| MSC-003 | Enforcement Mediation |
+| MSC-004 | Fail-Closed Decision |
+| MSC-005 | Provenance and Authority Separation |
+| MSC-006 | Identity and Revocation |
+| MSC-007 | Delegation Attenuation |
+| MSC-008 | Evidence Integrity |
+| MSC-009 | Recovery Integrity |
+| MSC-010 | Responsible Capability |
+
+Normative catalog: [contracts/manifest.json](contracts/manifest.json). Details: [docs/CONTRACTS.md](docs/CONTRACTS.md).
+
+## Architecture
+Agent application -> protocol adapter -> authenticated identity and policy -> MASG enforcement adapter -> protected executor -> independent evidence sink.
+
+A model output is a request, never an authorization token. A signature proves key possession under cryptographic assumptions, not trust, permission, or safety. Multiple agents agreeing is not independent verification when they share a model, key, operator, infrastructure, or data lineage.
+
+## Decision outcomes
+The evaluator currently emits ALLOW, REVIEW_REQUIRED, or DENY. Unknown, malformed, expired, or unmatched requests do not receive ALLOW. ALLOW_RESTRICTED and SAFE_STOP are documented dispositions, not implemented evaluator outcomes.
+
+## Important security limitations
+This is an experimental reference implementation, not a certified security product:
+- Principal strings are assertions, not authenticated identities.
+- Policy files are not cryptographically signed or provenance-verified.
+- No revocation service or distributed replay cache exists.
+- Delegation cycle checks are not capability attenuation.
+- A local hash chain cannot prevent whole-file replacement by an attacker controlling the file and checkpoint.
+- The structural verifier does not test a live deployment or prove complete enforcement mediation.
+- Python in-process code cannot isolate a hostile process controlling the same interpreter.
+- No MCP, A2A, ACS, OPA, Cedar, SPIFFE/SPIRE, or OS sandbox adapter is implemented.
+
+Read [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md), and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## Interoperability
+MASG intends to integrate rather than replace mature identity, policy, protocol, sandbox, observability, and supply-chain systems. Integration targets and actual status are listed in [docs/INTEROPERABILITY.md](docs/INTEROPERABILITY.md).
+
+## Attribution
+Please retain repository origin and applicable copyright/license notices. Apache-2.0 does not mandate prominent marketing credit; accurate attribution is requested as a community practice. Citation metadata: [CITATION.cff](CITATION.cff).
+
+## License
+Apache License 2.0. See [LICENSE](LICENSE).
