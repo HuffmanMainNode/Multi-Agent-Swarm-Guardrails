@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Begin an independent dependency-free Rust reference evaluator and CI job to test language neutrality against the same v1.0.0 schemas and vectors. Its conformance report remains UNKNOWN pending CI.
 - Record PR #16 merged and post-merge main CI success; Go reference v0.1.1 now reports eight shared policy-decision/time vectors with explicit embedded-only scope.
 - Record passing cross-language protocol parity CI for complete Python and Go request envelopes, strict raw JSON parsing, schema-aligned limits, Unicode code-point handling, timestamp rules and JSON depth boundary tests.
 - Add a strict Python `evaluate_protocol_json` entry point mirroring Go raw-JSON parsing, including duplicate-key, invalid UTF-8, non-standard constant, nesting-depth and byte-limit rejection.

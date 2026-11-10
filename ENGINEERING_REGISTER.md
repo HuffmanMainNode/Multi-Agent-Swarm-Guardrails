@@ -53,3 +53,8 @@ PR #16 tested head `1b95c53aefd366f5364417b5bdfc6f07b78b95a8`; CI run 4275084947
 ## Current main checkpoint
 
 Main commit `019cd466583779fe38441ef5e62be32e5b1cc191`; post-merge CI `42751069709` passed Python 3.11/3.12/3.13 and Go. Python and Go share eight vectors and aligned strict input limits. Go conformance is still limited to embedded policy decision/time vectors; all ten MSC statuses remain NOT_TESTED.
+
+
+## Rust implementation checkpoint
+
+A third implementation is under review in `implementations/rust/`. It uses only the Rust standard library and has its own strict JSON parser. Status remains NOT_TESTED until the Rust CI job compiles and executes the shared vectors. Do not count it as a supported implementation or conformance PASS before CI succeeds.

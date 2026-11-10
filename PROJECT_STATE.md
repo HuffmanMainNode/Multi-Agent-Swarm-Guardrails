@@ -128,3 +128,10 @@ Open PR #16: none; merged successfully.
 Current protocol: MASG v1.0.0.
 Current independent implementations: Python reference and Go 0.1.1.
 Current shared vectors: eight policy-decision and request-time cases.
+
+
+## Independent Rust implementation in progress
+
+Branch: `implementations/rust-reference`
+Scope: dependency-free Rust parser/evaluator for MASG v1.0.0; same eight shared decision/time vectors; strict UTF-8, duplicate-key, unknown-field, nesting and byte-size handling.
+Status: source and CI workflow prepared; Rust compiler is not available in the local editing environment. No conformance result is claimed until the GitHub Rust job passes. The conformance report is deliberately UNKNOWN.
