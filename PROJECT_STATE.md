@@ -214,3 +214,8 @@ The implementation is tested but not yet merged. Do not count it as part of main
 - The next update introduces BCP 47 localization packs, stable concept IDs, a human-review workflow, and an experimental UASR semantic-frame proposal. English is the source locale; Spanish is an untranslated template only.
 - UASR is not part of authorization protocol v1.0.0. It does not expose hidden model reasoning, authenticate identity, authorize actions, or prove truth.
 - Deterministic CBOR is a candidate encoding only. No custom binary language or token-efficiency claim is standardized.
+
+
+## Localization runtime checkpoint
+
+A follow-on implementation adds offline translation resolvers in Python and JavaScript/TypeScript. Both default to HUMAN_REVIEWED entries, fall back to English for missing, untranslated, or NEEDS_REVISION strings, and require explicit opt-in for MACHINE_DRAFT text. The resolver does not translate content or contact external services. Go/Rust resolvers and full BCP 47 registry validation remain future work.
