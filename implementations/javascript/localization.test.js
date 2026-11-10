@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { resolveMessage } from "./localization.js";
+import { createTranslationTemplate, resolveMessage } from "./localization.js";
 
 const source = JSON.parse(await readFile(new URL("../../localization/locales/en/messages.json", import.meta.url), "utf8"));
 const template = JSON.parse(await readFile(new URL("../../localization/locales/es/messages.template.json", import.meta.url), "utf8"));
@@ -63,4 +63,19 @@ test("malformed locale source type is rejected", () => {
   const locale = structuredClone(template);
   locale.source_locale = 42;
   assert.throws(() => resolveMessage(source, locale, messageId), /source_locale/);
+});
+
+test("template generator creates an untranslated entry for every source ID", () => {
+  const generated = createTranslationTemplate(source, "fr-CA", "ltr");
+  assert.equal(generated.locale, "fr-CA");
+  assert.equal(generated.source_locale, "en");
+  assert.deepEqual(Object.keys(generated.messages).sort(), Object.keys(source.messages).sort());
+  for (const item of Object.values(generated.messages)) {
+    assert.deepEqual(item, {text: "", status: "UNTRANSLATED"});
+  }
+});
+
+test("template generator rejects source locale and invalid direction", () => {
+  assert.throws(() => createTranslationTemplate(source, "en"), /differ from source/);
+  assert.throws(() => createTranslationTemplate(source, "fr", "diagonal"), /text direction/);
 });

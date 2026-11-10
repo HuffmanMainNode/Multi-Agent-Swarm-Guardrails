@@ -91,3 +91,23 @@ export function resolveMessage(sourcePack, localePack, messageId, options = {}) 
   }
   return fallback();
 }
+
+/** Create an untranslated locale-pack skeleton from the authoritative source catalog. */
+export function createTranslationTemplate(sourcePack, locale, textDirection = "auto") {
+  validateSourcePack(sourcePack);
+  if (typeof locale !== "string" || !LOCALE.test(locale)) fail("invalid locale syntax");
+  if (locale.toLowerCase() === sourcePack.locale.toLowerCase()) fail("target locale must differ from source locale");
+  if (!["ltr", "rtl", "auto"].includes(textDirection)) fail("invalid text direction");
+  const messages = Object.create(null);
+  for (const id of Object.keys(sourcePack.messages)) {
+    messages[id] = {text: "", status: "UNTRANSLATED"};
+  }
+  return {
+    schema_version: "1.0.0",
+    locale,
+    source_locale: sourcePack.locale,
+    catalog_version: sourcePack.catalog_version,
+    text_direction: textDirection,
+    messages,
+  };
+}

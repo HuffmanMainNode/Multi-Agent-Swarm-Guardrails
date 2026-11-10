@@ -27,7 +27,9 @@
     "cross_language_protocol_implementations",
     "human_language_localization_catalog",
     "experimental_semantic_frame_schema",
-    "offline_human_language_fallback_resolvers"
+    "offline_human_language_fallback_resolvers",
+    "locale_template_generation",
+    "controlled_contextual_concept_glossary"
   ],
   "not_capabilities": [
     "hosted_runtime",

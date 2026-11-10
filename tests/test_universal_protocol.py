@@ -181,6 +181,15 @@ class UniversalProtocolTests(unittest.TestCase):
                 self.assertTrue(report["limitations"])
                 self.assertTrue(all(item["status"] == "NOT_TESTED" for item in manifest["contract_status"]))
 
+    def test_controlled_core_glossary_matches_schema_and_has_unique_ids(self):
+        schema = self.schemas["core-glossary.schema.json"]
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        glossary = load_json(ROOT / "localization/glossary/core-concepts.json")
+        validator.validate(glossary)
+        concept_ids = [item["concept_id"] for item in glossary["concepts"]]
+        self.assertEqual(len(concept_ids), len(set(concept_ids)))
+        self.assertEqual(glossary["source_locale"], "en")
+
     def test_localization_source_and_untranslated_template_match_schema(self):
         schema = self.schemas["translation-pack.schema.json"]
         validator = Draft202012Validator(schema, format_checker=FormatChecker())
