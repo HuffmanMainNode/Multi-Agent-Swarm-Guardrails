@@ -22,7 +22,7 @@ POLICY_KEYS = {"version", "default_effect", "rules"}
 RULE_KEYS = {"id", "principals", "actions", "targets", "scopes", "effect"}
 REQUEST_KEYS = {
     "principal", "action", "target", "scope", "request_id",
-    "issued_at", "expires_at", "delegation_chain",
+    "issued_at", "expires_at", "delegation_chain", "policy_version",
 }
 RFC3339 = re.compile(
     r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$"
