@@ -26,7 +26,7 @@ test("all shared parser-negative fixtures fail closed identically", () => {
 });
 
 test("Unicode selector lengths use code points, not UTF-8 bytes", () => {
-  const policy = {version:"unicode-1",default_effect:"DENY",rules:[{id:"unicode-allow",principals:["é".repeat(1024)],actions:["read"],targets:["report"],scopes:["summary"],effect:"ALLOW"}]};
+  const policy = {version:"unicode-1",default_effect:"DENY",rules:[{id:"unicode-allow",principals:["é".repeat(1024)],actions:["read"],targets:[vectors[0].request.target],scopes:[vectors[0].request.scope],effect:"ALLOW"}]};
   const request = {...vectors[0].request,principal:"é".repeat(1024),policy_version:"unicode-1"};
   assert.equal(evaluate(policy, request, fixedNow).decision, "ALLOW");
   request.principal = "é".repeat(1025);
