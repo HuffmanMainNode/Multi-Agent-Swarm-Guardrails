@@ -102,7 +102,7 @@ func TestPolicyMustDefaultToDeny(t *testing.T) {
 }
 
 func TestExpiredRequestDenied(t *testing.T) {
-	policy := Policy{Version: "p1", DefaultEffect: "DENY"}
+	policy := Policy{Version: "p1", DefaultEffect: "DENY", Rules: []Rule{}}
 	request := Request{
 		ProtocolVersion: ProtocolVersion, MessageType: "authorization_request",
 		RequestID: "550e8400-e29b-41d4-a716-446655440000",
