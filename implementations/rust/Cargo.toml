@@ -1,0 +1,10 @@
+[package]
+name = "masg-rust-reference"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Dependency-free Rust reference evaluator for MASG protocol v1.0.0"
+
+[lib]
+name = "masg"
+path = "src/lib.rs"

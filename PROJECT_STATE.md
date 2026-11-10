@@ -96,12 +96,11 @@ Added a namespaced extension manifest schema, extension package rules, types for
 
 ## Next critical engineering priorities
 
-1. Add a third independent implementation (Rust) against the same v1.0.0 schemas and vectors. The purpose is to expose hidden assumptions in the Python/Go implementations, not to create another mandatory runtime.
-2. Turn the extension model into usable developer tooling: offline manifest validation, compatibility checks, dependency resolution, and extension-specific conformance reports. Keep extension discovery decentralized and publisher trust separate from namespace claims.
-3. Build one real transport extension (MCP is the first candidate) with strict tool identity mapping, authenticated principal derivation, stable target/action/scope mapping, refusal on lossy mapping, and bypass tests. Do not claim a generic MCP integration until the actual adapter exists.
-4. Close the sender-constrained identity gap: X.509-SVID/mTLS, live SPIRE integration, rotation, revocation propagation, and workload-selector tests.
-5. Expand the typed protected executor and complete-mediation tests only after each operation has a fixed schema, independent identity mapping, bounded inputs/resources, evidence, and alternate-path denial tests.
-6. Define signed protocol/policy envelopes only after selecting a reviewed canonicalization/signature profile, key discovery/rotation/revocation rules, anti-rollback behavior, and portable cryptographic vectors.
+1. Turn the extension model into usable developer tooling: offline manifest validation, compatibility checks, dependency resolution, and extension-specific conformance reports. Keep extension discovery decentralized and publisher trust separate from namespace claims.
+2. Build one real transport extension (MCP is the first candidate) with strict tool identity mapping, authenticated principal derivation, stable target/action/scope mapping, refusal on lossy mapping, and bypass tests. Do not claim a generic MCP integration until the actual adapter exists.
+3. Close the sender-constrained identity gap: X.509-SVID/mTLS, live SPIRE integration, rotation, revocation propagation, and workload-selector tests.
+4. Expand the typed protected executor and complete-mediation tests only after each operation has a fixed schema, independent identity mapping, bounded inputs/resources, evidence, and alternate-path denial tests.
+5. Define signed protocol/policy envelopes only after selecting a reviewed canonicalization/signature profile, key discovery/rotation/revocation rules, anti-rollback behavior, and portable cryptographic vectors.
 
 No implementation may claim production readiness or full MSC conformance based only on decision vectors. Keep unsupported capabilities and untested assumptions visible.
 
@@ -126,5 +125,23 @@ Main commit: `019cd466583779fe38441ef5e62be32e5b1cc191`
 Post-merge main CI: `42751069709` PASS (Python 3.11/3.12/3.13 and Go).
 Open PR #16: none; merged successfully.
 Current protocol: MASG v1.0.0.
-Current independent implementations: Python reference and Go 0.1.1.
+Current independent implementations: Python reference, Go 0.1.1, and Rust 0.1.0 (Rust PR #18 awaiting merge).
 Current shared vectors: eight policy-decision and request-time cases.
+
+
+## Independent Rust implementation in progress
+
+Branch: `implementations/rust-reference`
+Scope: dependency-free Rust parser/evaluator for MASG v1.0.0; same eight shared decision/time vectors; strict UTF-8, duplicate-key, unknown-field, nesting and byte-size handling.
+Status: source and CI workflow prepared; Rust compiler is not available in the local editing environment. No conformance result is claimed until the GitHub Rust job passes. The conformance report is deliberately UNKNOWN.
+
+
+## Independent Rust implementation milestone (PR #18)
+
+PR: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/18
+Branch: `implementations/rust-reference`
+Tested source revision: `0cc0a0ac4baa906f3757c970f8d881f1ec365ca5`
+CI run: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251
+CI result: PASS across Python 3.11/3.12/3.13, Go vet/race tests, Rust formatting, Rust Clippy with warnings denied, and Rust tests.
+
+Rust is a dependency-free third implementation with a custom bounded JSON parser. It consumes all eight shared v1.0.0 decision/time vectors and adds parser, Unicode, timestamp, and boundary tests. Its conformance report is PASS only for those eight vectors. All ten MSC statuses remain NOT_TESTED; Rust does not authenticate identity or mediate side effects. PR #18 merge status remains pending.

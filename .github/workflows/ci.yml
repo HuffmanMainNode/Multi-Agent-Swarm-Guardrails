@@ -34,7 +34,7 @@ jobs:
           python -m json.tool examples/request.json > /dev/null
           python -m json.tool examples/broker-policy.example.json > /dev/null
           python -m json.tool examples/broker-principals.example.json > /dev/null
-          for file in schemas/*.json vectors/v1.0.0/*.json implementations/go/*.json extensions/examples/generic-tool-action/*.json; do python -m json.tool "$file" > /dev/null; done
+          for file in schemas/*.json vectors/v1.0.0/*.json implementations/go/*.json implementations/rust/*.json extensions/examples/generic-tool-action/*.json; do python -m json.tool "$file" > /dev/null; done
 
   go-reference:
     runs-on: ubuntu-latest
@@ -50,3 +50,20 @@ jobs:
       - name: Go tests against shared protocol vectors
         working-directory: implementations/go
         run: go test -race -count=1 ./...
+
+  rust-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Rust formatting
+        working-directory: implementations/rust
+        run: cargo fmt --check
+      - name: Rust clippy
+        working-directory: implementations/rust
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: Rust tests against shared protocol vectors
+        working-directory: implementations/rust
+        run: cargo test --locked

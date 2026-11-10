@@ -1,0 +1,73 @@
+{
+  "report_version": "1.0.0",
+  "implementation_id": "masg-rust-reference",
+  "implementation_version": "0.1.0",
+  "protocol_version": "1.0.0",
+  "profile": "embedded",
+  "tested_at": "2026-11-10T03:54:00Z",
+  "overall_status": "PASS",
+  "results": [
+    {
+      "test_id": "MASG-V1-ALLOW-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-DEFAULT-DENY-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-DENY-PRECEDENCE-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-REVIEW-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-EXPIRED-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-NOT-YET-VALID-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    },
+    {
+      "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
+      "status": "PASS",
+      "notes": "Passed shared MASG v1.0.0 portable vector in dependency-free Rust CI; Python and Go implementations run the same vector set.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42752336251"
+    }
+  ],
+  "limitations": [
+    "Conformance report covers eight portable policy-decision and request-time vectors only.",
+    "The evaluator does not authenticate principal identity or mediate side effects.",
+    "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load, penetration or independent-assessment result is implied."
+  ],
+  "notices": [
+    "PASS applies only to the eight portable policy-decision and request-time vectors in this report's declared scope.",
+    "Parser/limit regression tests pass in CI but do not certify a deployment or prove complete mediation.",
+    "This is not a security certification, production readiness claim or independent assessment.",
+    "The caller supplies principal and clock inputs; neither is authenticated by this crate."
+  ],
+  "assessor": "Self-reported project test artifact; not an independent assessment.",
+  "conformance_scope": "portable_policy_decision_and_time_vectors_only",
+  "source_revision": "0cc0a0ac4baa906f3757c970f8d881f1ec365ca5"
+}
