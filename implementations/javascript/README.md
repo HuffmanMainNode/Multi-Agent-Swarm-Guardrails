@@ -21,7 +21,7 @@ The package includes TypeScript declarations. It does not require Python, Go, Ru
 - UUIDv4 and RFC3339 validity checks, six fractional digits, known offsets.
 - Schema-aligned field/selector/rule limits and Unicode code-point counting.
 - Strict bounded JSON parser rejects duplicate keys, invalid UTF-8, unpaired surrogates, non-standard constants, unknown fields, excessive nesting, trailing data and oversized input.
-- Shared eight-vector decision/time suite and ten shared raw-parser negative fixtures.
+- Shared eight-vector decision/time suite and twenty-one shared raw-parser negative fixtures.
 
 ## Not implemented
 
