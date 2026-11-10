@@ -806,11 +806,19 @@ mod tests {
         if input.len() % 2 != 0 {
             return Err("hex string has odd length".to_string());
         }
-        input.as_bytes().chunks_exact(2).map(|pair| {
-            let high = (pair[0] as char).to_digit(16).ok_or_else(|| "invalid hex".to_string())?;
-            let low = (pair[1] as char).to_digit(16).ok_or_else(|| "invalid hex".to_string())?;
-            Ok(((high << 4) | low) as u8)
-        }).collect()
+        input
+            .as_bytes()
+            .chunks_exact(2)
+            .map(|pair| {
+                let high = (pair[0] as char)
+                    .to_digit(16)
+                    .ok_or_else(|| "invalid hex".to_string())?;
+                let low = (pair[1] as char)
+                    .to_digit(16)
+                    .ok_or_else(|| "invalid hex".to_string())?;
+                Ok(((high << 4) | low) as u8)
+            })
+            .collect()
     }
 
     #[test]
@@ -825,9 +833,20 @@ mod tests {
         assert!(fixtures.len() >= 10);
         for fixture in fixtures {
             let object = as_object(fixture).unwrap();
-            let policy = decode_hex(as_string(&object["policy_json_hex"], "policy_json_hex").unwrap().as_str()).unwrap();
-            let request = decode_hex(as_string(&object["request_json_hex"], "request_json_hex").unwrap().as_str()).unwrap();
-            let expected = as_string(&object["expected_reason_code"], "expected_reason_code").unwrap();
+            let policy = decode_hex(
+                as_string(&object["policy_json_hex"], "policy_json_hex")
+                    .unwrap()
+                    .as_str(),
+            )
+            .unwrap();
+            let request = decode_hex(
+                as_string(&object["request_json_hex"], "request_json_hex")
+                    .unwrap()
+                    .as_str(),
+            )
+            .unwrap();
+            let expected =
+                as_string(&object["expected_reason_code"], "expected_reason_code").unwrap();
             let id = as_string(&object["fixture_id"], "fixture_id").unwrap();
             let result = evaluate_json(&policy, &request, fixed_now());
             assert_eq!(result.decision, "DENY", "{id}");
