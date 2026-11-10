@@ -168,3 +168,20 @@ Next quality gate: broaden portable conformance beyond eight policy/time cases, 
 Branch: `conformance/shared-parser-negative-vectors`
 Protocol: MASG v1.0.0.
 Added ten language-neutral raw parser-negative fixtures encoded as hexadecimal bytes. Cases include duplicate keys in policy/request, invalid UTF-8, non-standard NaN, unknown fields, non-object roots, trailing data, excessive nesting and oversized request bodies. The same fixtures are executed by Python, Go, and Rust, with fail-closed decision and reason-code assertions. CI is pending; no parser-negative conformance claim until all three implementation jobs pass.
+
+
+## Shared parser-negative conformance milestone (merged)
+
+PR #20: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/20
+Merge commit: `31f3c9d1f60bf71363250965a2db32d811cd9d3d`
+Tested source revision: `283bc384f3c5a9f00e67289ed543282a2906b51b`
+PR CI: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761090847 (PASS)
+Post-merge main CI: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42761152825 (PASS)
+
+Added ten shared raw-parser negative fixtures in `vectors/v1.0.0/parser-negative-vectors.json`, represented as hex-encoded byte documents so malformed UTF-8 and duplicate keys are testable. Python, Go, and Rust consume the same fixtures and must return DENY with the exact expected failure reason. Covered: duplicate policy key, duplicate request key, invalid UTF-8, non-standard NaN, unknown request field, non-object request root, trailing data, excessive nesting, oversized request, and unknown policy field.
+
+Rust CI initially caught formatting and Clippy warnings in the new test helper; both were corrected and re-run. The final PR CI passed Python 3.11/3.12/3.13, Go vet/race, Rust fmt/Clippy/tests. Post-merge main CI passed all five jobs. The first two failed CI runs are retained as development history, not counted as passing evidence.
+
+Scope: ten deterministic parser-negative regressions. They are not exhaustive fuzzing, parser memory-safety proof, hostile-load resilience, identity conformance, runtime mediation, or deployment certification. Go/Rust conformance reports remain scoped to the eight positive policy/time vectors; parser-negative regression results are separate CI evidence. All ten MSC statuses remain NOT_TESTED for both independent implementations.
+
+Next quality gate: differential/property testing and fuzzing across the three evaluators; then a Node/TypeScript reference adapter and a portable offline conformance runner. Keep the identity, enforcement, recovery, and supply-chain gaps open.

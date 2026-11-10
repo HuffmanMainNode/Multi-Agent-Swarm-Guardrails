@@ -6,6 +6,7 @@ Last updated: 2026-11-10
 |---|---|---|
 | Ten mandatory contracts | Specified | Machine-readable catalog; only a subset of requirements is executable |
 | Universal protocol v1.0.0 | Implemented specification baseline | Normative language-neutral decision semantics, versioning, trust boundaries, policy-version binding, JSON Schemas and portable vectors; merged PR #10 |
+| Shared parser-negative fixtures | PASS in CI | Ten hex-encoded malformed raw-document fixtures run unchanged through Python, Go and Rust; PR #20 run 42761090847 and post-merge main run 42761152825 passed; deterministic regression baseline, not exhaustive fuzzing |
 | Portable conformance artifacts | PASS in PR CI | JSON Schema Draft 2020-12 validation and shared decision vectors run against Python 3.11/3.12/3.13; PR run 42746824887 passed; this is not deployment certification |
 | Independent language implementations | Python, Go, and Rust reference implementations | Go 0.1.1 and Rust 0.1.0 are independent standard-library-only evaluators; both pass the same eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Java/C#/TypeScript implementation yet |
 | Namespaced extension model | Specified | Versioned extension manifest schema, domain/transport/identity/policy/enforcement/evidence/recovery types, fail-closed compatibility rules; example is documentation-only; merged PR #13 |
@@ -26,7 +27,7 @@ Last updated: 2026-11-10
 
 ## Critical gaps
 
-Java/C#/TypeScript implementations and broader cross-language interoperability testing; full conformance runner for deployment profiles; signed protocol envelope/canonicalization profile; sender-constrained identity (X.509-SVID/mTLS); live SPIRE rotation/revocation and workload-selector tests; review and hash-pin the optional py-spiffe dependency closure (pinned release currently has no PyPI provenance); stronger rollback-resistant TUF cache storage; TUF repository publishing/signing workflow and key management; distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
+Java/C#/TypeScript implementations and broader cross-language differential/property/fuzz testing; full conformance runner for deployment profiles; signed protocol envelope/canonicalization profile; sender-constrained identity (X.509-SVID/mTLS); live SPIRE rotation/revocation and workload-selector tests; review and hash-pin the optional py-spiffe dependency closure (pinned release currently has no PyPI provenance); stronger rollback-resistant TUF cache storage; TUF repository publishing/signing workflow and key management; distributed anti-replay; capability-set delegation attenuation; typed protected executor beyond audit append; complete mediation and bypass testing; stronger OS isolation; independently checkpointed evidence; deployment-level conformance; fuzzing/load/penetration testing; independent security review.
 
 ## Validation boundary
 
@@ -72,3 +73,8 @@ Rust 0.1.0 under `implementations/rust/` passed CI run 42752336251: rustfmt, Cli
 - Rust 0.1.0: eight shared policy/time vectors; strict parser, UTF-8, duplicate-key, unknown-field, timestamp and boundary tests; tested source revision `0cc0a0ac4baa906f3757c970f8d881f1ec365ca5`; CI run 42752336251 passed.
 - Post-merge main CI run 42752581046 passed Python 3.11/3.12/3.13, Go vet/race, Rust formatting, Clippy with warnings denied, and Rust tests.
 - The eight vectors are not a full conformance suite. All ten MSC statuses remain NOT_TESTED in both Go and Rust manifests. No deployment certification or independent security assessment is implied.
+
+
+## Parser-negative regression evidence
+
+PR #20 merged as `31f3c9d1f60bf71363250965a2db32d811cd9d3d`. Tested head `283bc384f3c5a9f00e67289ed543282a2906b51b`; PR CI run 42761090847 passed; post-merge main CI run 42761152825 passed. Ten shared raw-byte fixtures are executed by Python, Go, and Rust. These cases prove only the listed failure behaviors. They are not a fuzz campaign, memory-safety assessment, or full protocol conformance result.

@@ -25,7 +25,7 @@ Priorities are ordered by security dependency, not feature count.
 - [x] Independent Go standard-library evaluator with race-enabled CI.
 - [x] Independent Rust standard-library evaluator with formatting, Clippy and tests.
 - [x] Validate Go and Rust implementation manifests/reports against normative schemas in Python CI.
-- [ ] Add shared malformed-input/parser-negative fixtures consumed by all implementations.
+- [x] Add ten shared malformed-input/parser-negative fixtures consumed unchanged by Python, Go, and Rust.
 - [ ] Add cross-language differential/property-based testing and fuzz campaigns.
 - [ ] Add JavaScript/TypeScript implementation for common agent/tool ecosystems.
 - [ ] Add a portable CLI conformance runner that can validate any implementation report offline.
