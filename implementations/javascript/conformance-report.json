@@ -4,7 +4,7 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T05:25:30Z",
+  "tested_at": "2026-11-10T05:27:10Z",
   "conformance_scope": "portable_policy_decision_and_time_vectors_only",
   "overall_status": "PASS",
   "results": [
@@ -12,49 +12,49 @@
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-EXPIRED-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-NOT-YET-VALID-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     },
     {
       "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762110390"
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139"
     }
   ],
   "limitations": [
