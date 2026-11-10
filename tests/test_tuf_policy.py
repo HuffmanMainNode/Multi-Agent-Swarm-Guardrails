@@ -18,7 +18,7 @@ try:
 except ImportError:
     TUF_TESTS_AVAILABLE = False
 
-from masg.broker import ExecutionBroker
+from masg.broker import BrokerError, ExecutionBroker
 from masg.trust import PolicyTrustError, fetch_verified_policy
 
 
@@ -189,6 +189,54 @@ class TUFPolicyTests(unittest.TestCase):
         )
         self.assertEqual(broker.policy["version"], "tuf-broker-policy-v1")
 
+
+
+    @unittest.skipUnless(sys.platform.startswith("linux") and hasattr(socket, "SO_PEERCRED"), "Linux broker required")
+    def test_broker_startup_fails_closed_when_tuf_target_is_tampered(self):
+        policy = {
+            "version": "tuf-broker-policy-v1",
+            "default_effect": "DENY",
+            "rules": [{
+                "id": "allow-audit-append",
+                "principals": ["service:tuf-test"],
+                "actions": ["audit.append"],
+                "targets": ["audit-ledger"],
+                "scopes": ["append"],
+                "effect": "ALLOW",
+            }],
+        }
+        self.publish(json.dumps(policy).encode(), 2)
+        target = next((self.repository / "targets" / "policies").glob("*.active.json"))
+        target.write_text('{"version":"attacker-policy"}', encoding="utf-8")
+        principals = self.root / "principals.json"
+        principals.write_text(json.dumps({str(os.getuid()): "service:tuf-test"}), encoding="utf-8")
+        with self.assertRaises(BrokerError):
+            ExecutionBroker(
+                policy_path=None,
+                principal_map_path=principals,
+                replay_db=self.root / "replay.sqlite3",
+                ledger_path=self.root / "evidence.jsonl",
+                tuf_repository=self.repository,
+                tuf_bootstrap_root=self.bootstrap_path,
+                tuf_cache=self.cache,
+            )
+
+    @unittest.skipUnless(sys.platform.startswith("linux") and hasattr(socket, "SO_PEERCRED"), "Linux broker required")
+    def test_broker_rejects_mixed_static_and_tuf_policy_sources(self):
+        static_policy = self.root / "static-policy.json"
+        static_policy.write_text('{"version":"static","default_effect":"DENY","rules":[]}', encoding="utf-8")
+        principals = self.root / "principals.json"
+        principals.write_text(json.dumps({str(os.getuid()): "service:tuf-test"}), encoding="utf-8")
+        with self.assertRaises(BrokerError):
+            ExecutionBroker(
+                policy_path=static_policy,
+                principal_map_path=principals,
+                replay_db=self.root / "replay.sqlite3",
+                ledger_path=self.root / "evidence.jsonl",
+                tuf_repository=self.repository,
+                tuf_bootstrap_root=self.bootstrap_path,
+                tuf_cache=self.cache,
+            )
 
 if __name__ == "__main__":
     unittest.main()
