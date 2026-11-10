@@ -55,6 +55,66 @@
       "status": "PASS",
       "notes": "Eight shared v1.0.0 policy-decision/time vectors passed in the recorded CI run; parser-negative and calendar regression tests are separate CI checks.",
       "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323"
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-001",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-002",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-003",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-004",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-005",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-006",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-007",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-008",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-009",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-NEGATIVE-010",
+      "status": "PASS",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762137323",
+      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
     }
   ],
   "limitations": [
