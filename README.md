@@ -15,7 +15,7 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 - Optional local SQLite one-time request-ID consumption for replay resistance.
 - Local JSONL evidence ledger with a SHA-256 hash chain and verifier.
 - Experimental separate-process Linux broker for one fixed protected operation: `audit.append`.
-- Broker derives caller UID from Linux SO_PEERCRED, maps it to a configured principal, rejects caller-supplied identity/operation, consumes request IDs, and writes to its own bounded evidence ledger.
+- Broker derives caller UID from Linux SO_PEERCRED, maps it to a configured principal, rejects caller-supplied identity/operation, requires canonical UUIDv4 request IDs, consumes them before execution, and writes to its own bounded evidence ledger.
 - Structural repository conformance CLI, examples, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
 
 ## Quick start

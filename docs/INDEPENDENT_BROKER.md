@@ -114,7 +114,7 @@ Submit it:
 masg broker append --socket /run/masg/broker.sock --request request.json
 ```
 
-The request ID must be unique. The broker's five-minute maximum validity window is an additional bound, not a substitute for trusted time or authenticated message provenance.
+The request ID must be a canonical UUID version 4 and unique. Generate one with a cryptographically secure UUIDv4 implementation. UUID format does not authenticate the caller or prevent a malicious authorized caller from minting fresh IDs. The broker's five-minute maximum validity window is an additional bound, not a substitute for trusted time or authenticated message provenance.
 
 ## Operational failure behavior
 
