@@ -8,9 +8,13 @@ import (
 )
 
 type vector struct {
-	VectorID string `json:"vector_id"`
-	Policy   Policy `json:"policy"`
-	Request  Request `json:"request"`
+	VectorVersion string   `json:"vector_version"`
+	VectorID      string   `json:"vector_id"`
+	Category      string   `json:"category"`
+	Description   string   `json:"description"`
+	Policy        Policy   `json:"policy"`
+	Request       Request  `json:"request"`
+	Limitations   []string `json:"limitations"`
 	Expected struct {
 		Decision   string `json:"decision"`
 		ReasonCode string `json:"reason_code"`
