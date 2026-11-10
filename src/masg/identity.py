@@ -37,8 +37,12 @@ class SpiffeJwtSvidVerifier:
         timeout: float = 2.0,
         client_factory: Any | None = None,
     ) -> None:
-        if not isinstance(audience, str) or not audience or len(audience) > 512:
-            raise WorkloadIdentityError("SPIFFE audience must be a non-empty bounded string")
+        if (
+            not isinstance(audience, str) or not audience or len(audience) > 512
+            or audience != audience.strip() or any(char.isspace() for char in audience)
+            or audience == "*"
+        ):
+            raise WorkloadIdentityError("SPIFFE audience must be a non-empty exact bounded value")
         if not isinstance(timeout, (int, float)) or isinstance(timeout, bool) or not 0.1 <= timeout <= 10:
             raise WorkloadIdentityError("SPIFFE validation timeout must be between 0.1 and 10 seconds")
 
@@ -54,9 +58,14 @@ class SpiffeJwtSvidVerifier:
 
         path = Path(filesystem_path)
         try:
+            parent_metadata = path.parent.lstat()
             metadata = path.lstat()
         except OSError as exc:
             raise WorkloadIdentityError("SPIFFE endpoint socket cannot be inspected") from exc
+        if (
+            not stat.S_ISDIR(parent_metadata.st_mode) or parent_metadata.st_mode & 0o022
+        ):
+            raise WorkloadIdentityError("SPIFFE socket parent must be a protected, non-writable directory")
         if not stat.S_ISSOCK(metadata.st_mode):
             raise WorkloadIdentityError("SPIFFE endpoint must be a Unix socket, not a symlink or regular file")
 

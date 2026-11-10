@@ -126,5 +126,41 @@ class SpiffeIdentityTests(unittest.TestCase):
             )
 
 
+
+    def test_wildcard_or_whitespace_audience_rejected(self):
+        for audience in ("*", " masg-broker", "masg-broker "):
+            with self.subTest(audience=audience), self.assertRaises(WorkloadIdentityError):
+                SpiffeJwtSvidVerifier(
+                    socket_path=self.socket_path, audience=audience,
+                    client_factory=self.factory,
+                )
+
+    def test_group_writable_socket_parent_rejected(self):
+        unsafe = self.root / "unsafe-sockets"
+        unsafe.mkdir()
+        unsafe.chmod(0o777)
+        socket_path = unsafe / "workload-api.sock"
+        server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        server.bind(str(socket_path))
+        server.close()
+        try:
+            with self.assertRaises(WorkloadIdentityError):
+                SpiffeJwtSvidVerifier(
+                    socket_path=socket_path, audience="masg-broker",
+                    client_factory=self.factory,
+                )
+        finally:
+            unsafe.chmod(0o700)
+
+    def test_symlink_socket_parent_rejected(self):
+        alias = self.root / "socket-alias"
+        alias.symlink_to(self.root, target_is_directory=True)
+        with self.assertRaises(WorkloadIdentityError):
+            SpiffeJwtSvidVerifier(
+                socket_path=alias / "workload-api.sock", audience="masg-broker",
+                client_factory=self.factory,
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
