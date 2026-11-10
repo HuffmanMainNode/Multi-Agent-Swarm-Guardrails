@@ -98,7 +98,7 @@ The request intentionally has no principal, action, target, scope, or path:
 
 ```json
 {
-  "request_id": "a-unique-request-id",
+  "request_id": "550e8400-e29b-41d4-a716-446655440000",
   "issued_at": "2026-11-10T12:00:00Z",
   "expires_at": "2026-11-10T12:02:00Z",
   "event": {

@@ -4,6 +4,7 @@ import socket
 import tempfile
 import threading
 import unittest
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -36,7 +37,7 @@ class BrokerTests(unittest.TestCase):
         self.broker = self.make_broker()
         now = datetime.now(timezone.utc)
         self.request = {
-            "request_id": "broker-request-001",
+            "request_id": str(uuid.uuid4()),
             "issued_at": (now - timedelta(seconds=2)).isoformat(),
             "expires_at": (now + timedelta(minutes=2)).isoformat(),
             "event": {"kind": "test", "details": "authorized append"},
@@ -85,6 +86,14 @@ class BrokerTests(unittest.TestCase):
 
     def test_duplicate_json_key_rejected(self):
         raw = b'{"request_id":"one","request_id":"two","issued_at":"2026-01-01T00:00:00Z","expires_at":"2099-01-01T00:00:00Z","event":{"kind":"x","details":"y"}}'
+        self.assertEqual(self.broker.process(raw, os.getuid())["reason_code"], "REQUEST_INVALID")
+
+    def test_non_uuid4_request_id_rejected(self):
+        request = {**self.request, "request_id": "not-a-uuid"}
+        self.assertEqual(self.call(request)["reason_code"], "REQUEST_ID_INVALID")
+
+    def test_deeply_nested_json_is_rejected_without_crashing(self):
+        raw = b'{"x":' + (b"[" * 2000) + b"0" + (b"]" * 2000) + b"}"
         self.assertEqual(self.broker.process(raw, os.getuid())["reason_code"], "REQUEST_INVALID")
 
     def test_long_validity_window_rejected(self):

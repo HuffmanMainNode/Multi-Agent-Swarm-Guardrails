@@ -15,6 +15,7 @@ import stat
 import struct
 import sys
 import threading
+import uuid
 from typing import Any
 
 from .audit import append_event
@@ -49,9 +50,12 @@ def _constant(value: str) -> None:
 def _decode(raw: bytes) -> dict[str, Any]:
     if len(raw) > MAX_MESSAGE_BYTES:
         raise ValueError("request exceeds broker message limit")
-    value = json.loads(
-        raw.decode("utf-8"), object_pairs_hook=_pairs, parse_constant=_constant,
-    )
+    try:
+        value = json.loads(
+            raw.decode("utf-8"), object_pairs_hook=_pairs, parse_constant=_constant,
+        )
+    except RecursionError as exc:
+        raise ValueError("JSON nesting exceeds parser safety limit") from exc
     if not isinstance(value, dict):
         raise ValueError("request must be a JSON object")
     return value
@@ -141,7 +145,7 @@ class ExecutionBroker:
             request.get("expires_at"), request.get("event"),
         )
         if (
-            not isinstance(request_id, str) or not request_id.strip() or len(request_id) > 128
+            not isinstance(request_id, str) or len(request_id) != 36
             or not isinstance(issued_at, str) or len(issued_at) > 64
             or not isinstance(expires_at, str) or len(expires_at) > 64
             or not isinstance(event, dict) or set(event) != {"kind", "details"}
@@ -151,6 +155,13 @@ class ExecutionBroker:
             or len(event["details"]) > MAX_EVENT_DETAILS
         ):
             return {"decision": "DENY", "reason_code": "REQUEST_FIELDS_INVALID"}
+
+        try:
+            parsed_id = uuid.UUID(request_id)
+            if parsed_id.version != 4 or str(parsed_id) != request_id:
+                return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
+        except (ValueError, AttributeError):
+            return {"decision": "DENY", "reason_code": "REQUEST_ID_INVALID"}
 
         policy_request = {
             "principal": principal, "action": OPERATION, "target": TARGET, "scope": SCOPE,
