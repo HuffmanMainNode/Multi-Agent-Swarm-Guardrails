@@ -4,51 +4,69 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T03:14:35Z",
+  "tested_at": "2026-11-10T03:25:00Z",
   "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
-      "notes": "Passed shared v1.0.0 decision vector using go test -race -count=1 ./...",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42748095348"
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+    },
+    {
+      "test_id": "MASG-V1-EXPIRED-001",
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+    },
+    {
+      "test_id": "MASG-V1-NOT-YET-VALID-001",
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
+    },
+    {
+      "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
+      "status": "PASS",
+      "notes": "Passed shared v1.0.0 portable vector in the Python/Go CI matrix; Go uses go test -race -count=1 ./....",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42749139619"
     }
   ],
   "limitations": [
-    "CI validates only the five portable policy-decision vectors; it does not test a deployed integration or protected side effect.",
+    "CI validates eight portable policy-decision and request-time vectors; it does not test a deployed integration or protected side effect.",
     "The evaluator does not authenticate principal identity or mediate side effects.",
     "No replay, TUF, broker, sandbox, evidence, recovery, fuzz, load or penetration tests."
   ],
   "notices": [
-    "PASS applies only to the five portable policy-decision vectors in this report's declared scope.",
+    "PASS applies only to the eight portable policy-decision and request-time vectors in this report's declared scope.",
     "This is not a security certification, complete mediation result, production readiness claim or independent assessment.",
     "The Go evaluator accepts a principal assertion from its caller and does not authenticate identity or mediate any side effect."
   ],
   "assessor": "Self-reported project test artifact; not an independent assessment.",
-  "conformance_scope": "portable_policy_decision_vectors_only",
-  "source_revision": "6c43c0f997d627f77f297b2639e34fadd321c407"
+  "conformance_scope": "portable_policy_decision_and_time_vectors_only",
+  "source_revision": "16921af9334166bc8e60f7da7c736e5d85cbb48e"
 }

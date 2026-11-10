@@ -234,5 +234,137 @@
       "decision": "DENY",
       "reason_code": "POLICY_VERSION_MISMATCH"
     }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-EXPIRED-001",
+    "category": "expiry",
+    "description": "A request whose expiry is at or before the trusted evaluation clock is denied.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440005",
+      "issued_at": "2026-11-10T12:00:00Z",
+      "expires_at": "2026-11-10T12:00:20Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "EXPIRED"
+    }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-NOT-YET-VALID-001",
+    "category": "expiry",
+    "description": "A request issued after the trusted evaluation clock is denied.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440006",
+      "issued_at": "2026-11-10T12:01:00Z",
+      "expires_at": "2026-11-10T12:02:00Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "NOT_YET_VALID"
+    }
+  },
+  {
+    "vector_version": "1.0.0",
+    "vector_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
+    "category": "expiry",
+    "description": "A request whose expiry does not follow its issue time is denied.",
+    "policy": {
+      "version": "vector-policy-1",
+      "default_effect": "DENY",
+      "rules": [
+        {
+          "id": "allow-read",
+          "principals": [
+            "agent:reader"
+          ],
+          "actions": [
+            "read"
+          ],
+          "targets": [
+            "reports:weekly"
+          ],
+          "scopes": [
+            "summary"
+          ],
+          "effect": "ALLOW"
+        }
+      ]
+    },
+    "request": {
+      "protocol_version": "1.0.0",
+      "message_type": "authorization_request",
+      "request_id": "550e8400-e29b-41d4-a716-446655440007",
+      "issued_at": "2026-11-10T12:01:00Z",
+      "expires_at": "2026-11-10T12:00:00Z",
+      "principal": "agent:reader",
+      "action": "read",
+      "target": "reports:weekly",
+      "scope": "summary",
+      "policy_version": "vector-policy-1"
+    },
+    "expected": {
+      "decision": "DENY",
+      "reason_code": "INVALID_VALIDITY_WINDOW"
+    }
   }
 ]

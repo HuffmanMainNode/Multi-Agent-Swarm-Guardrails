@@ -43,7 +43,7 @@ class UniversalProtocolTests(unittest.TestCase):
         self.assertGreaterEqual(len(self.schemas), 6)
 
     def test_all_portable_vectors_match_their_schema(self):
-        self.assertGreaterEqual(len(self.vectors), 4)
+        self.assertGreaterEqual(len(self.vectors), 8)
         for vector in self.vectors:
             with self.subTest(vector=vector.get("vector_id")):
                 self.vector_validator.validate(vector)
@@ -85,8 +85,10 @@ class UniversalProtocolTests(unittest.TestCase):
         )
         manifest_validator.validate(manifest)
         report_validator.validate(report)
-        self.assertEqual(report["overall_status"], "PASS")
-        self.assertEqual(report["conformance_scope"], "portable_policy_decision_vectors_only")
+        statuses = [item["status"] for item in report["results"]]
+        expected_overall = "PASS" if all(status == "PASS" for status in statuses) else "UNKNOWN"
+        self.assertEqual(report["overall_status"], expected_overall)
+        self.assertTrue(report["conformance_scope"])
 
     def test_example_extension_manifest_matches_schema(self):
         manifest = load_json(

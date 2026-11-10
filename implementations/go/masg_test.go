@@ -34,8 +34,8 @@ func TestPortableV100Vectors(t *testing.T) {
 	if err := decodeUniqueJSON(raw, &vectors); err != nil {
 		t.Fatalf("decode shared vectors: %v", err)
 	}
-	if len(vectors) < 5 {
-		t.Fatalf("expected at least five shared vectors, got %d", len(vectors))
+	if len(vectors) < 8 {
+		t.Fatalf("expected at least eight shared vectors, got %d", len(vectors))
 	}
 	for _, testVector := range vectors {
 		t.Run(testVector.VectorID, func(t *testing.T) {
