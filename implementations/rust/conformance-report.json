@@ -1,1 +1,62 @@
-a5249d1d1de8f35d10877296f32a9410ac2c1f59
+{
+  "report_version": "1.0.0",
+  "implementation_id": "masg-rust-reference",
+  "implementation_version": "0.1.0",
+  "protocol_version": "1.0.0",
+  "profile": "embedded",
+  "tested_at": "2026-11-10T04:00:00Z",
+  "overall_status": "UNKNOWN",
+  "results": [
+    {
+      "test_id": "MASG-V1-ALLOW-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-DEFAULT-DENY-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-DENY-PRECEDENCE-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-REVIEW-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-EXPIRED-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-NOT-YET-VALID-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    },
+    {
+      "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
+      "status": "NOT_TESTED",
+      "notes": "Template. Update to PASS only after Rust CI succeeds for this exact source revision."
+    }
+  ],
+  "limitations": [
+    "Rust CI has not yet validated this source revision.",
+    "Only the eight portable decision/time vectors are in the conformance report scope.",
+    "The evaluator does not authenticate principal identity or mediate side effects."
+  ],
+  "notices": [
+    "This report is deliberately UNKNOWN until the Rust CI run passes.",
+    "A vector PASS does not establish deployment security, complete mediation, certification or production readiness."
+  ],
+  "assessor": "Self-reported project test artifact; not an independent assessment.",
+  "conformance_scope": "portable_policy_decision_and_time_vectors_only"
+}

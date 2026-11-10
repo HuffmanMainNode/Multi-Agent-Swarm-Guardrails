@@ -1,1 +1,79 @@
-84ca507ca9325dc3a4243290a3199cac06abed36
+{
+  "manifest_version": "1.0.0",
+  "implementation_id": "masg-rust-reference",
+  "name": "MASG Rust Reference Evaluator",
+  "version": "0.1.0",
+  "source_url": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/tree/main/implementations/rust",
+  "languages": [
+    "Rust"
+  ],
+  "runtimes": [
+    "Rust standard library"
+  ],
+  "protocol_versions": [
+    "1.0.0"
+  ],
+  "supported_profiles": [
+    "embedded"
+  ],
+  "contract_status": [
+    {
+      "contract_id": "MSC-001",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-002",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-003",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-004",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-005",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-006",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-007",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-008",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-009",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    },
+    {
+      "contract_id": "MSC-010",
+      "contract_version": "1.0.0",
+      "status": "NOT_TESTED"
+    }
+  ],
+  "limitations": [
+    "Only v1.0.0 policy-decision semantics and portable vectors are implemented.",
+    "The evaluator does not authenticate principal identity or mediate protected side effects.",
+    "No replay, signed policy, TUF, broker, sandbox, evidence, recovery, fuzz, load, penetration or independent-assessment result."
+  ],
+  "conformance_report": "conformance-report.json",
+  "maintainer": "MrCakes931",
+  "updated_at": "2026-11-10T04:00:00Z"
+}
