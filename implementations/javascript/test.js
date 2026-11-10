@@ -40,6 +40,31 @@ test("timestamp precision and unknown local offset fail closed", () => {
   assert.equal(evaluate(vectors[0].policy, request, fixedNow).reason_code, "REQUEST_INVALID");
 });
 
+test("impossible RFC3339 calendar and clock values fail closed", () => {
+  const request = {...vectors[0].request, expires_at:"2027-01-01T00:00:00Z"};
+  for (const invalid of [
+    "2026-02-30T12:00:00Z",
+    "2026-02-29T12:00:00Z",
+    "2026-13-01T12:00:00Z",
+    "2026-04-31T12:00:00Z",
+    "2026-11-10T24:00:00Z",
+    "2026-11-10T12:60:00Z",
+    "2026-11-10T12:00:60Z",
+  ]) {
+    request.issued_at = invalid;
+    assert.equal(evaluate(vectors[0].policy, request, fixedNow).reason_code, "REQUEST_INVALID", invalid);
+  }
+});
+
+test("valid RFC3339 leap day remains accepted", () => {
+  const request = {
+    ...vectors[0].request,
+    issued_at:"2024-02-29T12:00:00Z",
+    expires_at:"2027-01-01T00:00:00Z",
+  };
+  assert.equal(evaluate(vectors[0].policy, request, fixedNow).decision, "ALLOW");
+});
+
 test("strict raw JSON rejects unknown fields and excessive nesting", () => {
   const policy = JSON.stringify(vectors[0].policy);
   const request = JSON.stringify(vectors[0].request);
