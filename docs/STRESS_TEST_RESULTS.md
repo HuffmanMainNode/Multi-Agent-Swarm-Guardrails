@@ -106,13 +106,13 @@ The broker is an experimental reference for one narrow protected operation and p
 
 ## TUF-verified policy source
 
-PR #6: [TUF-verified policy updates](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/6). Tested head: `ba950ae7a69ffe77202d786623fdefb662ae1cd1`.
+PR #6: [TUF-verified policy updates](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/6), merged as `e8a8d1400a601ef4277ed388337f630c06531cf2`. Tested head: `ba950ae7a69ffe77202d786623fdefb662ae1cd1`.
 
 Successful CI runs:
 - [42737352852](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42737352852)
 - [42737349896](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42737349896)
 
-Both runs passed all Python 3.11, 3.12, and 3.13 jobs. Each job ran 57 tests, Ruff static checks, structural verification, and JSON syntax checks. CI installed python-tuf 7.0.1 and securesystemslib 1.6.0 through the optional TUF extra.
+Both runs passed all Python 3.11, 3.12, and 3.13 jobs. The post-merge main run [42737605525](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42737605525) also passed all three jobs with 57 tests each. Each job ran 57 tests, Ruff static checks, structural verification, and JSON syntax checks. CI installed python-tuf 7.0.1 and securesystemslib 1.6.0 through the optional TUF extra.
 
 ### TUF-specific cases exercised
 
