@@ -803,12 +803,12 @@ mod tests {
     }
 
     fn decode_hex(input: &str) -> std::result::Result<Vec<u8>, String> {
-        if input.len() % 2 != 0 {
+        if input.len() & 1 == 1 {
             return Err("hex string has odd length".to_string());
         }
         input
             .as_bytes()
-            .chunks_exact(2)
+            .chunks(2)
             .map(|pair| {
                 let high = (pair[0] as char)
                     .to_digit(16)
