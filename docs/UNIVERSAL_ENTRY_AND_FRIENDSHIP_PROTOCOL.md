@@ -37,7 +37,7 @@ A participant may be operated by another participant. The manifest does not esta
 
 ## 4. Introduction manifest
 
-The experimental JSON Schema is [participant-manifest.schema.json](../schemas/participant-manifest.schema.json). The example is [participant-manifest.example.json](../examples/participant-manifest.example.json).
+The experimental JSON Schema is [participant-manifest.schema.json](../schemas/participant-manifest.schema.json). The example is [participant-manifest.example.json](../examples/participant-manifest.example.json). The 0.1.0 message envelope is defined in [uefp-handshake-message.schema.json](../schemas/uefp-handshake-message.schema.json).
 
 The manifest can describe:
 - A stable, locally chosen participant identifier.
@@ -67,7 +67,7 @@ A minimal conceptual exchange has these steps:
 7. **EXCHANGE:** Only the accepted content is shared over a separately selected transport.
 8. **CLOSE:** Participants record completion or termination according to their own policies.
 
-This sequence is a protocol design description, not an implemented network handshake. The repository does not currently provide a transport, discovery server, cryptographic identity system, or automated consent manager.
+The message envelope and local session transitions are specified in [UEFP Handshake State Machine](UEFP_HANDSHAKE_STATE_MACHINE.md). This remains an experimental protocol definition, not an implemented network handshake or stateful session engine. The repository does not provide a transport, discovery server, cryptographic identity system, or automated consent manager.
 
 ## 6. Trust is not friendship
 
@@ -136,7 +136,7 @@ GitHub is a useful collaboration and distribution point, not a universal network
 ## 11. Versioning and compatibility
 
 This proposal begins at 0.1.0. Before a stable release, the project needs:
-- A normative message envelope and handshake state machine.
+- Normative stabilization and independent review of the experimental message envelope and handshake state machine.
 - Shared positive and negative test vectors.
 - Independent validators in multiple languages.
 - Explicit version negotiation and downgrade behavior.
