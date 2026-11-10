@@ -10,8 +10,9 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 
 ## Initial implementation
 - Ten versioned mandatory safety contract definitions.
-- Dependency-free Python reference policy evaluator with deny-by-default behavior.
-- Exact principal/action/target/scope matching and request validity checks.
+- Dependency-free Python reference policy evaluator with strict local input validation and deny-by-default behavior.
+- Exact principal/action/target/scope matching, explicit-deny precedence, and request validity checks.
+- Optional local SQLite one-time request-ID consumption for replay resistance.
 - Local JSONL evidence ledger with a SHA-256 hash chain and verifier.
 - Structural repository conformance CLI.
 - Example policy/request, tests, CI, deployment profiles, machine-readable metadata, and security documentation.
@@ -22,12 +23,16 @@ Requires Python 3.11+.
 ```bash
 python -m venv .venv
 # Linux/macOS: . .venv/bin/activate
-# Windows: .venv\Scripts\Activate.ps1
+# Windows: .venv\\Scripts\\Activate.ps1
 python -m pip install -e .
 masg verify --root .
 masg evaluate --policy examples/policy.json --request examples/request.json
+# Enable local one-time request-ID consumption:
+masg evaluate --policy examples/policy.json --request examples/request.json --replay-db .masg/replay.sqlite3
 python -m unittest discover -s tests -v
 ```
+
+Without `--replay-db`, replay protection is disabled. With it, an ALLOW consumes the request ID in local SQLite before returning. Repeated IDs are denied. Protect the database from deletion, replacement, and rollback. This is not distributed replay protection.
 
 The example ALLOW means only that the local request exactly matched the local example policy. It does not authenticate the principal, protect policy provenance, isolate the process, or prove downstream execution is mediated.
 
@@ -59,7 +64,7 @@ The evaluator currently emits ALLOW, REVIEW_REQUIRED, or DENY. Unknown, malforme
 This is an experimental reference implementation, not a certified security product:
 - Principal strings are assertions, not authenticated identities.
 - Policy files are not cryptographically signed or provenance-verified.
-- No revocation service or distributed replay cache exists.
+- SQLite replay protection is optional and local; a database rollback can reset its history.
 - Delegation cycle checks are not capability attenuation.
 - A local hash chain cannot prevent whole-file replacement by an attacker controlling the file and checkpoint.
 - The structural verifier does not test a live deployment or prove complete enforcement mediation.
