@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased
+- Define language-neutral MASG protocol v1.0.0 with JSON Schemas for policies, authorization requests/responses, implementation manifests, conformance reports, and portable conformance vectors.
+- Add shared decision vectors and Python CI validation; publish implementation guidance for independent language/runtime adapters.
+- Clarify that Python is a reference implementation, not the normative protocol or a required dependency.
+
+## Unreleased
 - Add optional SPIFFE JWT-SVID validation through the local Workload API for the Linux broker. Validated SPIFFE IDs become exact policy principals; legacy UID mapping remains available.
 - Add per-request online validation, bounded bearer-token input, explicit audience configuration, fail-closed provider errors, request-expiry binding to SVID expiry, and tests with an injected Workload API client.
 - Document py-spiffe 0.4.0 provenance caveat, bearer-token limitations, and outstanding live SPIRE/X.509-SVID work.

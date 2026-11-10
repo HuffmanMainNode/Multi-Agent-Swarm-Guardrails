@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:masg:schema:decision-request:1.0.0",
+  "title": "MASG Language-Neutral Authorization Decision Request",
+  "type": "object",
+  "required": [
+    "protocol_version",
+    "message_type",
+    "request_id",
+    "issued_at",
+    "expires_at",
+    "principal",
+    "action",
+    "target",
+    "scope"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": "1.0.0"
+    },
+    "message_type": {
+      "const": "authorization_request"
+    },
+    "request_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "principal": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "description": "Must be derived by a trusted adapter from authenticated identity, never accepted as authority from an untrusted caller."
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "provenance_ref": {
+      "type": "string",
+      "maxLength": 2048
+    }
+  },
+  "additionalProperties": false
+}
