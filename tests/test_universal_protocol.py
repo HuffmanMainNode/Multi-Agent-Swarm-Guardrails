@@ -8,7 +8,7 @@ import unittest
 from jsonschema import Draft202012Validator, FormatChecker
 from referencing import Registry, Resource
 
-from masg.policy import evaluate
+from masg.policy import evaluate, evaluate_protocol
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
@@ -52,14 +52,7 @@ class UniversalProtocolTests(unittest.TestCase):
         fixed_now = datetime(2026, 11, 10, 12, 0, 30, tzinfo=timezone.utc)
         for vector in self.vectors:
             request = vector["request"]
-            internal_request = {
-                key: request[key]
-                for key in (
-                    "principal", "action", "target", "scope",
-                    "request_id", "issued_at", "expires_at", "policy_version",
-                )
-            }
-            result = evaluate(vector["policy"], internal_request, now=fixed_now)
+            result = evaluate_protocol(vector["policy"], request, now=fixed_now)
             with self.subTest(vector=vector["vector_id"]):
                 self.assertEqual(result.decision.value, vector["expected"]["decision"])
                 self.assertEqual(result.reason_code, vector["expected"]["reason_code"])

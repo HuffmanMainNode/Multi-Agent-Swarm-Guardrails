@@ -25,7 +25,62 @@ const (
 	maxTextLength   = 1024
 )
 
-var uuidV4Pattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+var uuidV4Pattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}// Package masg implements the MASG v1.0.0 policy-decision reference in Go.
+//
+// It is deliberately an evaluator, not an identity provider, transport broker,
+// sandbox, or proof that a caller's side effects are mediated.
+package masg
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"regexp"
+	"strings"
+	"time"
+	"unicode/utf8"
+)
+
+const (
+	ProtocolVersion = "1.0.0"
+	maxJSONBytes    = 65536
+	maxJSONDepth    = 32
+	maxRules        = 1000
+	maxSelectors    = 128
+	maxTextLength   = 1024
+)
+
+)
+var rfc3339Pattern = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-](?:0\d|1\d|2[0-3]):[0-5]\d)// Package masg implements the MASG v1.0.0 policy-decision reference in Go.
+//
+// It is deliberately an evaluator, not an identity provider, transport broker,
+// sandbox, or proof that a caller's side effects are mediated.
+package masg
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"regexp"
+	"strings"
+	"time"
+	"unicode/utf8"
+)
+
+const (
+	ProtocolVersion = "1.0.0"
+	maxJSONBytes    = 65536
+	maxJSONDepth    = 32
+	maxRules        = 1000
+	maxSelectors    = 128
+	maxTextLength   = 1024
+)
+
+)
 
 // Policy is the language-neutral MASG decision policy document.
 type Policy struct {
@@ -56,6 +111,7 @@ type Request struct {
 	Target          string `json:"target"`
 	Scope           string `json:"scope"`
 	PolicyVersion   string `json:"policy_version"`
+	ProvenanceRef   string `json:"provenance_ref,omitempty"`
 }
 
 // Result is the deterministic policy outcome for one request.
@@ -70,16 +126,16 @@ func result(decision, reason, version string) Result {
 }
 
 func validText(value string, max int) bool {
-	return strings.TrimSpace(value) != "" && len(value) <= max
+	return utf8.ValidString(value) && strings.TrimSpace(value) != "" && utf8.RuneCountInString(value) <= max
 }
 
-func validSelectorList(values []string) bool {
+func validSelectorList(values []string, maxLength int) bool {
 	if len(values) == 0 || len(values) > maxSelectors {
 		return false
 	}
 	seen := make(map[string]struct{}, len(values))
 	for _, value := range values {
-		if !validText(value, maxTextLength) {
+		if !validText(value, maxLength) {
 			return false
 		}
 		if _, exists := seen[value]; exists {
@@ -102,10 +158,10 @@ func validatePolicy(policy Policy) error {
 	}
 	for _, rule := range policy.Rules {
 		if !validText(rule.ID, 128) ||
-			!validSelectorList(rule.Principals) ||
-			!validSelectorList(rule.Actions) ||
-			!validSelectorList(rule.Targets) ||
-			!validSelectorList(rule.Scopes) {
+			!validSelectorList(rule.Principals, 1024) ||
+			!validSelectorList(rule.Actions, 256) ||
+			!validSelectorList(rule.Targets, 512) ||
+			!validSelectorList(rule.Scopes, 512) {
 			return errors.New("policy rule or selector invalid")
 		}
 		switch rule.Effect {
@@ -124,22 +180,29 @@ func validateRequest(request Request, policy Policy, now time.Time) (time.Time, 
 	if !uuidV4Pattern.MatchString(request.RequestID) {
 		return time.Time{}, time.Time{}, "REQUEST_INVALID"
 	}
-	for _, field := range []string{
-		request.Principal, request.Action, request.Target, request.Scope, request.PolicyVersion,
-	} {
-		if !validText(field, maxTextLength) {
-			return time.Time{}, time.Time{}, "REQUEST_INVALID"
-		}
+	if !validText(request.Principal, 1024) ||
+		!validText(request.Action, 256) ||
+		!validText(request.Target, 512) ||
+		!validText(request.Scope, 512) ||
+		!validText(request.PolicyVersion, 128) ||
+		(request.ProvenanceRef != "" && (!utf8.ValidString(request.ProvenanceRef) || utf8.RuneCountInString(request.ProvenanceRef) > 2048)) {
+		return time.Time{}, time.Time{}, "REQUEST_INVALID"
 	}
 	if request.PolicyVersion != policy.Version {
 		return time.Time{}, time.Time{}, "POLICY_VERSION_MISMATCH"
 	}
+	if !rfc3339Pattern.MatchString(request.IssuedAt) || strings.HasSuffix(request.IssuedAt, "-00:00") {
+		return time.Time{}, time.Time{}, "REQUEST_INVALID"
+	}
 	issued, err := time.Parse(time.RFC3339Nano, request.IssuedAt)
-	if err != nil || len(request.IssuedAt) > 64 {
+	if err != nil {
+		return time.Time{}, time.Time{}, "REQUEST_INVALID"
+	}
+	if !rfc3339Pattern.MatchString(request.ExpiresAt) || strings.HasSuffix(request.ExpiresAt, "-00:00") {
 		return time.Time{}, time.Time{}, "REQUEST_INVALID"
 	}
 	expires, err := time.Parse(time.RFC3339Nano, request.ExpiresAt)
-	if err != nil || len(request.ExpiresAt) > 64 {
+	if err != nil {
 		return time.Time{}, time.Time{}, "REQUEST_INVALID"
 	}
 	if !expires.After(issued) {

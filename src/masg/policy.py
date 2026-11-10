@@ -16,8 +16,11 @@ from .replay import ReplayStore, ReplayStoreError
 
 MAX_POLICY_BYTES = 1_048_576
 MAX_REQUEST_BYTES = 65_536
-MAX_RULES = 10_000
+MAX_RULES = 1_000
+MAX_SELECTORS = 128
 MAX_TEXT_LENGTH = 1_024
+SELECTOR_MAX_LENGTH = {"principals": 1_024, "actions": 256, "targets": 512, "scopes": 512}
+POLICY_VERSION_MAX_LENGTH = 128
 POLICY_KEYS = {"version", "default_effect", "rules"}
 RULE_KEYS = {"id", "principals", "actions", "targets", "scopes", "effect"}
 REQUEST_KEYS = {
@@ -66,37 +69,40 @@ def _load(path: str | Path, *, max_bytes: int) -> dict[str, Any]:
     return value
 
 
-def _text(value: Any, field: str) -> bool:
-    return isinstance(value, str) and bool(value.strip()) and len(value) <= MAX_TEXT_LENGTH
+def _text(value: Any, field: str, *, max_length: int = MAX_TEXT_LENGTH) -> bool:
+    return isinstance(value, str) and bool(value.strip()) and len(value) <= max_length
+
+
+def _selector_list(value: Any, field: str) -> bool:
+    max_length = SELECTOR_MAX_LENGTH[field]
+    return (
+        isinstance(value, list)
+        and 1 <= len(value) <= MAX_SELECTORS
+        and all(_text(item, field, max_length=max_length) for item in value)
+        and len(value) == len(set(value))
+    )
 
 
 def load_policy(path: str | Path) -> dict[str, Any]:
     policy = _load(path, max_bytes=MAX_POLICY_BYTES)
     if set(policy) != POLICY_KEYS:
         raise PolicyError("policy must contain exactly version, default_effect, and rules")
-    if not _text(policy.get("version"), "version"):
-        raise PolicyError("policy.version must be a non-empty string of at most 1024 characters")
+    if not _text(policy.get("version"), "version", max_length=POLICY_VERSION_MAX_LENGTH):
+        raise PolicyError("policy.version must be a non-empty string of at most 128 characters")
     if policy.get("default_effect") != "DENY":
         raise PolicyError("default_effect must be DENY")
     rules = policy.get("rules")
     if not isinstance(rules, list) or len(rules) > MAX_RULES:
         raise PolicyError(f"policy.rules must be an array of at most {MAX_RULES} rules")
     for index, rule in enumerate(rules):
-        if not isinstance(rule, dict) or not set(rule).issubset(RULE_KEYS):
-            raise PolicyError(f"rules[{index}] has invalid shape or unknown fields")
-        for key in ("principals", "actions", "targets", "scopes"):
-            values = rule.get(key)
-            if (
-                not isinstance(values, list)
-                or not values
-                or len(values) > 1_024
-                or not all(_text(item, f"rules[{index}].{key}") for item in values)
-                or len(values) != len(set(values))
-            ):
-                raise PolicyError(f"rules[{index}].{key} must be a unique non-empty string array")
+        if not isinstance(rule, dict) or set(rule) != RULE_KEYS:
+            raise PolicyError(f"rules[{index}] must contain exactly the required rule fields")
+        for key in SELECTOR_MAX_LENGTH:
+            if not _selector_list(rule.get(key), key):
+                raise PolicyError(f"rules[{index}].{key} must contain 1 to 128 unique bounded strings")
         if rule.get("effect") not in {"ALLOW", "DENY", "REVIEW_REQUIRED"}:
             raise PolicyError(f"rules[{index}].effect is unsupported")
-        if "id" in rule and not _text(rule["id"], f"rules[{index}].id"):
+        if not _text(rule["id"], "rule.id", max_length=128):
             raise PolicyError(f"rules[{index}].id is invalid")
     return policy
 
@@ -122,7 +128,7 @@ def load_request(path: str | Path) -> dict[str, Any]:
 
 
 def _time(value: Any, field: str) -> datetime:
-    if not isinstance(value, str) or not RFC3339.fullmatch(value):
+    if not isinstance(value, str) or not RFC3339.fullmatch(value) or value.endswith("-00:00"):
         raise PolicyError(f"{field} must be RFC3339 with an explicit timezone")
     try:
         result = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -154,7 +160,7 @@ def evaluate(
         rules = policy.get("rules")
         if not isinstance(rules, list) or len(rules) > MAX_RULES:
             return deny("POLICY_INVALID", "Policy rules are invalid.")
-        if not _text(policy.get("version"), "version"):
+        if not _text(policy.get("version"), "version", max_length=POLICY_VERSION_MAX_LENGTH):
             return deny("POLICY_INVALID", "Policy version is invalid.")
         if not isinstance(request, dict) or not set(request).issubset(REQUEST_KEYS):
             return deny("REQUEST_INVALID", "Request shape is invalid.")
@@ -162,12 +168,15 @@ def evaluate(
         if any(not _text(request.get(key), key) for key in required):
             return deny("REQUEST_INVALID", "Required request fields are missing or invalid.")
         if "policy_version" in request:
-            if not _text(request["policy_version"], "policy_version"):
+            if not _text(request["policy_version"], "policy_version", max_length=POLICY_VERSION_MAX_LENGTH):
                 return deny("REQUEST_INVALID", "Policy version reference is invalid.")
             if request["policy_version"] != policy["version"]:
                 return deny("POLICY_VERSION_MISMATCH", "Request policy version does not match loaded policy.")
-        issued = _time(request["issued_at"], "issued_at")
-        expires = _time(request["expires_at"], "expires_at")
+        try:
+            issued = _time(request["issued_at"], "issued_at")
+            expires = _time(request["expires_at"], "expires_at")
+        except PolicyError:
+            return deny("REQUEST_INVALID", "Request timestamp syntax is invalid.")
         if now is not None and (
             not isinstance(now, datetime) or now.tzinfo is None or now.utcoffset() is None
         ):
@@ -191,20 +200,13 @@ def evaluate(
 
         matches: list[str] = []
         for rule in rules:
-            if not isinstance(rule, dict) or not set(rule).issubset(RULE_KEYS):
+            if not isinstance(rule, dict) or set(rule) != RULE_KEYS:
                 return deny("POLICY_INVALID", "Policy rule shape is invalid.")
-            if any(
-                not isinstance(rule.get(key), list)
-                or not rule[key]
-                or len(rule[key]) > 1_024
-                or not all(_text(item, key) for item in rule[key])
-                or len(rule[key]) != len(set(rule[key]))
-                for key in ("principals", "actions", "targets", "scopes")
-            ):
+            if any(not _selector_list(rule.get(key), key) for key in SELECTOR_MAX_LENGTH):
                 return deny("POLICY_INVALID", "Policy rule selectors are invalid.")
             if rule.get("effect") not in {"ALLOW", "DENY", "REVIEW_REQUIRED"}:
                 return deny("POLICY_INVALID", "Policy contains an unknown effect.")
-            if "id" in rule and not _text(rule["id"], "rule.id"):
+            if not _text(rule["id"], "rule.id", max_length=128):
                 return deny("POLICY_INVALID", "Policy rule ID is invalid.")
             if (
                 request["principal"] in rule["principals"]
@@ -229,6 +231,56 @@ def evaluate(
         return deny("NO_MATCH", "No explicit rule authorizes this exact request.")
     except (PolicyError, TypeError, ValueError, KeyError, AttributeError):
         return deny("EVALUATION_ERROR", "Invalid input; request denied.")
+
+
+PROTOCOL_REQUEST_KEYS = {
+    "protocol_version", "message_type", "request_id", "issued_at", "expires_at",
+    "principal", "action", "target", "scope", "policy_version", "provenance_ref",
+}
+PROTOCOL_REQUEST_REQUIRED = PROTOCOL_REQUEST_KEYS - {"provenance_ref"}
+UUID_V4 = re.compile(
+    r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+)
+
+
+def evaluate_protocol(
+    policy: dict[str, Any],
+    envelope: dict[str, Any],
+    *,
+    now: datetime | None = None,
+) -> Evaluation:
+    """Evaluate a complete MASG v1.0.0 authorization request envelope.
+
+    This entry point enforces the language-neutral envelope contract before
+    delegating to the local policy evaluator. It does not authenticate principal
+    identity or mediate the protected side effect.
+    """
+    version = policy.get("version", "UNKNOWN") if isinstance(policy, dict) else "UNKNOWN"
+
+    def deny(code: str, message: str) -> Evaluation:
+        return Evaluation(Decision.DENY, code, message, version if isinstance(version, str) else "UNKNOWN")
+
+    if not isinstance(envelope, dict) or not PROTOCOL_REQUEST_REQUIRED.issubset(envelope):
+        return deny("REQUEST_INVALID", "Protocol request is missing required fields.")
+    if not set(envelope).issubset(PROTOCOL_REQUEST_KEYS):
+        return deny("REQUEST_INVALID", "Protocol request contains unknown fields.")
+    if envelope.get("protocol_version") != "1.0.0" or envelope.get("message_type") != "authorization_request":
+        return deny("REQUEST_INVALID", "Protocol version or message type is unsupported.")
+    if not isinstance(envelope.get("request_id"), str) or not UUID_V4.fullmatch(envelope["request_id"]):
+        return deny("REQUEST_INVALID", "Request identifier must be a canonical lowercase UUIDv4.")
+    field_limits = {"principal": 1024, "action": 256, "target": 512, "scope": 512, "policy_version": 128}
+    for field, limit in field_limits.items():
+        if not _text(envelope.get(field), field, max_length=limit):
+            return deny("REQUEST_INVALID", f"Request field {field} is invalid.")
+    if "provenance_ref" in envelope:
+        provenance = envelope["provenance_ref"]
+        if not isinstance(provenance, str) or len(provenance) > 2048:
+            return deny("REQUEST_INVALID", "Provenance reference is invalid.")
+    internal_request = {
+        field: envelope[field]
+        for field in ("principal", "action", "target", "scope", "request_id", "issued_at", "expires_at", "policy_version")
+    }
+    return evaluate(policy, internal_request, now=now)
 
 
 def evaluate_files(
