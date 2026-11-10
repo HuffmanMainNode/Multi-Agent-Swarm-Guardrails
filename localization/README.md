@@ -12,7 +12,7 @@ This directory contains portable, offline-capable human-language terminology and
 
 ## Package format
 
-Translation packs use `schemas/translation-pack.schema.json` and BCP 47 locale tags. Message IDs are stable keys. A pack records the source locale, catalog version, text, translation status, and optional review metadata.
+Translation packs use `schemas/translation-pack.schema.json` and BCP 47 locale tags. The schema checks a conservative tag syntax only; consumers should use a standards-aware BCP 47 parser for registry validation and canonicalization. A matching regular expression does not prove that a subtag is registered or semantically valid. Message IDs are stable keys. A pack records the source locale, catalog version, text, translation status, and optional review metadata.
 
 Statuses:
 - `SOURCE`: authoritative source text, used only in the source locale.
