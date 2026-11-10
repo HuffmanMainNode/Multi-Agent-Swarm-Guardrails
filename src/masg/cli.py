@@ -35,7 +35,10 @@ def main(argv: list[str] | None = None) -> int:
     serve.add_argument("--tuf-bootstrap-root", help="out-of-band trusted TUF root metadata")
     serve.add_argument("--tuf-cache", help="persistent protected TUF metadata/target cache")
     serve.add_argument("--policy-target", default="policies/active.json")
-    serve.add_argument("--principal-map", required=True)
+    identity_source = serve.add_mutually_exclusive_group(required=True)
+    identity_source.add_argument("--principal-map", help="legacy Linux UID-to-principal map")
+    identity_source.add_argument("--spiffe-endpoint-socket", help="local SPIFFE Workload API Unix socket")
+    serve.add_argument("--spiffe-audience", help="required audience for presented JWT-SVIDs")
     serve.add_argument("--replay-db", required=True)
     serve.add_argument("--ledger", required=True)
     append = broker_sub.add_parser("append", help="submit one request to the local broker")
@@ -61,6 +64,8 @@ def main(argv: list[str] | None = None) -> int:
                 ledger_path=args.ledger, tuf_repository=args.tuf_repository,
                 tuf_bootstrap_root=args.tuf_bootstrap_root, tuf_cache=args.tuf_cache,
                 policy_target=args.policy_target,
+                spiffe_endpoint_socket=args.spiffe_endpoint_socket,
+                spiffe_audience=args.spiffe_audience,
             )
         except (BrokerError, OSError, ValueError) as exc:
             print(json.dumps({"decision": "DENY", "reason_code": "BROKER_START_FAILED", "detail": str(exc)}), file=sys.stderr)

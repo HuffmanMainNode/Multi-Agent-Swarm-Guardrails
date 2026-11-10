@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from .audit import append_event
+from .identity import SpiffeJwtSvidVerifier, WorkloadIdentityError
 from .policy import evaluate, load_policy
 from .replay import ReplayStore, ReplayStoreError
 
@@ -133,12 +134,15 @@ class ExecutionBroker:
     """Authorize and execute the fixed audit.append operation."""
 
     def __init__(
-        self, *, policy_path: str | Path | None = None, principal_map_path: str | Path,
+        self, *, policy_path: str | Path | None = None, principal_map_path: str | Path | None = None,
         replay_db: str | Path, ledger_path: str | Path,
         tuf_repository: str | Path | None = None,
         tuf_bootstrap_root: str | Path | None = None,
         tuf_cache: str | Path | None = None,
         policy_target: str = "policies/active.json",
+        spiffe_endpoint_socket: str | Path | None = None,
+        spiffe_audience: str | None = None,
+        identity_verifier: Any | None = None,
     ) -> None:
         if not sys.platform.startswith("linux") or not hasattr(socket, "SO_PEERCRED"):
             raise BrokerError("execution broker currently supports Linux only")
@@ -162,7 +166,30 @@ class ExecutionBroker:
             except Exception as exc:
                 raise BrokerError("TUF policy verification failed; protected broker startup denied") from exc
         self.policy = load_policy(policy_file)
-        self.principals = _load_principals(principal_map_path)
+        spiffe_configured = spiffe_endpoint_socket is not None or spiffe_audience is not None
+        if identity_verifier is not None:
+            if principal_map_path is not None or spiffe_configured:
+                raise BrokerError("injected identity verifier cannot be combined with identity configuration")
+            self.identity_mode = "spiffe"
+            self.identity_verifier = identity_verifier
+            self.principals: dict[int, str] = {}
+        elif spiffe_configured:
+            if principal_map_path is not None or not spiffe_endpoint_socket or not spiffe_audience:
+                raise BrokerError("SPIFFE mode requires endpoint socket and audience, and forbids a UID principal map")
+            try:
+                self.identity_verifier = SpiffeJwtSvidVerifier(
+                    socket_path=spiffe_endpoint_socket, audience=spiffe_audience,
+                )
+            except WorkloadIdentityError as exc:
+                raise BrokerError("SPIFFE workload identity verifier initialization failed") from exc
+            self.identity_mode = "spiffe"
+            self.principals = {}
+        else:
+            if principal_map_path is None:
+                raise BrokerError("UID identity mode requires an operator-managed principal map")
+            self.identity_mode = "uid"
+            self.identity_verifier = None
+            self.principals = _load_principals(principal_map_path)
         replay_path = Path(replay_db)
         ledger = Path(ledger_path)
         for path, label in ((replay_path, "replay database"), (ledger, "evidence ledger")):
@@ -177,17 +204,40 @@ class ExecutionBroker:
         self.ledger_path = ledger
         self._ledger_lock = threading.Lock()
 
+    def close(self) -> None:
+        """Release optional identity-provider resources."""
+        if self.identity_verifier is not None:
+            close = getattr(self.identity_verifier, "close", None)
+            if callable(close):
+                close()
+
     def process(self, raw: bytes, peer_uid: int) -> dict[str, Any]:
         try:
             request = _decode(raw)
         except (TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError):
             return {"decision": "DENY", "reason_code": "REQUEST_INVALID"}
-        if set(request) != {"request_id", "issued_at", "expires_at", "event"}:
+        expected_fields = {"request_id", "issued_at", "expires_at", "event"}
+        if self.identity_mode == "spiffe":
+            expected_fields.add("svid")
+        if set(request) != expected_fields:
             return {"decision": "DENY", "reason_code": "REQUEST_SHAPE_INVALID"}
 
-        principal = self.principals.get(peer_uid)
-        if principal is None:
-            return {"decision": "DENY", "reason_code": "CALLER_IDENTITY_UNMAPPED"}
+        if self.identity_mode == "spiffe":
+            token = request.get("svid")
+            if (
+                not isinstance(token, str) or not token or len(token) > 8_192
+                or not token.isascii() or any(char.isspace() for char in token)
+                or token.count(".") != 2
+            ):
+                return {"decision": "DENY", "reason_code": "IDENTITY_TOKEN_INVALID"}
+            try:
+                principal = self.identity_verifier.authenticate(token)
+            except Exception:
+                return {"decision": "DENY", "reason_code": "IDENTITY_VALIDATION_FAILED"}
+        else:
+            principal = self.principals.get(peer_uid)
+            if principal is None:
+                return {"decision": "DENY", "reason_code": "CALLER_IDENTITY_UNMAPPED"}
 
         request_id, issued_at, expires_at, event = (
             request.get("request_id"), request.get("issued_at"),
@@ -242,8 +292,10 @@ class ExecutionBroker:
             return {"decision": "DENY", "reason_code": "REPLAY_DETECTED"}
 
         record_event = {
-            "operation": OPERATION, "principal": principal, "peer_uid": peer_uid,
-            "request_id": request_id, "submitted_event": event,
+            "operation": OPERATION, "principal": principal, "identity_source": (
+                "spiffe_jwt_svid" if self.identity_mode == "spiffe" else "linux_so_peercred"
+            ),
+            "peer_uid": peer_uid, "request_id": request_id, "submitted_event": event,
         }
         try:
             with self._ledger_lock:
@@ -302,6 +354,7 @@ def serve(
     principal_map_path: str | Path, replay_db: str | Path, ledger_path: str | Path,
     tuf_repository: str | Path | None = None, tuf_bootstrap_root: str | Path | None = None,
     tuf_cache: str | Path | None = None, policy_target: str = "policies/active.json",
+    spiffe_endpoint_socket: str | Path | None = None, spiffe_audience: str | None = None,
 ) -> None:
     """Serve until interrupted. Existing socket paths are never unlinked automatically."""
     if not sys.platform.startswith("linux"):
@@ -327,6 +380,7 @@ def serve(
         server.serve_forever(poll_interval=0.25)
     finally:
         server.server_close()
+        broker.close()
         try:
             current = path.lstat()
             if socket_stat and stat.S_ISSOCK(current.st_mode) and current.st_ino == socket_stat.st_ino:
