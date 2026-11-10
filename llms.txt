@@ -35,3 +35,14 @@ Both resolvers use human-reviewed text by default and never perform network tran
 - docs/GLOSSARY_FOR_HUMANS.md: plain-language computing and protocol glossary.
 - docs/AI_COLLABORATION_FOR_LEARNERS.md: safe AI tutor, pair-programming, review, and translation guidance.
 New contributors may participate through documentation, accessibility feedback, language review, testing, or code. Do not assume technical experience.
+
+## Global entry and GitHub participation
+- docs/UNIVERSAL_ENTRY_AND_FRIENDSHIP_PROTOCOL.md: experimental UEFP proposal for independent participants to introduce themselves, compare declared communication capabilities, and propose consent-based knowledge exchange. Not an identity, trust, authorization, or execution service.
+- schemas/participant-manifest.schema.json and examples/participant-manifest.example.json: experimental self-description format; schema validity does not authenticate identity or prove capability.
+- docs/GITHUB_FIELD_GUIDE.md: practical guide to profiles, repository creation, README writing, forks/upstream hygiene, achievements without spam, repository organization, international collaboration, and directing AI assistants safely.
+- templates/profile/README.md: adaptable personal profile README template.
+- templates/repository/README.md: reusable project README template.
+- templates/ai-project-brief.md: bounded instructions and evidence requirements for AI-assisted repository work.
+- templates/fork-maintenance-checklist.md: checklist for responsible forks and upstream contribution.
+
+UEFP is experimental. No live discovery service, transport, cryptographic identity, automatic consent negotiation, or remote execution is implemented.
