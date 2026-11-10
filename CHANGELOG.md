@@ -16,6 +16,7 @@
 - Add optional python-tuf 7.x policy retrieval from an operator-managed local mirror; verify out-of-band bootstrap root, metadata signatures/versions/expiry, snapshot consistency, and target hashes before broker policy load.
 - Add fail-closed TUF broker startup mode, persistent metadata cache requirements, optional dependency extra, TUF adversarial tests, and publishing/operations guidance. Static policy mode remains unauthenticated.
 - Validate the TUF client on python-tuf 7.0.1: 57 tests passed per Python 3.11/3.12/3.13 job, with Ruff, structural verification, and JSON checks.
+- Merge TUF policy trust integration in PR #6; main-branch CI run 42737605525 passed all three runtimes.
 
 ## 0.1.0 foundation
 - Ten versioned mandatory safety contract definitions.
