@@ -9,6 +9,10 @@
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js"
+    },
+    "./localization": {
+      "types": "./localization.d.ts",
+      "import": "./localization.js"
     }
   },
   "scripts": {
