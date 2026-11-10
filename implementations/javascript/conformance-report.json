@@ -4,130 +4,177 @@
   "implementation_version": "0.1.0",
   "protocol_version": "1.0.0",
   "profile": "embedded",
-  "tested_at": "2026-11-10T05:27:10Z",
+  "tested_at": "2026-11-10T06:00:00Z",
   "conformance_scope": "portable_policy_time_and_parser_negative_vectors_only",
   "overall_status": "PASS",
   "results": [
     {
       "test_id": "MASG-V1-ALLOW-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-DEFAULT-DENY-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-DENY-PRECEDENCE-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-REVIEW-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-POLICY-VERSION-MISMATCH-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-EXPIRED-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-NOT-YET-VALID-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-V1-INVALID-VALIDITY-WINDOW-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared v1.0.0 policy-decision/time vector passed in the recorded CI run."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared v1.0.0 policy-decision/time vector passed in the Node.js 22 CI job."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-001",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-002",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-003",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-004",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-005",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-006",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-007",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-008",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-009",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
     },
     {
       "test_id": "MASG-PARSER-NEGATIVE-010",
       "status": "PASS",
-      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762180139",
-      "notes": "Shared malformed-input fixture rejected with the required fail-closed reason code."
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code."
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-FEBRUARY-30",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-NONLEAP-FEBRUARY-29",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-MONTH-13",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-APRIL-31",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-HOUR-24",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-MINUTE-60",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-SECOND-60",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
+    },
+    {
+      "test_id": "MASG-PARSER-REQUEST-INVALID-OFFSET-25",
+      "status": "PASS",
+      "notes": "Shared malformed-input or timestamp-validation fixture rejected with the required fail-closed reason code.",
+      "evidence_ref": "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42762823222"
     }
   ],
   "limitations": [
-    "Conformance report covers eight shared policy-decision/request-time vectors and ten deterministic parser-negative fixtures only.",
+    "Conformance report covers eight shared policy-decision/request-time vectors and eighteen deterministic parser/timestamp-negative fixtures only.",
     "The evaluator does not authenticate principal identity or mediate side effects.",
     "No replay, TUF, broker, sandbox, evidence, recovery, fuzz campaign, load test, penetration test or independent assessment is implied."
   ],
   "notices": [
-    "PASS applies only to the eight shared policy-decision/time vectors and ten shared parser-negative fixtures in the embedded profile.",
-    "Parser-negative fixtures are deterministic regression cases, not exhaustive fuzzing or parser memory-safety proof.",
+    "PASS applies only to the eight shared policy-decision/time vectors and eighteen shared parser/timestamp-negative fixtures in the embedded profile.",
+    "Negative fixtures are deterministic regression cases, not exhaustive fuzzing or parser memory-safety proof.",
     "The caller supplies principal and JavaScript Date clock; neither is authenticated.",
-    "This is not a security certification, complete mediation result, MSC conformance, production readiness claim or independent assessment.",
-    "Overall PASS covers only the eight shared policy/time vectors and ten shared parser-negative fixtures. It is not MSC conformance, deployment security assurance, or independent review."
+    "This is not a security certification, complete mediation result, MSC conformance, production readiness claim or independent assessment."
   ],
   "assessor": "Self-reported project test artifact; not an independent assessment.",
   "source_revision": "da8ec519e1ca1d1f7e8a2baeae0a9f7e38159c4d"

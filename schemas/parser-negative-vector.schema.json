@@ -31,7 +31,10 @@
         "trailing_request_data",
         "excessive_request_depth",
         "oversized_request",
-        "unknown_policy_field"
+        "unknown_policy_field",
+        "invalid_calendar_date",
+        "invalid_clock_component",
+        "invalid_timestamp_offset"
       ]
     },
     "description": {

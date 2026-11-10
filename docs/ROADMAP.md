@@ -26,7 +26,7 @@ Priorities are ordered by security dependency, not feature count.
 - [x] Independent Rust standard-library evaluator with formatting, Clippy and tests.
 - [x] Independent JavaScript evaluator with TypeScript declarations and Node.js 22 CI.
 - [x] Validate Go, Rust, and JavaScript implementation manifests/reports against normative schemas in Python CI.
-- [x] Add ten shared malformed-input/parser-negative fixtures consumed unchanged by Python, Go, and Rust.
+- [x] Add eighteen shared malformed-input and RFC 3339 timestamp-validation fixtures consumed unchanged by Python, Go, Rust, and JavaScript.
 - [ ] Add cross-language differential/property-based testing and fuzz campaigns.
 - [ ] Add framework-specific JavaScript/TypeScript integration adapters after identity and enforcement mappings are defined.
 - [ ] Add a portable CLI conformance runner that can validate any implementation report offline.
@@ -54,12 +54,3 @@ No production or certification claim until identity, policy integrity, execution
 - [ ] Expand independent protocol implementations to Java, C#, Swift, Kotlin, C/C++, and WebAssembly as community demand and maintainers allow.
 
 UASR is experimental and separate from authorization protocol v1.0.0. No hidden-reasoning disclosure, translation accuracy guarantee, or token-efficiency result is claimed.
-
-## Localization runtime implementation
-
-- [x] Add an offline Python resolver with source fallback and explicit machine-draft opt-in.
-- [x] Add an independent JavaScript/TypeScript resolver with matching selection behavior.
-- [x] Add tests for human-review metadata, draft opt-in, needs-revision fallback, missing entries, and catalog mismatch.
-- [ ] Add equivalent resolvers for Go and Rust after the shared behavior contract is reviewed.
-- [ ] Add standards-aware BCP 47 validation adapters without imposing one locale library on every implementation.
-- [ ] Add packaging/release automation for locale packs and source-catalog version invalidation.

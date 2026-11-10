@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Expand the shared malformed-input corpus to eighteen fixtures, adding impossible RFC 3339 dates, clock fields, and timezone offsets; Python, Go, Rust, and JavaScript reject the same raw request documents.
+- Merge the universal localization and experimental semantic-interchange foundation (PR #23); keep UASR explicitly separate from authorization and label it experimental.
 - Add a dependency-free JavaScript reference evaluator for Node.js 22+ with TypeScript declarations, strict bounded JSON parsing, and shared-vector/parser-negative tests.
 - Add a Node.js 22 CI job; JavaScript 0.1.0 passed all eight shared decision/time vectors and ten shared parser-negative fixtures in CI run 42761807335. Its report PASS is limited to the eight-vector embedded profile.
 - Merge ten shared raw-parser negative fixtures; Python, Go, and Rust now reject the same malformed policy/request byte documents in CI, with exact fail-closed reason-code checks. PR #20 and post-merge main CI passed all five jobs.
