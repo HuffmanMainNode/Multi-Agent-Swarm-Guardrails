@@ -17,7 +17,11 @@
     "universal_language": "docs/UNIVERSAL_LANGUAGE_ARCHITECTURE.md",
     "semantic_interchange": "docs/AI_SEMANTIC_INTERCHANGE.md",
     "localization": "localization/README.md",
-    "glossary": "localization/glossary/core-concepts.json"
+    "glossary": "localization/glossary/core-concepts.json",
+    "global_entry": "docs/UNIVERSAL_ENTRY_AND_FRIENDSHIP_PROTOCOL.md",
+    "participant_manifest_schema": "schemas/participant-manifest.schema.json",
+    "github_learning": "docs/GITHUB_FIELD_GUIDE.md",
+    "templates": "templates/"
   },
   "capabilities": [
     "contract_catalog",
@@ -29,7 +33,10 @@
     "experimental_semantic_frame_schema",
     "offline_human_language_fallback_resolvers",
     "locale_template_generation",
-    "controlled_contextual_concept_glossary"
+    "controlled_contextual_concept_glossary",
+    "experimental_global_participant_manifest_schema",
+    "github_open_source_learning_materials",
+    "reusable_contributor_templates"
   ],
   "not_capabilities": [
     "hosted_runtime",
@@ -42,7 +49,13 @@
     "model_internal_reasoning_access",
     "universal_semantic_equivalence",
     "AI_semantic_frame_authorization",
-    "automatic_machine_translation"
+    "automatic_machine_translation",
+    "global_participant_directory",
+    "participant_identity_authentication",
+    "automated_friendship_handshake",
+    "capability_verification",
+    "automated_consent_negotiation",
+    "remote_execution_via_uefp"
   ],
   "network_required_for_core": false,
   "status": "experimental"
