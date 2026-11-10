@@ -1,0 +1,21 @@
+{
+  "name": "@masg/reference-javascript",
+  "version": "0.1.0",
+  "description": "Dependency-free JavaScript reference evaluator for MASG protocol v1.0.0",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  },
+  "scripts": {
+    "test": "node --test test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "Apache-2.0"
+}

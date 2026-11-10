@@ -34,7 +34,7 @@ jobs:
           python -m json.tool examples/request.json > /dev/null
           python -m json.tool examples/broker-policy.example.json > /dev/null
           python -m json.tool examples/broker-principals.example.json > /dev/null
-          for file in schemas/*.json vectors/v1.0.0/*.json implementations/go/*.json implementations/rust/*.json extensions/examples/generic-tool-action/*.json; do python -m json.tool "$file" > /dev/null; done
+          for file in schemas/*.json vectors/v1.0.0/*.json implementations/go/*.json implementations/rust/*.json implementations/javascript/*.json extensions/examples/generic-tool-action/*.json; do python -m json.tool "$file" > /dev/null; done
 
   go-reference:
     runs-on: ubuntu-latest
@@ -67,3 +67,14 @@ jobs:
       - name: Rust tests against shared protocol vectors
         working-directory: implementations/rust
         run: cargo test --locked
+
+  javascript-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests against shared protocol vectors
+        working-directory: implementations/javascript
+        run: node --test

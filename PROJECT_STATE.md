@@ -185,3 +185,9 @@ Rust CI initially caught formatting and Clippy warnings in the new test helper; 
 Scope: ten deterministic parser-negative regressions. They are not exhaustive fuzzing, parser memory-safety proof, hostile-load resilience, identity conformance, runtime mediation, or deployment certification. Go/Rust conformance reports remain scoped to the eight positive policy/time vectors; parser-negative regression results are separate CI evidence. All ten MSC statuses remain NOT_TESTED for both independent implementations.
 
 Next quality gate: differential/property testing and fuzzing across the three evaluators; then a Node/TypeScript reference adapter and a portable offline conformance runner. Keep the identity, enforcement, recovery, and supply-chain gaps open.
+
+
+## JavaScript reference implementation (under review)
+
+Branch: `implementations/javascript-reference`
+Node.js 22+, dependency-free ES module with TypeScript declaration file. Intended to consume the same eight decision/time vectors and ten parser-negative fixtures as Python, Go, and Rust. Implements a bounded strict JSON parser, duplicate-key rejection, UTF-8 validation, field/selector bounds, UUIDv4, RFC3339 time checks, and exact-match deny-by-default decisions. CI and conformance report remain pending; do not count it as a supported implementation until tests pass.

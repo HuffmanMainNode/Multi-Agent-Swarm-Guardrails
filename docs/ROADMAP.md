@@ -24,6 +24,7 @@ Priorities are ordered by security dependency, not feature count.
 - [x] Python reference evaluator.
 - [x] Independent Go standard-library evaluator with race-enabled CI.
 - [x] Independent Rust standard-library evaluator with formatting, Clippy and tests.
+- [ ] Independent JavaScript evaluator with TypeScript declarations and Node.js CI (under implementation).
 - [x] Validate Go and Rust implementation manifests/reports against normative schemas in Python CI.
 - [x] Add ten shared malformed-input/parser-negative fixtures consumed unchanged by Python, Go, and Rust.
 - [ ] Add cross-language differential/property-based testing and fuzz campaigns.
