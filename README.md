@@ -36,7 +36,7 @@ Without `--replay-db`, replay protection is disabled. With it, an ALLOW consumes
 
 ## Experimental independent broker (Linux only)
 
-The broker is a separate process, not an in-process middleware hook. It uses Linux Unix-domain-socket peer credentials to derive the caller UID, maps that UID to an operator-configured principal, and authorizes one fixed operation: appending a bounded event to the broker-owned evidence ledger. The client cannot choose a principal, action, target, scope, path, executable, or command.
+The broker is a separate process, not an in-process middleware hook. It collects Linux Unix-domain-socket peer credentials as transport provenance and uses either an operator-configured UID-to-principal map or optional per-request SPIFFE JWT-SVID validation through the local Workload API. It authorizes one fixed operation: appending a bounded event to the broker-owned evidence ledger. The client cannot choose an operation, target, scope, path, executable, or command. In SPIFFE mode the JWT-SVID remains a bearer credential and is not bound to the Unix peer process.
 
 See [docs/INDEPENDENT_BROKER.md](docs/INDEPENDENT_BROKER.md) for broker deployment, [docs/SPIFFE_WORKLOAD_IDENTITY.md](docs/SPIFFE_WORKLOAD_IDENTITY.md) for optional cryptographic workload identity, and [docs/TUF_POLICY_TRUST.md](docs/TUF_POLICY_TRUST.md) for policy publisher verification.
 

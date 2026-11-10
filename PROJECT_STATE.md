@@ -54,3 +54,18 @@ Linux only. UID mode still depends on OS peer identity and processes sharing a U
 
 ## Next
 Complete live SPIRE interoperability, rotation/revocation and workload-selector tests; add sender-constrained X.509-SVID/mTLS; review and improve the optional SDK's supply-chain provenance. Then prioritize TUF repository publishing/signing, stronger rollback-resistant cache storage, capability delegation attenuation, and a typed protected executor. Do not expand broker capabilities until each new operation has a fixed schema, explicit authority mapping, bounded inputs/resources, side-effect evidence, and bypass tests.
+
+## Universal language-neutral protocol milestone
+
+PR #10: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/10
+Merged: c595bd6293634b5f7349cf19f45ff44d42a98f20
+Protocol version: 1.0.0
+Tested PR head: a4fd0c71add091ba2ecd415b6ca3c283029b9eff
+PR CI run: 42746824887 (Python 3.11, 3.12, 3.13 all passed)
+Post-merge main CI: 42746893640 and 42746898736 both passed.
+
+The normative protocol is now separate from the Python reference package. Added language-neutral JSON Schemas for decision policy, request/response envelopes, implementation manifests, conformance reports and conformance vectors. Added portable v1.0.0 decision vectors for exact allow, default deny, explicit deny precedence, review-required and policy-version mismatch. The Python reference evaluator checks a supplied policy_version against the loaded policy and fails closed on mismatch. The protocol request schema requires policy_version.
+
+Independent implementations may use Rust, Go, Java, C#, JavaScript/TypeScript or any other language/runtime. They do not need Python, the MASG package, a MASG-hosted service, or the same transport. The specification defines normative semantics; adapters and SDKs are replaceable.
+
+Important scope: the first version standardizes policy/decision semantics and conformance artifacts, not a universal execution broker, transport, identity provider, cryptographic signature format, sandbox, or orchestration protocol. The Linux broker remains Linux-only and only supports audit.append. Signed envelopes and canonical JSON signatures are not defined. Full deployment conformance and security assurance remain future work.
