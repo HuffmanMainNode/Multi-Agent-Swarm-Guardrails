@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -235,6 +236,50 @@ func EvaluateJSON(policyJSON, requestJSON []byte, now time.Time) Result {
 	return Evaluate(policy, request, now)
 }
 
+
+func rejectUnpairedSurrogateEscapes(raw []byte) error {
+	inString := false
+	for index := 0; index < len(raw); index++ {
+		switch {
+		case !inString && raw[index] == '"':
+			inString = true
+		case inString && raw[index] == '"':
+			inString = false
+		case inString && raw[index] == '\\':
+			if index+1 >= len(raw) {
+				return errors.New("incomplete JSON escape")
+			}
+			if raw[index+1] != 'u' {
+				index++
+				continue
+			}
+			if index+5 >= len(raw) {
+				return errors.New("incomplete Unicode escape")
+			}
+			code, err := strconv.ParseUint(string(raw[index+2:index+6]), 16, 16)
+			if err != nil {
+				return errors.New("invalid Unicode escape")
+			}
+			switch {
+			case code >= 0xD800 && code <= 0xDBFF:
+				if index+11 >= len(raw) || raw[index+6] != '\\' || raw[index+7] != 'u' {
+					return errors.New("unpaired high surrogate")
+				}
+				low, err := strconv.ParseUint(string(raw[index+8:index+12]), 16, 16)
+				if err != nil || low < 0xDC00 || low > 0xDFFF {
+					return errors.New("invalid low surrogate")
+				}
+				index += 11
+			case code >= 0xDC00 && code <= 0xDFFF:
+				return errors.New("unpaired low surrogate")
+			default:
+				index += 5
+			}
+		}
+	}
+	return nil
+}
+
 func decodeUniqueJSON(raw []byte, target any, maxBytes int) error {
 	if !utf8.Valid(raw) {
 		return errors.New("invalid UTF-8")
@@ -242,11 +287,25 @@ func decodeUniqueJSON(raw []byte, target any, maxBytes int) error {
 	if len(raw) == 0 || len(raw) > maxBytes {
 		return errors.New("JSON size invalid")
 	}
+	if err := rejectUnpairedSurrogateEscapes(raw); err != nil {
+		return err
+	}
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
 	value, err := parseValue(decoder, 1)
 	if err != nil {
 		return err
+	}
+	if _, isRequest := target.(*Request); isRequest {
+		object, ok := value.(map[string]any)
+		if !ok {
+			return errors.New("request must be a JSON object")
+		}
+		if provenance, present := object["provenance_ref"]; present {
+			if _, ok := provenance.(string); !ok {
+				return errors.New("provenance_ref must be a string when present")
+			}
+		}
 	}
 	if _, err := decoder.Token(); err != io.EOF {
 		if err == nil {
