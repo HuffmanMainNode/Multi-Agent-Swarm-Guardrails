@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Please cite this repository and retain applicable license and attribution notices."
+title: "Multi-Agent Swarm Guardrails"
+abstract: "Portable, independently verifiable safety contracts and reference enforcement for autonomous agent systems."
+authors:
+  - name: "MrCakes931"
+repository-code: "https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails"
+license: Apache-2.0
+type: software
+version: 0.1.0
+date-released: 2026-11-09
