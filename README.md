@@ -24,7 +24,7 @@ No hosted control plane, paid API, mandatory telemetry, central registry, or ven
 The normative protocol lives in `spec/`, `schemas/`, and `vectors/v1.0.0/`. It is independent of the Python package, operating system, transport, model framework, or orchestration engine.
 
 - Python provides `evaluate_protocol` for complete parsed envelopes and `evaluate_protocol_json` for strict raw JSON parsing.
-- Go provides an independent standard-library-only `Evaluate` / `EvaluateJSON` implementation.
+- Go 0.1.1 provides an independent standard-library-only `Evaluate` / `EvaluateJSON` implementation.
 - Both implementations consume the same eight versioned decision/time vectors. CI checks Python 3.11, 3.12, 3.13 and Go race-enabled tests.
 - Rust, Java, C#, JavaScript/TypeScript, and other runtimes can implement the same schemas and vectors without importing Python, using Go, or calling a MASG-hosted service.
 - Transport, identity provider, policy engine, enforcement broker, and runtime adapters remain replaceable. An adapter is not trusted merely because it implements the interface; it must publish evidence and limitations.
@@ -92,14 +92,6 @@ This is an experimental reference implementation, not a certified security produ
 - No MCP, A2A, ACS, OPA, Cedar, X.509-SVID/mTLS, or OS sandbox adapter is implemented. MASG does not provide a TUF repository publisher or manage signing keys.
 
 Read [docs/UNIVERSAL_PROTOCOL.md](docs/UNIVERSAL_PROTOCOL.md), [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md), [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md), and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
-
-## Universal protocol and language implementations
-
-MASG's normative protocol is language-neutral. Python is the first reference implementation, not a required runtime. The versioned specification, JSON Schemas, portable decision vectors, and implementation guide are in [spec/](spec/README.md), [schemas/](schemas/), [vectors/](vectors/), and [docs/IMPLEMENTING_IN_ANY_LANGUAGE.md](docs/IMPLEMENTING_IN_ANY_LANGUAGE.md). Independent Rust, Go, Java, C#, JavaScript/TypeScript, and future implementations can consume the same contracts and test vectors without depending on the Python package.
-
-A first standalone Go evaluator is now available under [implementations/go/](implementations/go/README.md). It consumes the shared v1.0.0 vectors without Python or third-party Go modules. Its PASS is limited to portable policy-decision vectors in the embedded profile; it does not authenticate identities or mediate execution. Rust, Java, C#, and JavaScript/TypeScript implementations have not yet been added.
-
-A conformance PASS applies only to the implementation, version, profile, tests, and environment reported. It is not certification or proof of production security.
 
 ## Namespaced extensions
 

@@ -10,7 +10,7 @@ License: Apache-2.0
 Public, portable, independently verifiable safety substrate for autonomous agents and swarms. Not a hosted service or centralized command center.
 
 ## Current milestone
-Initial foundation merged in PR #1. Input/replay hardening merged in PR #2. Adversarial review records merged in PR #3.
+Foundation and input/replay hardening merged in PRs #1-#3; independent Linux broker in PR #4; TUF policy verification in PR #6; SPIFFE JWT-SVID validation in PR #8; language-neutral protocol v1.0.0 in PR #10; Go reference in PR #12; namespaced extension model in PR #13; cross-language semantic parity in PR #16.
 
 ## Critical engineering milestone: independent broker
 PR #4: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/4
@@ -81,7 +81,7 @@ Go/PR CI run: 42748095348 passed Go vet, Go race tests, and Python 3.11/3.12/3.1
 Final PR CI run after report update: 42748191713 passed all jobs.
 Post-merge main CI: 42748296088 passed all jobs.
 
-The independent Go evaluator uses only the Go standard library and consumes the same portable decision vectors as Python. It implements strict JSON parsing (including duplicate-key and invalid UTF-8 rejection), exact selector matching, deny-by-default, explicit deny precedence, review-required, UUIDv4 syntax, RFC3339 expiry, and exact policy-version binding. Its conformance report is PASS only for the five portable policy-decision vectors in the embedded profile.
+The independent Go evaluator uses only the Go standard library and consumes the same portable decision vectors as Python. It implements strict JSON parsing (including duplicate-key and invalid UTF-8 rejection), exact selector matching, deny-by-default, explicit deny precedence, review-required, UUIDv4 syntax, RFC3339 expiry, and exact policy-version binding. Its initial five-vector report was expanded to eight policy-decision and request-time vectors in PR #15, then aligned to the full request envelope and strict parser limits in PR #16. Current Go manifest version is 0.1.1; its PASS remains limited to the eight portable vectors in the embedded profile.
 
 It does NOT authenticate the principal, provide a broker/executor, replay database, TUF policy verification, SPIFFE/mTLS, sandbox, OS mediation, evidence ledger, recovery, or complete mediation. All ten MSC contract statuses remain NOT_TESTED in its implementation manifest. This is a second-language protocol proof, not a second complete security system.
 
@@ -96,24 +96,14 @@ Added a namespaced extension manifest schema, extension package rules, types for
 
 ## Next critical engineering priorities
 
-1. Expand shared vectors beyond the initial five policy decisions: expiry/future time, malformed envelopes, duplicate keys, invalid UTF-8, policy integrity, and replay behavior where applicable.
-2. Add an independent Rust implementation to further challenge language neutrality after Go.
-3. Define and test an extension discovery/provenance format without creating a central trust authority.
-4. Implement a real transport/identity adapter only after its mapping, identity provenance, threat model, and bypass tests are defined.
-5. Continue toward a typed protected executor and complete-mediation tests; do not widen the Linux broker without per-operation assurance.
+1. Add a third independent implementation (Rust) against the same v1.0.0 schemas and vectors. The purpose is to expose hidden assumptions in the Python/Go implementations, not to create another mandatory runtime.
+2. Turn the extension model into usable developer tooling: offline manifest validation, compatibility checks, dependency resolution, and extension-specific conformance reports. Keep extension discovery decentralized and publisher trust separate from namespace claims.
+3. Build one real transport extension (MCP is the first candidate) with strict tool identity mapping, authenticated principal derivation, stable target/action/scope mapping, refusal on lossy mapping, and bypass tests. Do not claim a generic MCP integration until the actual adapter exists.
+4. Close the sender-constrained identity gap: X.509-SVID/mTLS, live SPIRE integration, rotation, revocation propagation, and workload-selector tests.
+5. Expand the typed protected executor and complete-mediation tests only after each operation has a fixed schema, independent identity mapping, bounded inputs/resources, evidence, and alternate-path denial tests.
+6. Define signed protocol/policy envelopes only after selecting a reviewed canonicalization/signature profile, key discovery/rotation/revocation rules, anti-rollback behavior, and portable cryptographic vectors.
 
-Do not describe Go as full MASG conformance or the extension example as a working adapter.
-
-
-## Cross-language semantic parity work in progress
-
-Branch: `protocol/cross-language-semantic-parity`
-Goal: eliminate differences between normative JSON Schemas and Python/Go decision evaluators.
-Changes prepared: Python full-envelope `evaluate_protocol` entry point; complete request envelopes used by Python shared-vector tests; aligned policy/rule/selector limits and required rule IDs; Unicode code-point counting; shared timestamp precision and known-offset rule; optional provenance_ref support; explicit policy/request byte limits; new edge-case tests.
-Status: open engineering work. CI and merge not yet confirmed.
-
-Cross-language parser parity: Python now exposes `evaluate_protocol_json` for strict raw-envelope parsing; Go exposes `EvaluateJSON`. Both enforce duplicate-key, UTF-8, JSON depth and byte-size checks before decision evaluation. CI for PR #16 is being rerun after the latest parser tests.
-
+No implementation may claim production readiness or full MSC conformance based only on decision vectors. Keep unsupported capabilities and untested assumptions visible.
 
 ## Cross-language semantic parity milestone (PR #16)
 
@@ -121,10 +111,20 @@ PR: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/16
 Branch: `protocol/cross-language-semantic-parity`
 Tested head: `1b95c53aefd366f5364417b5bdfc6f07b78b95a8`
 CI run: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42750849476
-CI result: PASS (Python 3.11, 3.12, 3.13; Go vet; Go race tests).
+CI result: PASS (Python 3.11, 3.12, 3.13; Go vet; Go race tests).\nMerged: `019cd466583779fe38441ef5e62be32e5b1cc191`.\nPost-merge main CI: `42751069709` passed all four jobs.
 
 The Python vector harness now evaluates the complete v1.0.0 request envelope through `evaluate_protocol`; untrusted serialized JSON can use `evaluate_protocol_json` to enforce duplicate-key, UTF-8, constant, nesting and byte-size rules. Go's `EvaluateJSON` performs the equivalent raw-document checks. Both implementations align with the normative schema for required rule IDs, rule/selector counts, field-specific string limits, Unicode code-point counting, optional provenance references, timestamp precision and known-offset requirements.
 
 The eight shared vectors cover exact ALLOW, default DENY, explicit DENY precedence, REVIEW_REQUIRED, policy-version mismatch, expired, not-yet-valid and invalid validity window. Additional CI tests cover schema boundaries, Unicode, duplicate keys, invalid UTF-8, unknown fields, oversized inputs and exact JSON depth boundary.
 
-Scope remains narrow: this establishes protocol parsing and policy-decision interoperability between two implementations. It does not authenticate identity, provide universal execution mediation, prove isolation, or certify deployments. PR #16 merge status must be checked separately.
+Scope remains narrow: this establishes protocol parsing and policy-decision interoperability between two implementations. It does not authenticate identity, provide universal execution mediation, prove isolation, or certify deployments. PR #16 merged as `019cd466583779fe38441ef5e62be32e5b1cc191`; post-merge main CI run 42751069709 passed all four jobs.
+
+
+## Current main checkpoint
+
+Main commit: `019cd466583779fe38441ef5e62be32e5b1cc191`
+Post-merge main CI: `42751069709` PASS (Python 3.11/3.12/3.13 and Go).
+Open PR #16: none; merged successfully.
+Current protocol: MASG v1.0.0.
+Current independent implementations: Python reference and Go 0.1.1.
+Current shared vectors: eight policy-decision and request-time cases.

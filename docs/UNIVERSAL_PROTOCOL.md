@@ -1,6 +1,6 @@
 # Universal, Language-Neutral MASG Architecture
 
-MASG is a protocol and set of safety contracts, not a single-language framework. Python is the first reference implementation; an independent Go policy-decision implementation now consumes the same protocol vectors.
+MASG is a protocol and set of safety contracts, not a single-language framework. Python is the first reference implementation; an independent Go 0.1.1 policy-decision implementation now consumes the same protocol vectors and strict input constraints.
 
 ## Separation of concerns
 

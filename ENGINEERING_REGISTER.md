@@ -7,9 +7,9 @@ Last updated: 2026-11-10
 | Ten mandatory contracts | Specified | Machine-readable catalog; only a subset of requirements is executable |
 | Universal protocol v1.0.0 | Implemented specification baseline | Normative language-neutral decision semantics, versioning, trust boundaries, policy-version binding, JSON Schemas and portable vectors; merged PR #10 |
 | Portable conformance artifacts | PASS in PR CI | JSON Schema Draft 2020-12 validation and shared decision vectors run against Python 3.11/3.12/3.13; PR run 42746824887 passed; this is not deployment certification |
-| Independent language implementations | Python and Go reference implementations | Go uses only the standard library and passes five shared v1.0.0 policy-decision vectors; it is embedded-only and does not authenticate principals or mediate side effects; no Rust/Java/C#/TypeScript implementation yet |
+| Independent language implementations | Python and Go reference implementations | Go 0.1.1 uses only the standard library and passes eight shared v1.0.0 decision/time vectors plus strict parser/limit tests; embedded-only, no principal authentication or side-effect mediation; no Rust/Java/C#/TypeScript implementation yet |
 | Namespaced extension model | Specified | Versioned extension manifest schema, domain/transport/identity/policy/enforcement/evidence/recovery types, fail-closed compatibility rules; example is documentation-only; merged PR #13 |
-| Go portable decision conformance | PASS in CI, narrowly scoped | Go vet and race-enabled tests pass; five shared vectors; PR run 42748191713 and main run 42748296088; report scope is policy-decision vectors only, not MSC certification |
+| Go portable decision conformance | PASS in CI, narrowly scoped | Go vet and race-enabled tests pass; eight shared vectors; PR #16 CI run 42750992748 and post-merge main run 42751069709; report scope is policy-decision/time vectors only, not MSC certification |
 | Strict policy/request parsing | Implemented in reference evaluator | Duplicate keys, non-standard constants, unknown fields, malformed selectors, and oversized inputs rejected |
 | Policy evaluator | Experimental reference implementation | Deny-by-default, exact selectors, explicit deny precedence, expiry checks |
 | Identity/revocation | Experimental optional SPIFFE JWT-SVID mode | Per-request Workload API validation for exact audience; validated SPIFFE ID becomes policy principal; request expiry bounded by SVID expiry; legacy UID mode remains; bearer-token limitations apply |
@@ -30,7 +30,7 @@ Independent Rust/Java/C#/TypeScript implementations and broader cross-language i
 
 ## Validation boundary
 
-The Go implementation passed Go vet and race-enabled tests against the shared five-vector v1.0.0 policy-decision suite. Its report is explicitly scoped to those vectors; its MSC contract statuses remain NOT_TESTED. It does not authenticate principals or enforce side effects. The extension manifest schema and documentation example passed CI, but no extension adapter is implemented or trusted by virtue of its manifest.
+The Go implementation 0.1.1 passed Go vet and race-enabled tests against the shared eight-vector v1.0.0 policy-decision/time suite. Its report is explicitly scoped to those vectors; its MSC contract statuses remain NOT_TESTED. It does not authenticate principals or enforce side effects. The extension manifest schema and documentation example passed CI, but no extension adapter is implemented or trusted by virtue of its manifest.
 
 
 
@@ -39,7 +39,7 @@ PR #8's SPIFFE integration passed its 75-test Python 3.11/3.12/3.13 matrix, Ruff
 
 ## Cross-language parity checkpoint
 
-The v1.0.0 shared-vector harness now passes the complete request envelope to Python's `evaluate_protocol`, rather than stripping protocol fields before evaluation. Python and Go now align with the published schema for rule IDs, 1,000-rule and 128-selector limits, field-specific selector lengths, Unicode code-point counting, policy/request JSON byte caps, optional provenance references, and RFC 3339 timestamp precision/known-offset behavior. CI evidence is pending for PR `protocol/cross-language-semantic-parity`; do not describe these changes as merged or passed until the run completes.
+The v1.0.0 shared-vector harness now passes the complete request envelope to Python's `evaluate_protocol`, rather than stripping protocol fields before evaluation. Python and Go now align with the published schema for rule IDs, 1,000-rule and 128-selector limits, field-specific selector lengths, Unicode code-point counting, policy/request JSON byte caps, optional provenance references, and RFC 3339 timestamp precision/known-offset behavior. PR #16 merged as `019cd466583779fe38441ef5e62be32e5b1cc191`; CI run 42750992748 passed and post-merge main CI 42751069709 passed.
 
 
 Cross-language raw parser parity: Python `evaluate_protocol_json` and Go `EvaluateJSON` reject duplicate keys, invalid UTF-8, non-standard JSON constants, non-object envelopes, unknown fields, excessive nesting and over-limit byte sizes. This is parser/evaluator conformance only; it is not identity or enforcement certification.
@@ -48,3 +48,8 @@ Cross-language raw parser parity: Python `evaluate_protocol_json` and Go `Evalua
 ## Cross-language parity evidence
 
 PR #16 tested head `1b95c53aefd366f5364417b5bdfc6f07b78b95a8`; CI run 42750849476 passed Python 3.11/3.12/3.13 and Go vet/race tests. The Python shared-vector harness now evaluates the complete request envelope; Python `evaluate_protocol_json` and Go `EvaluateJSON` apply equivalent strict raw-JSON checks. Both implementations match the schema's rule IDs, array and field limits, Unicode code-point semantics, optional provenance field, timestamp precision and JSON depth/size boundaries. Eight vectors are covered; MSC statuses remain untested and no deployment assurance is claimed.
+
+
+## Current main checkpoint
+
+Main commit `019cd466583779fe38441ef5e62be32e5b1cc191`; post-merge CI `42751069709` passed Python 3.11/3.12/3.13 and Go. Python and Go share eight vectors and aligned strict input limits. Go conformance is still limited to embedded policy decision/time vectors; all ten MSC statuses remain NOT_TESTED.
