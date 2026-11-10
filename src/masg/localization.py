@@ -126,3 +126,31 @@ def resolve_message(
     if status == "HUMAN_REVIEWED" or (status == "MACHINE_DRAFT" and allow_machine_drafts is True):
         return ResolvedMessage(translated["text"], locale_pack["locale"], status, False)
     return ResolvedMessage(source_item["text"], source_pack["locale"], "SOURCE", True)
+
+def create_translation_template(
+    source_pack: Mapping[str, Any],
+    locale: str,
+    *,
+    text_direction: str = "auto",
+) -> dict[str, Any]:
+    """Create an untranslated pack skeleton for any syntactically valid locale tag."""
+    if not _record(source_pack):
+        raise LocalizationError("source pack must be an object")
+    _validate_source_pack(source_pack)
+    if not isinstance(locale, str) or not _LOCALE.fullmatch(locale):
+        raise LocalizationError("invalid locale syntax")
+    if locale.casefold() == source_pack["locale"].casefold():
+        raise LocalizationError("target locale must differ from source locale")
+    if text_direction not in {"ltr", "rtl", "auto"}:
+        raise LocalizationError("text_direction must be ltr, rtl, or auto")
+    return {
+        "schema_version": "1.0.0",
+        "locale": locale,
+        "source_locale": source_pack["locale"],
+        "catalog_version": source_pack["catalog_version"],
+        "text_direction": text_direction,
+        "messages": {
+            message_id: {"text": "", "status": "UNTRANSLATED"}
+            for message_id in source_pack["messages"]
+        },
+    }
