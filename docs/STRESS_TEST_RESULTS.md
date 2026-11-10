@@ -144,3 +144,56 @@ The first TUF CI attempt stopped at Ruff before unit tests. The reported issues 
 - Metadata expiry relies on the host clock.
 - The bootstrap root must be provisioned out-of-band; its initial correctness is an adopter responsibility.
 - TUF authenticates policy distribution, not the policy's wisdom, legality, safety, or runtime enforcement.
+
+
+## SPIFFE JWT-SVID workload identity integration
+
+PR #8: [Optional SPIFFE workload identity validation](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/8), merged as `afac8e19a9d979158ec048c4261a5a993dce39e5`. Tested head: `bb482dcefc1184350b76122ea9bc33c56e35d98c`.
+
+CI:
+- PR matrix: [42744847753](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42744847753)
+- Post-merge main matrix: [42744955882](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42744955882)
+
+Both runs passed Python 3.11, 3.12 and 3.13. Each job ran 75 unit tests, Ruff static checks, package installation including the optional `spiffe` extra, structural verification and JSON syntax checks.
+
+### SPIFFE-specific cases exercised
+
+| Test | Expected result | Observed |
+|---|---|---|
+| Validated JWT-SVID | Return SPIFFE ID and SVID expiry | PASS |
+| Invalid JWT-SVID | Fail closed | PASS |
+| Wrong audience | Reject identity | PASS |
+| Expired SVID expiry claim | Reject identity | PASS |
+| Empty/wildcard/padded audience | Reject configuration | PASS |
+| Malformed or oversized token | Reject before Workload API call | PASS |
+| Workload API client factory and RPC arguments | Use configured Unix socket, timeout and exact audience | PASS |
+| Relative socket path or path containing `..` | Reject configuration | PASS |
+| Regular file instead of Unix socket | Reject configuration | PASS |
+| Group/world-writable socket parent | Reject configuration | PASS |
+| Symlinked socket path component | Reject configuration | PASS |
+| Symlinked ancestor directory | Reject configuration | PASS |
+| Exact SPIFFE ID in policy | Use validated ID as policy principal | PASS |
+| Workload API validation error | DENY; no evidence append | PASS |
+| Request expires after SVID | DENY; no evidence append | PASS |
+| UID map combined with SPIFFE verifier | Reject ambiguous identity mode | PASS |
+| Client supplies a principal field | Reject request shape | PASS |
+| Evidence contents | Do not write the JWT-SVID bearer token | PASS |
+
+The Workload API client itself is exercised through an injected fake. The optional SDK is installed and its top-level client factory and call contract are tested, but CI does not connect to a live SPIRE Agent. No live SPIRE key rotation, bundle update/removal, revocation, workload attestation selector, or multi-trust-domain test is claimed.
+
+### CI failure and correction record
+
+The first PR run exposed Ruff findings for broad exception handling and nested context managers. These were corrected by making the broker catch the adapter's explicit fail-closed error type and combining context managers.
+
+The next run exposed a test fixture that attempted to use an ALLOW default policy, which the MASG policy loader correctly rejects. The fixture was changed to DENY by default with an exact SPIFFE-ID ALLOW rule, preserving the project's default-deny invariant.
+
+Additional path-hardening tests then exposed an import-order finding. Imports were sorted and the final 75-test matrix passed. The intermediate CI failures are retained in Actions history; they are not represented as successful runs.
+
+### Integration limits
+
+- The optional dependency is community-maintained py-spiffe 0.4.0, pinned exactly. PyPI reports no publishing provenance for this release; this must be reviewed before sensitive deployment. The transitive dependency closure is not hash-pinned by MASG.
+- JWT-SVIDs are bearer tokens. A stolen token may be presented by another process with access to the broker socket until expiry or provider-side invalidation.
+- The broker validates every request online through the Workload API and has no identity cache or offline fallback. Provider outage/timeout fails closed.
+- Revocation depends on Workload API trust-bundle/key update propagation; no globally instantaneous revocation guarantee.
+- Request expiry cannot exceed the validated SVID expiry.
+- No X.509-SVID/mTLS sender binding, live SPIRE integration, production deployment, or certification is claimed.
