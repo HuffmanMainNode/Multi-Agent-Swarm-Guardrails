@@ -39,3 +39,18 @@ Priorities are ordered by security dependency, not feature count.
 
 ## Release gate
 No production or certification claim until identity, policy integrity, execution isolation, complete declared-path mediation, evidence trust, recovery, and independent review are tested in a documented threat model.
+
+## Human-language and AI semantic interoperability
+
+- [x] Define portable BCP 47 translation-pack schema with explicit UNTRANSLATED, MACHINE_DRAFT, HUMAN_REVIEWED, and NEEDS_REVISION states.
+- [x] Publish authoritative English message catalog and an explicitly untranslated Spanish contributor template.
+- [x] Publish stable multilingual concept identifiers and English glossary definitions.
+- [x] Publish experimental UASR semantic-frame schema with explicit epistemic status and evidence requirement for VERIFIED claims.
+- [ ] Add shared positive/negative semantic-frame vectors and translation-pack conformance vectors.
+- [ ] Add independent localization and semantic-frame validators in Python, JavaScript/TypeScript, Go, and Rust.
+- [ ] Build a contributor review workflow for security-critical translations, including source-change invalidation and reviewer metadata checks.
+- [ ] Benchmark JSON against deterministic CBOR for bytes, model-token counts across multiple tokenizers, encode/decode latency, and semantic round-trip fidelity.
+- [ ] Approve a compact binary profile only after independent implementations, benchmark evidence, and external review.
+- [ ] Expand independent protocol implementations to Java, C#, Swift, Kotlin, C/C++, and WebAssembly as community demand and maintainers allow.
+
+UASR is experimental and separate from authorization protocol v1.0.0. No hidden-reasoning disclosure, translation accuracy guarantee, or token-efficiency result is claimed.
