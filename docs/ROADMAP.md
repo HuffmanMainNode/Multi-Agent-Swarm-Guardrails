@@ -1,34 +1,28 @@
 # Roadmap
 
-Roadmap entries are proposals, not current capabilities.
+Priorities are ordered by security dependency, not feature count.
 
-## Foundation
-- [x] Ten stable contract IDs and machine-readable catalog.
-- [x] Local reference evaluator, evidence chain, structural CLI, tests, CI.
-- [ ] Independent contract and code review.
+## Experimental foundation
+- [x] Ten versioned mandatory safety contracts.
+- [x] Deny-by-default local policy evaluator.
+- [x] Optional local SQLite replay consumption.
+- [x] Local hash-chain evidence ledger.
+- [x] Repository structural verifier and CI.
+- [x] Experimental Linux separate-process broker for one fixed audit append operation.
 
-## Core strengthening
-- Strict schema validation.
-- Property-based/fuzz testing.
-- Durable replay protection with concurrency semantics.
-- Capability-set delegation attenuation and signed delegation using maintained libraries.
-- Policy provenance/signature profile.
-- External evidence checkpointing and concurrency-safe ledger.
-- Reproducible package builds and provenance.
-
-## Deployment enforcement
-- Isolated enforcement service with authenticated IPC.
-- Tool broker and protected executor example.
-- Bypass-path test harness.
-- Safe-stop interfaces and tested recovery.
+## Critical engineering
+1. Authenticated workload identity and revocation integration beyond local OS UID.
+2. Signed policy provenance, freshness, and anti-rollback update process.
+3. Cryptographically bound capability delegation with strict attenuation.
+4. Typed protected-executor interface and explicit capability registry; no arbitrary shell execution.
+5. Expand broker operation-by-operation only after threat model, allowlist, resource limits, authorization, evidence, and bypass tests exist.
+6. Independent evidence checkpoint and signed portable evidence format.
+7. Deployment-level conformance, property-based/fuzz testing, load testing, and external review.
 
 ## Interoperability
-- MCP, A2A, ACS, OPA/Cedar, SPIFFE/SPIRE, OpenTelemetry, CycloneDX/SPDX adapters.
+- ACS/MCP integration only after security contract mappings and compatibility tests.
+- A2A identity, audience, expiry, and replay integration.
+- OPA/Cedar and SPIFFE/SPIRE adapters where they improve interoperability without replacing MASG contracts.
 
-## Independent adoption
-- Portable Security Passport with signature profile.
-- At least two independent language implementations.
-- Cross-implementation test vectors and verifier.
-- Community governance and maintainer succession.
-
-A phase is complete only when code exists, tests are executed, evidence retained, limitations documented, and status registers updated.
+## Release gate
+No production or certification claim until identity, policy integrity, execution isolation, complete declared-path mediation, evidence trust, recovery, and independent review are tested in a documented threat model.

@@ -15,8 +15,14 @@ Agent proposes typed request -> adapter binds authenticated caller -> validate p
 
 Model output is a request, never authorization. A signature does not establish trust or safety. In-process Python cannot contain hostile code controlling the same interpreter.
 
+## Experimental Linux broker
+
+The first separate-process broker deliberately exposes one fixed operation, `audit.append`. It derives caller UID from Linux Unix-socket peer credentials, maps that UID to an operator-configured principal, authorizes the fixed operation, consumes a request ID in SQLite, and appends a bounded event to its own ledger. It accepts no caller-supplied principal, operation, target, scope, path, executable, or command.
+
+The broker is an example of a protected side-effect boundary, not a general tool executor. It depends on OS UID separation, socket directory ownership, broker service account isolation, protected configuration, and broker-owned state. It is Linux-only.
+
 ## Failure handling
 Unknown authorization state is not permission. Define safe state per protected resource. Safe-stop may be scoped to tool, session, delegation chain, agent, node, or swarm segment. No universal remote shutdown mechanism is provided.
 
 ## Current implementation
-Local evaluator, JSONL ledger, and structural verifier only. No external identity, signed policy, OS isolation, network mediation, complete path coverage, remote revocation, or hardware attestation.
+Local evaluator, JSONL ledger, structural verifier, and experimental Linux audit-append broker. No external identity provider, signed policy, general OS isolation, network mediation, complete path coverage, remote revocation, or hardware attestation.

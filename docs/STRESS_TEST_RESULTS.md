@@ -1,78 +1,103 @@
 # Adversarial Review and Stress-Test Results
 
 Date: 2026-11-10
-Reviewed implementation: PR #2 head aab694b0a58a6ccc741376628498bc9820b88107
-Merged commit: 4a8adac5308e0414018484f68ca4b28d43a053cd
-CI run: https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42734201509
 
-## Executive result
+## Previous evaluator hardening
 
-The second review found and corrected input ambiguity, weak bounds, local clock handling, missing replay resistance, ledger parsing ambiguity, and shallow contract catalog validation. One newly added ledger test initially failed in CI because the record writer emitted a literal backslash-n instead of a line terminator. The failure was investigated from the job log, corrected, and the full matrix rerun. This is recorded rather than hidden.
+Implementation merged in PR #2, merge commit `4a8adac5308e0414018484f68ca4b28d43a053cd`.
+CI run: [42734201509](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42734201509).
 
-Final CI result: 28 unit tests passed on each of Python 3.11, 3.12, and 3.13; package installation, structural/contract verification, and JSON syntax checks passed in all three jobs.
+The second review corrected input ambiguity, weak bounds, local clock handling, missing replay resistance, ledger parsing ambiguity, and shallow contract catalog validation. A ledger newline defect was exposed by CI, corrected, and retested.
 
-## Attack and failure cases exercised
+Result: 28 unit tests passed on Python 3.11, 3.12, and 3.13, with structural/contract verification and JSON checks passing.
+
+## Independent broker implementation
+
+PR #4: [Independent Linux execution broker](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/pull/4).
+Tested head: `6885d489f8aa971c5d409c8de5753a539ef540e5`.
+
+Successful CI runs:
+- [42735881467](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42735881467)
+- [42735881291](https://github.com/HuffmanMainNode/Multi-Agent-Swarm-Guardrails/actions/runs/42735881291)
+
+All three Python jobs (3.11, 3.12, 3.13) passed in both runs. Each job ran 46 unit tests and completed package installation, structural verification, and JSON syntax checks.
+
+### Broker attack and failure cases exercised
+
+| Test | Expected result | Observed |
+|---|---|---|
+| Authorized local OS peer with matching policy | Fixed audit append executes | PASS |
+| Reuse same UUIDv4 request ID | DENY; no second append | PASS |
+| Unmapped OS UID | DENY | PASS |
+| Caller supplies principal or shell operation | Reject request shape | PASS |
+| Caller adds path or unexpected event field | DENY | PASS |
+| Oversized event detail | DENY | PASS |
+| Duplicate JSON keys | DENY | PASS |
+| Deeply nested JSON | Reject within parser/depth bounds | PASS |
+| Non-UUIDv4 request ID | DENY with specific reason | PASS |
+| Request validity longer than five minutes | DENY | PASS |
+| No matching policy rule | DENY; no ledger write | PASS |
+| Replay store unavailable | DENY; no ledger write | PASS |
+| Existing corrupt evidence ledger | DENY; no ALLOW | PASS |
+| Eight concurrent attempts with one request ID | Exactly one execution | PASS |
+| Real Unix socket request/response | Peer UID derived and response returned | PASS |
+| Symlink policy file | Broker configuration rejected | PASS |
+| Group/world-writable config directory | Broker configuration rejected | PASS |
+| Group/world-writable state directory | Broker configuration rejected | PASS |
+
+The socket integration test exercises Linux `SO_PEERCRED`. Most policy/failure tests call the broker's request-processing method with an explicit UID to isolate the relevant condition. They are unit/integration tests, not a deployed multi-user penetration test.
+
+### CI failure and correction record
+
+The first run on the broker branch failed two newly added tests:
+1. Deep JSON nesting was not rejected at the intended explicit depth boundary.
+2. A malformed request ID was categorized as a generic field error.
+
+The implementation was changed to enforce a maximum JSON nesting depth of 32 and to validate canonical UUIDv4 request IDs before other request fields. The updated matrix passed. Additional tests were then added for symlink configuration and unsafe writable parent directories; the final 46-test-per-version matrix passed.
+
+## Earlier evaluator cases exercised
 
 | Area | Test or attack | Expected result | Observed |
 |---|---|---|---|
 | Policy | No matching rule | DENY | PASS |
 | Policy | Explicit DENY before/after ALLOW | DENY regardless of order | PASS |
 | Policy | REVIEW_REQUIRED matching rule | No ALLOW | PASS |
-| Policy | Expired request | DENY | PASS |
-| Policy | Future-issued request | DENY | PASS |
-| Policy | Timestamp without timezone | DENY | PASS |
-| Policy | Naive evaluator clock | DENY | PASS |
+| Policy | Expired/future-issued request | DENY | PASS |
+| Policy | Timestamp without timezone or naive clock | DENY | PASS |
 | Policy | Unknown request/policy fields | DENY | PASS |
 | Policy | Malformed/empty selector | DENY | PASS |
-| JSON | Duplicate policy keys | Reject input | PASS |
-| JSON | NaN/Infinity token | Reject input | PASS |
+| JSON | Duplicate keys and NaN/Infinity | Reject input | PASS |
 | Delegation | Repeated actor/cycle | DENY | PASS |
-| Replay | Reuse same request ID | DENY second use | PASS |
-| Replay | New store instance, same DB | Remains consumed | PASS |
+| Replay | Same request ID across store instances | DENY second use | PASS |
 | Replay | Eight concurrent consumers | Exactly one succeeds | PASS |
-| Replay | Different request IDs | Independent entries | PASS |
-| Audit | Modify event content | Detect hash mismatch | PASS |
-| Audit | Blank line | Invalid ledger | PASS |
-| Audit | Add unhashed field | Invalid ledger | PASS |
-| Audit | Boolean sequence value | Invalid ledger | PASS |
-| Audit | Duplicate JSON keys | Invalid ledger | PASS |
-| Audit | NaN event value | Reject append | PASS |
-| Catalog | Missing/duplicate/unexpected contract IDs | FAIL | PASS |
-| Catalog | Extra contract field | FAIL | PASS |
-| Catalog | Required ten-contract catalog | PASS | PASS |
+| Audit | Tamper, blank line, unhashed field, boolean sequence | Invalid ledger | PASS |
+| Catalog | Missing/duplicate/unexpected IDs or extra fields | FAIL | PASS |
 
 PASS means the corresponding automated test passed, not that the control is proven against every attacker or deployment.
-
-## Fixes made from findings
-
-1. Strict JSON parsing rejects duplicate object keys and non-standard numeric constants.
-2. Policy and request input sizes, rule counts, selector counts, string lengths, and delegation chain length are bounded.
-3. Unknown fields and malformed selector arrays fail closed.
-4. Request timestamps require strict RFC3339 formatting and explicit timezone; a naive supplied clock is rejected.
-5. Optional SQLite replay protection consumes a request ID inside an atomic write transaction. Concurrent duplicate attempts were tested.
-6. Replay-store errors produce DENY rather than ALLOW.
-7. The JSONL ledger rejects ambiguous JSON, non-integer sequence values, malformed record shapes, and non-standard numbers. Appends flush and fsync the file.
-8. The structural verifier now checks contract catalog shape, required fields, IDs, versions, evidence lists, duplicate IDs, and contract-schema required-field metadata.
 
 ## Not tested / not claimed
 
 - No penetration test, external red-team engagement, fuzzing campaign, property-based test campaign, or high-volume performance/load benchmark.
-- No live OS sandbox, container escape, network egress, process isolation, kernel boundary, hardware attestation, or complete-mediation test.
-- No identity-provider integration, signed policy, credential revocation, distributed replay cache, or replay-database anti-rollback test.
-- No multi-process or multi-host JSONL writer test; the JSONL ledger remains single-writer.
+- No deployed service-account configuration test or multi-user/multi-host test.
+- No live OS sandbox, container escape, network egress, kernel boundary, hardware attestation, or complete-mediation test.
+- No cryptographic workload identity, credential issuance/revocation, signed policy, or policy anti-rollback.
+- No distributed replay cache or replay-database anti-rollback test.
+- No general arbitrary-tool broker, filesystem/network mediation, or shell/executable execution.
+- No multi-process external writer test for the JSONL ledger; broker serializes only its own in-process append handlers.
 - No recovery drill, signing-key compromise exercise, real MCP/A2A/ACS interoperability test, or independent assessor review.
 - No production safety or certification claim.
 
 ## Residual highest-risk gaps
 
-1. Identity and authority are still represented by caller-supplied strings, not authenticated credentials.
-2. SQLite replay protection is optional, local, and vulnerable to database rollback/replacement by an attacker with write access. Fresh fabricated request IDs are not prevented.
-3. A local policy file is not signed or protected against rollback.
-4. No separate privileged execution broker currently enforces all protected side effects.
-5. Delegation cycle rejection is not capability attenuation.
-6. The JSONL ledger remains replaceable without an independent signed checkpoint and is not multi-writer safe.
-7. The repository verifier is not a deployment conformance engine.
+1. OS UID is the broker's caller identity signal. Processes sharing a UID share authority; this is not cryptographic workload identity.
+2. Broker service account, host kernel, operator-controlled directories, policy, principal map, replay DB, and ledger remain trusted.
+3. SQLite replay state is local and can be rolled back by an attacker controlling broker-owned state. UUIDv4 format does not authenticate the caller or prevent a malicious authorized client from minting fresh IDs.
+4. Policy is loaded at startup but is not signed or protected against rollback.
+5. Only one fixed operation is brokered. Other application side effects can bypass it unless adopters independently route them through a protected boundary.
+6. The JSONL ledger remains replaceable without an independent signed checkpoint.
+7. Delegation cycle rejection is not capability attenuation.
+8. No independent security review has occurred.
 
 ## Acceptance decision
 
-The hardened reference layer is suitable for continued experimental development and local integration testing. It is not a standalone production security control. Deployments must place identity, policy integrity, replay storage, and enforcement behind independently protected boundaries appropriate to their threat model.
+The broker is an experimental reference for one narrow protected operation and passed its current Python CI matrix. It is not a general production security boundary. Adoption requires distinct OS identities, a dedicated broker service account, protected configuration/state/socket directories, and explicit routing of the protected operation through the broker. Do not infer that other side effects are mediated.
