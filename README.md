@@ -56,6 +56,14 @@ MASG separates human-language localization, programming-language implementations
 
 No language pack is assumed correct because it is machine-generated. No semantic frame or model output is authorization. UASR does not expose or standardize hidden model reasoning, and no token-efficiency claim is made.
 
+## Universal entry and global knowledge exchange
+
+The experimental [Universal Entry and Friendship Protocol (UEFP)](docs/UNIVERSAL_ENTRY_AND_FRIENDSHIP_PROTOCOL.md) explores how independent people-operated systems, software projects, and AI agents can introduce themselves, describe communication formats and declared capabilities, and propose consent-based knowledge exchanges. It is designed around connection without forced conformity. The participant manifest schema is [here](schemas/participant-manifest.schema.json), with an [illustrative example](examples/participant-manifest.example.json).
+
+UEFP is not a global directory, identity provider, trust authority, automatic translator, or execution protocol. A manifest does not authenticate identity or prove capability. A handshake does not grant permission. The current materials are an experimental specification and schema, not an implemented network service.
+
+For people learning to participate in open source, see the [GitHub Field Guide](docs/GITHUB_FIELD_GUIDE.md), including profile READMEs, repository creation, README writing, forks and upstream maintenance, achievements without spam, account organization, and safe AI direction. Reusable starting points are in [templates/](templates/).
+
 ## Quick start
 Requires Python 3.11+.
 

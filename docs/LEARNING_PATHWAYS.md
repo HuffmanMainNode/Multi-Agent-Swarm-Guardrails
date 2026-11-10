@@ -57,6 +57,19 @@ Do not edit security rules, authorization behavior, schemas, or cryptographic co
 
 **Done means:** You have proposed a small change and can explain it. A pull request is a proposal, not proof that the change is correct or merged.
 
+## Path 2A: Set up your GitHub home
+
+**Goal:** Make your work understandable and learn healthy repository habits.
+
+1. Read the [GitHub Field Guide](GITHUB_FIELD_GUIDE.md).
+2. Draft a profile README using [the profile template](../templates/profile/README.md). Keep only details you choose to make public.
+3. Create a practice repository using [the repository README template](../templates/repository/README.md). Decide its visibility and license before inviting contributions.
+4. Learn the difference between a fork, a clone, a branch, and an upstream remote.
+5. Use the [fork maintenance checklist](../templates/fork-maintenance-checklist.md) before proposing a contribution to another project.
+6. Treat achievements as incidental. Do not spam activity to collect badges.
+
+**Done means:** You can explain where your work lives, who can see it, how to describe it, and how to propose a change without confusing your fork with the upstream project.
+
 ## Path 3: First local test
 
 **Goal:** Run the project's existing checks without changing security behavior.

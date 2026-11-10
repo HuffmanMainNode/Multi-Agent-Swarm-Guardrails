@@ -69,3 +69,19 @@ UASR is experimental and separate from authorization protocol v1.0.0. No hidden-
 - [ ] Add a browser-based, optional, sandboxed practice environment only after its threat model, isolation, data handling, and maintenance costs are reviewed. It must not be required to use the repository.
 - [ ] Create small, independently checkable exercises for JSON, schemas, test vectors, localization, and semantic frames.
 - [ ] Invite novice usability testing and publish what confused participants and what was changed.
+- [x] Publish a practical GitHub field guide covering profile READMEs, repository creation, README quality, forks/upstream hygiene, achievements without spam, account organization, and safe AI direction.
+- [x] Publish reusable profile README, repository README, AI project brief, and fork-maintenance templates.
+- [ ] Add interactive, step-by-step GitHub exercises using safe practice repositories and clearly labeled screenshots/text alternatives.
+- [ ] Add community-reviewed profile and repository examples from contributors with different regions, languages, devices, and experience levels.
+
+## Universal entry and global knowledge exchange
+
+- [x] Publish experimental UEFP introduction and design principles.
+- [x] Publish an experimental participant-manifest JSON Schema and illustrative example.
+- [ ] Define normative handshake messages and a versioned state machine.
+- [ ] Add positive and negative participant-manifest and handshake test vectors.
+- [ ] Add independent validators and conformance tests in multiple languages.
+- [ ] Design consent and exchange metadata for data scope, purpose, retention, attribution, and license.
+- [ ] Threat-model identity spoofing, capability overclaiming, malicious manifest content, unsafe link handling, privacy leakage, and protocol downgrade.
+- [ ] Invite external review and co-design from contributors in multiple regions and technical communities.
+- [ ] Explore decentralized discovery and offline exchange formats without requiring a central directory.
