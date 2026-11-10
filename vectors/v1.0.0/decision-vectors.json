@@ -40,7 +40,7 @@
     },
     "expected": {
       "decision": "ALLOW",
-      "reason_code": "MATCHED_ALLOW"
+      "reason_code": "EXPLICIT_MATCH"
     }
   },
   {
@@ -84,7 +84,7 @@
     },
     "expected": {
       "decision": "DENY",
-      "reason_code": "DEFAULT_DENY"
+      "reason_code": "NO_MATCH"
     }
   },
   {
@@ -188,7 +188,7 @@
     },
     "expected": {
       "decision": "REVIEW_REQUIRED",
-      "reason_code": "MATCHED_REVIEW_REQUIRED"
+      "reason_code": "APPROVAL_REQUIRED"
     }
   }
 ]
