@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import unittest
 
-from masg.localization import LocalizationError, resolve_message
+from masg.localization import LocalizationError, create_translation_template, resolve_message
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -68,6 +68,22 @@ class LocalizationTests(unittest.TestCase):
     def test_unknown_message_id_is_not_silently_translated(self):
         with self.assertRaises(KeyError):
             resolve_message(self.source, self.template, "masg.ui.not_a_real_message")
+
+    def test_template_generator_creates_all_untranslated_ids(self):
+        generated = create_translation_template(self.source, "fr-CA", text_direction="ltr")
+        self.assertEqual(generated["locale"], "fr-CA")
+        self.assertEqual(generated["source_locale"], "en")
+        self.assertEqual(set(generated["messages"]), set(self.source["messages"]))
+        self.assertTrue(all(
+            item == {"text": "", "status": "UNTRANSLATED"}
+            for item in generated["messages"].values()
+        ))
+
+    def test_template_generator_rejects_source_locale_and_bad_direction(self):
+        with self.assertRaises(LocalizationError):
+            create_translation_template(self.source, "en")
+        with self.assertRaises(LocalizationError):
+            create_translation_template(self.source, "fr", text_direction="diagonal")
 
     def test_missing_locale_entry_falls_back(self):
         locale = copy.deepcopy(self.template)
