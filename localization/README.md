@@ -38,7 +38,7 @@ Consumers must fall back to the English source for missing, invalid, or unreview
 
 ## Contributing a language
 
-Copy `locales/es/messages.template.json`, change the locale to your BCP 47 tag, and submit a pull request. Leave untranslated values empty. Add human translations only when you can review them competently. Include regional context where relevant.
+Use `masg.localization.create_translation_template(source_pack, locale)` in Python or `createTranslationTemplate(sourcePack, locale)` in JavaScript/TypeScript to generate a complete untranslated skeleton for any locale. You may also copy `locales/es/messages.template.json` and change the locale to your BCP 47 tag. Submit the resulting pack in a pull request. Leave untranslated values empty. Add human translations only when you can review them competently. Include regional context where relevant.
 
 The project welcomes new language packs and corrections. Contributors should disclose machine assistance and avoid claiming native-speaker review they did not perform.
 
@@ -47,3 +47,8 @@ The project welcomes new language packs and corrections. Contributors should dis
 The Python reference package provides `masg.localization.resolve_message`; the JavaScript reference package exports `@masg/reference-javascript/localization`. Both are offline resolvers, not translation engines.
 
 They use HUMAN_REVIEWED text by default. UNTRANSLATED, NEEDS_REVISION, missing entries, and absent locale packs fall back to the English source. MACHINE_DRAFT text is available only through an explicit opt-in. Human-reviewed entries without reviewer metadata are rejected. Runtime helpers perform basic consistency checks; validate packs against the JSON Schema and use a standards-aware BCP 47 parser where full registry validation is required.
+
+
+## Glossary scope
+
+The core glossary is a controlled vocabulary for protocol fields, decisions, security assurances, evidence, semantic exchange, and localization states. It is not a dictionary of every word in every language. Natural-language words can have multiple meanings; each glossary entry therefore has a stable concept ID, a domain, and a contextual definition. The glossary is validated by `schemas/core-glossary.schema.json`.
