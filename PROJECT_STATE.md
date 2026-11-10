@@ -228,3 +228,8 @@ The older entries above that describe JavaScript as pending, the parser suite as
 
  
 The localization follow-on also adds Python and JavaScript/TypeScript template generators for any locale tag, plus a schema-validated controlled glossary of protocol/security concepts. The glossary is intentionally contextual rather than an unbounded word-for-word dictionary.
+
+
+## Universal participation and learning checkpoint
+
+A documentation-first milestone adds a no-install, no-code entry point, progressive learning paths, a plain-language computing/protocol glossary, and safe AI tutoring/review guidance. It explicitly welcomes non-code contributions such as clarity reports, accessibility feedback, language review, and reproducible testing. This is a learning and access layer; it does not change protocol authority, runtime behavior, or security claims. Reviewed translations, accessible interactive exercises, and any browser sandbox remain future work.
